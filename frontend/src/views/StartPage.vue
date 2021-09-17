@@ -1,6 +1,6 @@
 <template>
   <div class="mainDiv">
-    <p>Lorem Ipsum</p>
+    <router-link to="/profile">My Profile</router-link>
   </div>
 </template>
 <script>
