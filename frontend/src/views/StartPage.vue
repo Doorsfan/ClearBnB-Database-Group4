@@ -7,7 +7,7 @@
       <div class="endDateBox Box">End Date<div class="endDateBar"><input type="date" min="2021-09-17" max="2021-10-17"></div></div>
       <div class="priceBox Box">Price<div class="priceBar"><input placeholder=0 type="number" min=0></div></div>
       <button class="searchButton" @click="search" type="button">Search</button>
-      <router-link class="Login" to="/">Login</router-link>
+      <router-link class="Login" to="/login">Login</router-link>
     </div>
   </div>
 </template>
