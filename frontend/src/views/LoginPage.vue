@@ -12,6 +12,7 @@
         <input class="submitButton" type="submit" value="Log In">
       </form>
     </div>
+    <router-link to="/register" class="registerLink">Register New Account</router-link>
   </div>
 </template>
 <script>
@@ -81,5 +82,11 @@ a{
 }
 .submitButton{
   margin-left: 55px;
+}
+.registerLink{
+  position:absolute;
+  top: 54vh;
+  left: 45.6vw;
+  color:blue;
 }
 </style>
