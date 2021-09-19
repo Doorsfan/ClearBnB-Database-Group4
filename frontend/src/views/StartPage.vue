@@ -5,10 +5,13 @@
       <div class="guestBox Box">Guests<div class="guestsBar"><input type="number" min=1 placeholder="Guests" class="guestsBar"></div></div>
       <div class="startDateBox Box">Start Date<div class="startDateBar"><input min="2021-09-17" type="date"></div></div>
       <div class="endDateBox Box">End Date<div class="endDateBar"><input type="date" min="2021-09-17" max="2021-10-17"></div></div>
-      <div class="priceBox Box">Price<div class="priceBar"><input placeholder=0 type="number" min=0></div></div>
+      <div class="priceBox Box">Below Price Of<div class="priceBar"><input placeholder=0 type="number" min=0></div></div>
       <button class="searchButton" @click="search" type="button">Search</button>
       <router-link class="Login" to="/">Login</router-link>
+      <router-link class="myProfileBox" to="/profile">My Profile</router-link>
     </div>
+  </div>
+  <div class="searchDiv">
   </div>
 </template>
 <script>
@@ -49,5 +52,12 @@ a:visited{
 }
 .searchButton{
   margin-right:100px;
+}
+.myProfileBox{
+  margin-left:50px;
+}
+.searchDiv{
+  background-color:lightcyan;
+  height:100vh;
 }
 </style>
