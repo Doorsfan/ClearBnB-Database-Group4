@@ -33,8 +33,8 @@
       <router-link class="Login" to="/login">Login</router-link>
       <router-link class="myProfileBox" to="/profile">My Profile</router-link>
     </div>
+    <div class="searchDiv"></div>
   </div>
-  <div class="searchDiv"></div>
 </template>
 <script>
 export default {
