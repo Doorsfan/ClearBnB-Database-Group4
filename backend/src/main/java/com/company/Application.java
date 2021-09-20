@@ -13,11 +13,7 @@ public class Application {
 
         app.listen(4000);
 
-        this.connectToDB();
-
-        if (con == null) {
-            System.out.println("Panic mode?! Handle graceful shutdown.");
-        }
+        con = MySQL.INSTANCE.getConnection();
 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -29,20 +25,8 @@ public class Application {
 
         try{
             con.close();
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
-    }
-
-    private void connectToDB() {
-        {
-            try {
-                con = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/ClearBnB","root","root");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }
