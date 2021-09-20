@@ -11,14 +11,20 @@ public class Application {
         Express app = new Express();
 
         app.listen(4000);
-        this.connectToDB();
-        if (con == null) {
-            System.out.println("Panic mode?! Handle graceful shutdown.");
-        }
 
-        doExampleQuery();
+        con = MySQL.INSTANCE.getConnection();
+
+        // Insert code here
+        this.doExampleQuery();
+
+        try{
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
+    // This should be deleted when we actually add code
     private void doExampleQuery() {
         try {
             int userID = 1;
@@ -27,8 +33,7 @@ public class Application {
             // SQL-injection possible with the query below since we're concatenating strings
             // ResultSet rs=stmt.executeQuery("SELECT * FROM emp WHERE emp.id = " + userID);
 
-            PreparedStatement pStatement = con.prepareStatement("SELECT id, name, date_created FROM users WHERE id = ?");
-            pStatement.setInt(1, userID);
+            PreparedStatement pStatement = con.prepareStatement("SELECT * FROM User");
             ResultSet rs = pStatement.executeQuery();
 
             while(rs.next()) {
@@ -37,25 +42,10 @@ public class Application {
                         rs.getInt(1)
                                 + "  " +
                                 rs.getString(2)
-                                + "  " +
-                                rs.getTimestamp(3)
                 );
             }
-            con.close();
         }catch(Exception e){
             System.out.println(e);
         }
-    }
-
-    private void connectToDB() {
-        {
-            try {
-                con = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/mydb","root","root");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }
