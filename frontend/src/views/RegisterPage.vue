@@ -1,14 +1,22 @@
 <template>
   <div class="mainDiv">
-    <div class="navbar">
-      <div class="locationBox Box">Location<div class="locationBar"><input type="text" placeholder="Location" class="searchBar"></div></div>
-      <div class="guestBox Box">Guests<div class="guestsBar"><input type="number" min=1 placeholder="Guests" class="guestsBar"></div></div>
-      <div class="startDateBox Box">Start Date<div class="startDateBar"><input min="2021-09-17" type="date"></div></div>
-      <div class="endDateBox Box">End Date<div class="endDateBar"><input type="date" min="2021-09-17" max="2021-10-17"></div></div>
-      <div class="priceBox Box">Price<div class="priceBar"><input placeholder=0 type="number" min=0></div></div>
-      <button class="searchButton" @click="search" type="button">Search</button>
-      <router-link class="Login" to="/">Login</router-link>
+    <div class="navBar">
+      <router-link to="/" class="backToStartPageLink">ClearBnB</router-link>
     </div>
+    <form @submit.prevent="tryToRegisterUser" class="registerForm">
+      <div class="registerTitle">Register a new User</div>
+      <div class="usernameTitle">Username</div>
+      <input type="text" class="nameInput inputField" placeholder="Username">
+      <div class="passwordTitle">Password</div>
+      <input type="password" class="passwordInput inputField" placeholder="Password">
+      <div class="repeatPasswordTitle">Repeat Password</div>
+      <input type="password" class="repeatPasswordInput inputField" placeholder="Repeat Password">
+      <div class="emailTitle">Email</div>
+      <input type="type" class="emailInput inputField" placeholder="E-mail">
+      <div class="balanceTitle">Balance</div>
+      <input type="number" min=0 class="balanceInput inputField" placeholder="Balance">
+      <button type="submit" class="submitButton inputField" value="Register">Register</button>
+    </form>
   </div>
 </template>
 <script>
@@ -25,11 +33,54 @@ export default {
 
   },
   methods: {
-    search(){
+    tryToRegisterUser(){
+      console.log("hi");
     }
   },
 };
 </script>
 <style scoped>
-
+.inputField{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+}
+.registerTitle{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  width:max-content;
+  font-size:30px;
+  font-weight:bolder;
+}
+.usernameTitle, .emailTitle, .repeatPasswordTitle, .passwordTitle, .balanceTitle{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  width:max-content;
+  font-size:20px;
+  font-weight:bolder;
+  margin-top: 15px;
+}
+.registerForm{
+  margin-top: 20vh;
+}
+.navBar{
+  height:25px;
+  background-color:lightcoral;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+a {
+  color:black;
+  text-decoration:none;
+  font-weight:bolder;
+  font-size: 25px;
+  margin-left: 10px;
+}
+.mainDiv{
+  background-color:lightcyan;
+  height: 98vh;
+}
 </style>
