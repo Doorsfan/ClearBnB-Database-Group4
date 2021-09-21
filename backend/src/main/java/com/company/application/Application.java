@@ -1,5 +1,7 @@
 package com.company.application;
 
+import com.company.MySQL;
+import com.company.Repositories.ListingRepository;
 import com.company.domain.*;
 import com.company.infrastructure.*;
 import express.Express;
@@ -25,6 +27,7 @@ public class Application {
         /*** Testing ListingRepository methods ***/
 
         System.out.println(listingRepository.findAllForId(1));
+
 
         /*** end test ***/
 
