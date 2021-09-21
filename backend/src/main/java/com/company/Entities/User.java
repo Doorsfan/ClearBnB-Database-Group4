@@ -7,6 +7,7 @@ import java.util.*;
 @Table(name = "User")
 public class User {
     @Id
+    @GeneratedValue
     @Column(name = "user_id")
     private Integer userId;
     private String username;

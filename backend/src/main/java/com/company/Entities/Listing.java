@@ -1,14 +1,17 @@
 package com.company.Entities;
 
+import com.company.Entities.CompositeIDs.ListingCompositeId;
 import jakarta.persistence.*;
 import java.time.*;
 
 @Entity
+@IdClass(ListingCompositeId.class)
 @Table(name = "Listing")
 public class Listing {
     @Id
     @Column(name = "listing_id")
     private Integer listingId;
+    @Id
     private Integer version;
     @Column(name = "audited_datetime")
     private LocalDateTime auditedDatetime;

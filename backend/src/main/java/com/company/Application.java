@@ -25,7 +25,7 @@ public class Application {
 
         /*** Testing ListingRepository methods ***/
 
-        System.out.println(listingRepository.findById(1));
+        System.out.println(listingRepository.findAllForId(1));
 
         /*** end test ***/
 
