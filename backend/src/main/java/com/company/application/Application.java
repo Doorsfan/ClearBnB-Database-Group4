@@ -1,17 +1,16 @@
-package com.company;
+package com.company.application;
 
-import com.company.Entities.*;
-import com.company.Repositories.*;
+import com.company.domain.*;
+import com.company.infrastructure.*;
 import express.Express;
 import jakarta.persistence.*;
 
-import java.net.UnknownServiceException;
 import java.sql.*;
 
 public class Application {
     Connection con;
 
-    Application() {
+    public Application() {
         Express app = new Express();
 
         app.listen(4000);

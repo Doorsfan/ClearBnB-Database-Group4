@@ -1,7 +1,6 @@
-package com.company.Entities;
+package com.company.domain;
 
 import jakarta.persistence.*;
-import java.util.*;
 
 @Entity
 @Table(name = "User")
