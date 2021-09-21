@@ -1,5 +1,7 @@
 package com.company.application;
 
+import com.company.MySQL;
+import com.company.Repositories.ListingRepository;
 import com.company.domain.*;
 import com.company.infrastructure.*;
 import express.Express;
@@ -20,28 +22,12 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        UserRepository userRepository = new UserRepository(entityManager);
+        ListingRepository listingRepository = new ListingRepository(entityManager);
 
-        /*** Testing UserRepository methods ***/
-        // create user class
-        User test = new User();
-        test.setUserId(1);
-        test.setUsername("matt");
-        test.setPassword("password");
-        test.setEmail("matt@yahoo.com");
-        test.setBalance(420.00);
+        /*** Testing ListingRepository methods ***/
 
-        // test saving user to db
-        userRepository.save(test);
-        System.out.println(userRepository.findAll());
+        System.out.println(listingRepository.findAllForId(1));
 
-        // test updating a user
-        userRepository.update(test.getUserId(), null, null, null, 400.00);
-        System.out.println(userRepository.findAll());
-
-        // test removing a user
-        userRepository.remove(test.getUserId());
-        System.out.println(userRepository.findAll());
 
         /*** end test ***/
 
