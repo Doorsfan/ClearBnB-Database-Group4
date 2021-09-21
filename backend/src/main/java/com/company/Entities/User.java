@@ -5,10 +5,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "User")
-@NamedQueries({
-        @NamedQuery(name = "User.selectAll",
-                query = "SELECT u FROM User u")
-})
 public class User {
     @Id
     @Column(name = "user_id")
