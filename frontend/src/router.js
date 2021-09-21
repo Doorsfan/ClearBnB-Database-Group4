@@ -25,7 +25,7 @@ export default createRouter({
     {
       path: '/leaseAHouse',
       component: LeaseAHousePage
-    }
+    },
     {
       path: '/register',
       component: RegisterPage
