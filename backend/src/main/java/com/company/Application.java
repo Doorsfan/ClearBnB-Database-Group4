@@ -37,6 +37,11 @@ public class Application {
 
         // print out all users in db
         System.out.println(userRepository.findAll());
+
+        // test updating a user
+        userRepository.update(test.getUserId(), "", "", "", 400.00);
+        System.out.println(userRepository.findAll());
+
         /*** end test ***/
 
         // Close everything after program completes

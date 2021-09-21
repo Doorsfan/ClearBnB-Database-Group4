@@ -38,4 +38,28 @@ public class UserRepository {
         }
         return null;
     }
+
+    public User update(Integer id, String username, String password, String email, Double balance) {
+        User user = this.findById(id);
+        try {
+            entityManager.getTransaction().begin();
+            if (username != null) {
+                user.setUsername(username);
+            }
+            if (password != null) {
+                user.setPassword(password);
+            }
+            if (email != null) {
+                user.setEmail(email);
+            }
+            if (balance != null) {
+                user.setBalance(balance);
+            }
+            entityManager.getTransaction().commit();
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
