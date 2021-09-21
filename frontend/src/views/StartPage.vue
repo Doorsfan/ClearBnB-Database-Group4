@@ -34,21 +34,74 @@
       <router-link class="myProfileBox" to="/profile">My Profile</router-link>
     </div>
     <div class="searchDiv"></div>
+    <div class="chatWindow" v-if="chatOpened">
+      <div class="innerWindow">
+        <input type="text" placeholder="Write your message here.." class="myMessageToSupport">
+      </div>
+    </div>
+    <footer class="bottomFooter">
+      <div @click="openSupportChat" class="chatTab">
+        Chat With Support
+      </div>
+    </footer>
   </div>
 </template>
 <script>
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      chatOpened: false
+    };
   },
   async mounted() {},
   methods: {
     search() {},
+    openSupportChat() {
+      if(this.chatOpened){
+        this.chatOpened = false;
+      }
+      else if(!this.chatOpened){
+        this.chatOpened = true;
+      }
+    }
   },
 };
 </script>
 <style scoped>
+.myMessageToSupport{
+  position:absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 275px;
+}
+.innerWindow{
+  height: 190px;
+  width: 290px;
+  background-color:white;
+  margin: 5px;
+}
+.chatWindow{
+  height: 200px;
+  width: 300px;
+  background-color:red;
+  border:lightcoral solid 1px;
+  z-index: 3;
+  position:absolute;
+  right: 20px;
+  top:89.5vh;
+}
+.chatTab{
+  position:absolute;
+  right: 20px;
+  padding-top: 15px;
+  padding-right: 15px;
+  font-weight:bolder;
+  font-size: 20px;
+}
+.bottomFooter {
+  height: 50px;
+}
 .Box {
   max-width: max-content;
   display: inline-block;
