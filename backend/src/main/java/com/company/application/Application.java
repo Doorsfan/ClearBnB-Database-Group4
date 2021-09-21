@@ -29,7 +29,7 @@ public class Application {
 
         /*** Testing ListingRepository methods ***/
         // create user object
-        /*User user = new User();
+        User user = new User();
         user.setUserId(1);
         user.setUsername("Matt");
         user.setPassword("password");
@@ -37,7 +37,7 @@ public class Application {
         user.setBalance(1000.00);
 
         // save user to db
-        userRepository.save(user);*/
+        userRepository.save(user);
 
         // create listing object
         Listing test = new Listing();
