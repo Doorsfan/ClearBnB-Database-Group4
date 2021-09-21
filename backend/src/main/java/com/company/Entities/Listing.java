@@ -1,6 +1,7 @@
 package com.company.Entities;
 
 import com.company.Entities.CompositeIDs.ListingCompositeId;
+import com.company.domain.User;
 import jakarta.persistence.*;
 import java.time.*;
 

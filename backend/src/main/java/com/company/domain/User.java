@@ -1,7 +1,10 @@
-package com.company.Entities;
+package com.company.domain;
 
+import com.company.Entities.Listing;
 import jakarta.persistence.*;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "User")

@@ -1,11 +1,12 @@
-package com.company;
+package com.company.application;
 
-import com.company.Entities.*;
-import com.company.Repositories.*;
+import com.company.MySQL;
+import com.company.Repositories.ListingRepository;
+import com.company.domain.*;
+import com.company.infrastructure.*;
 import express.Express;
 import jakarta.persistence.*;
 
-import java.net.UnknownServiceException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class Application {
     Connection con;
 
-    Application() {
+    public Application() {
         Express app = new Express();
 
         app.listen(4000);
@@ -66,6 +67,7 @@ public class Application {
         // remove listing in db (make a new version with a start and end date of null)
         listingRepository.remove(test);
         System.out.println(listingRepository.findAllForId(test.getListingId()));
+
 
 
         /*** end test ***/
