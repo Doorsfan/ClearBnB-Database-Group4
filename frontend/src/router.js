@@ -5,6 +5,7 @@ import StartPage from './views/StartPage.vue';
 import LoginPage from './views/LoginPage.vue';
 import ProfilePage from './views/ProfilePage.vue';
 import LeaseAHousePage from './views/LeaseAHousePage.vue';
+import RegisterPage from './views/RegisterPage.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -24,6 +25,10 @@ export default createRouter({
     {
       path: '/leaseAHouse',
       component: LeaseAHousePage
+    }
+    {
+      path: '/register',
+      component: RegisterPage
     }
   ],
 });
