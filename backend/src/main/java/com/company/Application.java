@@ -27,19 +27,21 @@ public class Application {
         // create user class
         User test = new User();
         test.setUserId(1);
-        test.setUsername("Matt");
+        test.setUsername("matt");
         test.setPassword("password");
         test.setEmail("matt@yahoo.com");
         test.setBalance(420.00);
 
-        // save new user to db
+        // test saving user to db
         userRepository.save(test);
-
-        // print out all users in db
         System.out.println(userRepository.findAll());
 
         // test updating a user
-        userRepository.update(test.getUserId(), "", "", "", 400.00);
+        userRepository.update(test.getUserId(), null, null, null, 400.00);
+        System.out.println(userRepository.findAll());
+
+        // test removing a user
+        userRepository.remove(test.getUserId());
         System.out.println(userRepository.findAll());
 
         /*** end test ***/

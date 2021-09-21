@@ -62,4 +62,17 @@ public class UserRepository {
         }
         return null;
     }
+
+    public User remove(Integer id) {
+        User user = this.findById(id);
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.remove(user);
+            entityManager.getTransaction().commit();
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
