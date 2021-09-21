@@ -8,8 +8,9 @@
     <div class="myProfileBox centerBox">My Profile</div>
     <div class="myProfileInfoBoxUsername centerBox subBox1">Username: TEMP</div>
     <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
+    <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
     <p class="myLeasesP">My Leases</p>
-    <div class="myProfileInfoBoxLinks centerBox subBox3">
+    <div class="myProfileInfoBoxLinks centerBox subBox4">
       <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
       <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
       <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
@@ -73,6 +74,13 @@ a {
   left: 47.2%;
 }
 .subBox3{
+  position:absolute;
+  top: 40%;
+  left: 48%;
+  color:blue;
+  text-decoration:underline;
+}
+.subBox4{
   position:absolute;
   top: 45%;
   left: 46.5%;
