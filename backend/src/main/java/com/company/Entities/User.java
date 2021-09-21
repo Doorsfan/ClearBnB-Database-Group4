@@ -13,6 +13,8 @@ public class User {
     private String password;
     private String email;
     private Double balance;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Listing> listings = new ArrayList<>();
     /*@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
@@ -60,6 +62,14 @@ public class User {
         this.balance = balance;
     }
 
+    public List<Listing> getListings() {
+        return listings;
+    }
+
+    public void setListings(List<Listing> listings) {
+        this.listings = listings;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -68,6 +78,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", balance=" + balance +
+                ", listings=" + listings +
                 '}';
     }
 }
