@@ -1,6 +1,5 @@
 package com.company.domain;
 
-import com.company.Entities.Listing;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package com.company.application;
 
 import com.company.MySQL;
-import com.company.Repositories.ListingRepository;
 import com.company.domain.*;
 import com.company.infrastructure.*;
 import express.Express;
