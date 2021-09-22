@@ -1,6 +1,6 @@
-package com.company.Repositories;
+package com.company.infrastructure;
 
-import com.company.Entities.User;
+import com.company.domain.User;
 import jakarta.persistence.*;
 import java.util.*;
 
