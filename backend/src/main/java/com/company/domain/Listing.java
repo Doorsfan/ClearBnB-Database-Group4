@@ -1,14 +1,12 @@
-package com.company.Entities;
+package com.company.domain;
 
-import com.company.Entities.CompositeIDs.ListingCompositeId;
-import com.company.domain.User;
 import jakarta.persistence.*;
 import java.time.*;
 
 @Entity
 @IdClass(ListingCompositeId.class)
 @Table(name = "Listing")
-public class Listing {
+public class Listing implements Cloneable {
     @Id
     @Column(name = "listing_id")
     private Integer listingId;
@@ -21,7 +19,8 @@ public class Listing {
     private User owner;
     private String title;
     private String description;
-    private String image_url;
+    @Column(name = "image_url")
+    private String imageUrl;
     private String location;
     @Column(name = "number_guests")
     private Integer numberGuests;
@@ -79,12 +78,12 @@ public class Listing {
         this.description = description;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImageUrl(String image_url) {
+        this.imageUrl = image_url;
     }
 
     public String getLocation() {
@@ -136,12 +135,30 @@ public class Listing {
                 ", owner=" + owner.getUserId() +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", image_url='" + image_url + '\'' +
+                ", image_url='" + imageUrl + '\'' +
                 ", location='" + location + '\'' +
                 ", numberGuests=" + numberGuests +
                 ", price=" + price +
                 ", listingStartDate=" + listingStartDate +
                 ", listingEndDate=" + listingEndDate +
                 '}';
+    }
+
+    @Override
+    public Listing clone() {
+        Listing listing = new Listing();
+        listing.setListingId(this.getListingId());
+        listing.setVersion(this.getVersion());
+        listing.setAuditedDatetime(this.getAuditedDatetime());
+        listing.setOwner(this.getOwner());
+        listing.setTitle(this.getTitle());
+        listing.setDescription(this.getDescription());
+        listing.setImageUrl(this.getImageUrl());
+        listing.setLocation(this.getLocation());
+        listing.setNumberGuests(this.getNumberGuests());
+        listing.setPrice(this.getPrice());
+        listing.setListingStartDate(this.getListingStartDate());
+        listing.setListingEndDate(this.getListingEndDate());
+        return listing;
     }
 }
