@@ -175,10 +175,9 @@ export default {
   margin-top: 5px;
   width: 300px;
   max-width: 300px;
-  overflow-x:scroll;
-  overflow:scroll;
-  overflow-y:scroll;
+  min-width: 300px;
   height: 200px;
+  min-height: 200px;
   display:block;
   margin-left:auto;
   margin-right:auto;
