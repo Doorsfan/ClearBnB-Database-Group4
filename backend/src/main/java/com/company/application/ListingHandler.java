@@ -20,7 +20,7 @@ public class ListingHandler {
     private void initListingHandler() {
         app.post("/listing", (req, res) -> {
             Listing newListing = req.body(Listing.class);
-            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000/leaseAHouse");
             res.append("Access-Control-Allow-Credentials", "true");
             try{
                 theListingRepository.save(newListing);

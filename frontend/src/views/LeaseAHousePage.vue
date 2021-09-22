@@ -6,35 +6,35 @@
       </div>
       <div class="centerBox">
         <div class="myTitleTitle centerBox">Title</div>
-        <input type="text" placeholder="My Title">
+        <input v-model="wantedListingTitle" type="text" placeholder="My Title">
       </div>
       <div class="centerBox">
         <div class="ImageURL centerBox">ImageURL of the Lease</div>
-        <input type="text" placeholder="Image URL">
+        <input v-model="wantedImageURL" type="text" placeholder="Image URL">
       </div>
       <div class="centerBox">
         <div class="Description centerBox">Description</div>
-        <textarea placeholder="Description"></textarea>
+        <textarea v-model="wantedDescription" placeholder="Description"></textarea>
       </div>
       <div class="centerBox">
         <div class="Location centerBox">Location</div>
-        <input type="text" placeholder="Location">
+        <input v-model="wantedLocation" type="text" placeholder="Location">
       </div>
       <div class="centerBox">
         <div class="nrOfGuests centerBox">Nr of Guests</div>
-        <input type="number" min=1 placeholder="Guests">
+        <input v-model="wantedNumberOfGuests" type="number" min=1 placeholder="Guests">
       </div>
       <div class="centerBox">
         <div class="price centerBox">Price/Night</div>
-        <input type="number" min=1 placeholder="Pricing">
+        <input v-model="wantedPrice" type="number" min=1 placeholder="Pricing">
       </div>
       <div class="centerBox">
         <div class="leaseStartDate centerBox">Available From</div>
-        <input min="2021-09-21" type="date" />
+        <input v-model="wantedListingStartDate" min="2021-09-21" type="date" />
       </div>
       <div class="leaseEndDate exceptionCenterBox">Stops Being Available From</div>
       <div class="centerBox noPaddingCenterBox">
-        <input min="2021-09-21" type="date" />
+        <input v-model="wantedListingEndDate" min="2021-09-21" type="date" />
       </div>
       <button class="centeredButton" type="submit" value="Submit">Submit</button>
     </form>
@@ -44,12 +44,40 @@
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      wantedListingTitle: '',
+      wantedDescription: '',
+      wantedImageURL: '',
+      wantedLocation: '',
+      wantedNumberOfGuests: '',
+      wantedPrice: '',
+      wantedListingStartDate: '',
+      wantedListingEndDate: ''
+    };
   },
   async mounted() {},
   methods: {
-    tryToPostLease() {
-      console.log("hello");
+    async tryToPostLease() {
+      let wantedListing = {
+        wantedListingTitle: this.wantedListingTitle,
+        wantedDescription: this.wantedDescription,
+        wantedImageURL: this.wantedImageURL,
+        wantedLocation: this.wantedLocation,
+        wantedNumberOfGuests: this.wantedNumberOfGuests,
+        wantedPrice: this.wantedPrice,
+        wantedListingStartDate: this.wantedListingStartDate,
+        wantedListingEndDate: this.wantedListingEndDate
+      }
+      let res = await fetch('http://localhost:4000/listing', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(wantedListing),
+      }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        console.log(data);
+      });
     },
   },
 };
