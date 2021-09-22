@@ -17,6 +17,8 @@ public class User {
     private Double balance;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Listing> listings = new ArrayList<>();
+    @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
     /*@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
@@ -72,6 +74,14 @@ public class User {
         this.listings = listings;
     }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -81,6 +91,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", balance=" + balance +
                 ", listings" + listings +
+                ", bookings" + bookings +
                 '}';
     }
 }
