@@ -1,7 +1,11 @@
 package com.company;
 
+<<<<<<< Updated upstream:backend/src/main/java/com/company/Application.java
 import com.company.Entities.*;
 import com.company.Repositories.*;
+=======
+import com.company.domain.*;
+>>>>>>> Stashed changes:backend/src/main/java/com/company/application/Application.java
 import express.Express;
 import jakarta.persistence.*;
 
@@ -10,47 +14,28 @@ import java.sql.*;
 
 public class Application {
     Connection con;
+    Express app = new Express();
 
+<<<<<<< Updated upstream:backend/src/main/java/com/company/Application.java
     Application() {
         Express app = new Express();
+=======
+    public Application() {
+>>>>>>> Stashed changes:backend/src/main/java/com/company/application/Application.java
 
         app.listen(4000);
 
         con = MySQL.INSTANCE.getConnection();
 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
+
+        // CONSIDER Do we need separate managers for different DOs?
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        UserRepository userRepository = new UserRepository(entityManager);
-
-        /*** Testing UserRepository methods ***/
-        // create user class
-        User test = new User();
-        test.setUserId(1);
-        test.setUsername("matt");
-        test.setPassword("password");
-        test.setEmail("matt@yahoo.com");
-        test.setBalance(420.00);
-
-        // test saving user to db
-        userRepository.save(test);
-        System.out.println(userRepository.findAll());
-
-        // test updating a user
-        userRepository.update(test.getUserId(), null, null, null, 400.00);
-        System.out.println(userRepository.findAll());
-
-        // test removing a user
-        userRepository.remove(test.getUserId());
-        System.out.println(userRepository.findAll());
-
-        /*** end test ***/
-
-        // Close everything after program completes
-        entityManager.close();
-        entityManagerFactory.close();
-
+        UserHandler userHandler = new UserHandler(app, entityManager);
         try{
+            entityManager.close();
+            entityManagerFactory.close();
             con.close();
         } catch (Exception e) {
             System.out.println(e);

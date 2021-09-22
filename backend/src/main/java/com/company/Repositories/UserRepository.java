@@ -5,22 +5,26 @@ import jakarta.persistence.*;
 import java.util.*;
 
 public class UserRepository {
-    private EntityManager entityManager;
+    private final EntityManager entityManager; //DEBUGABLE Set to final
 
     public UserRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     public User findById(Integer id) {
-        User user = entityManager.find(User.class, id);
-        return user;
+        return entityManager.find(User.class, id);
     }
 
     public User findByUsername(String username) {
-        User user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username)
                 .getSingleResult();
-        return user;
+    }
+
+    public User findByEmail(String email) {
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getSingleResult();
     }
 
     public List<User> findAll() {
