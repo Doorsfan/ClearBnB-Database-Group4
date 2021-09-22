@@ -1,6 +1,5 @@
 package com.company.domain;
 
-import com.company.Entities.Listing;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.List;
 @Table(name = "User")
 public class User {
     @Id
-    @GeneratedValue
     @Column(name = "user_id")
     private Integer userId;
     private String username;
@@ -82,7 +80,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", balance=" + balance +
-                ", listings=" + listings +
+                ", listings" + listings +
                 '}';
     }
 }

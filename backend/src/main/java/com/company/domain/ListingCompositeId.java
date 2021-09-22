@@ -1,4 +1,4 @@
-package com.company.Entities.CompositeIDs;
+package com.company.domain;
 
 import java.io.Serializable;
 import java.util.Objects;

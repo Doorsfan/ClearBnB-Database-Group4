@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 8.0.26)
 # Database: ClearBnB
-# Generation Time: 2021-09-21 14:22:04 +0000
+# Generation Time: 2021-09-21 16:11:33 +0000
 # ************************************************************
 
 
@@ -52,10 +52,10 @@ CREATE TABLE `Listing` (
   `version` int NOT NULL,
   `audited_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `owner_id` int NOT NULL,
-  `title` varchar(100) DEFAULT NULL,
-  `description` varchar(500) DEFAULT NULL,
-  `image_url` varchar(100) DEFAULT NULL,
-  `location` varchar(50) NOT NULL DEFAULT '',
+  `title` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `image_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `number_guests` int NOT NULL DEFAULT '1',
   `price` double NOT NULL DEFAULT '0',
   `listing_start_date` date DEFAULT NULL,
@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `Message`;
 CREATE TABLE `Message` (
   `message_id` int NOT NULL AUTO_INCREMENT,
   `written_by_id` int NOT NULL,
-  `content` varchar(500) DEFAULT NULL,
+  `content` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`message_id`),
   KEY `written_by_id` (`written_by_id`),
@@ -113,9 +113,9 @@ DROP TABLE IF EXISTS `User`;
 
 CREATE TABLE `User` (
   `user_id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `balance` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
