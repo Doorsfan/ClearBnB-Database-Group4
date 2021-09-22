@@ -2,7 +2,7 @@ package com.company.infrastructure;
 
 import com.company.domain.User;
 import jakarta.persistence.*;
-import java.util.*;
+import java.util.List;
 
 public class UserRepository {
     private EntityManager entityManager;
@@ -12,8 +12,7 @@ public class UserRepository {
     }
 
     public User findById(Integer id) {
-        User user = entityManager.find(User.class, id);
-        return user;
+        return entityManager.find(User.class, id);
     }
 
     public User findByUsername(String username) {

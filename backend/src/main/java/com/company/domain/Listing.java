@@ -1,7 +1,8 @@
 package com.company.domain;
 
 import jakarta.persistence.*;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @IdClass(ListingCompositeId.class)
@@ -135,7 +136,7 @@ public class Listing implements Cloneable {
                 ", owner=" + owner.getUserId() +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", image_url='" + imageUrl + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 ", location='" + location + '\'' +
                 ", numberGuests=" + numberGuests +
                 ", price=" + price +
