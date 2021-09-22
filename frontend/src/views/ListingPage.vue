@@ -54,12 +54,38 @@
         <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
       <button @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <div class="reviewsDiv">
+        <ReviewBox
+          v-for="(listItem, index) of reviewsFromDatabase"
+          :key="index"
+          :Content="listItem"
+        />
+        <div class="newReviewDivBox">
+          <form @submit.prevent="tryToPostReview" class="reviewForm">
+            <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
+            <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
+            <span v-if="wantedAmountOfStars >= 3" @click="setToThreeStars" class="starRating threeStars">&#11088;</span>
+            <span v-if="wantedAmountOfStars >= 4" @click="setToFourStars" class="starRating fourStars">&#11088;</span>
+            <span v-if="wantedAmountOfStars >= 5" @click="setToFiveStars" class="starRating fiveStars">&#11088;</span>
+            <span @click="setToTwoStars" v-if="wantedAmountOfStars < 2" class="fa fa-star"></span>
+            <span @click="setToThreeStars" v-if="wantedAmountOfStars < 3" class="fa fa-star"></span>
+            <span @click="setToFourStars" v-if="wantedAmountOfStars < 4" class="fa fa-star"></span>
+            <span @click="setToFiveStars" v-if="wantedAmountOfStars < 5" class="fa fa-star"></span>
+            <textarea class="commentArea" wrap="hard"></textarea>
+            <input class="submitButton" type="submit" value="Post Review">
+          </form>
+        </div>
+      </div>
     </div>
 </template>
 <script>
 import store from '../store.js';
+import Review from '../jsClasses/Review.js';
+import ReviewBox from '../components/ReviewBox.vue';
 export default {
-  components: {},
+  components: {
+    ReviewBox
+  },
   data() {
     return {
       wantedStartDate: new Date(this.myStartDate),
@@ -74,7 +100,9 @@ export default {
       myNumberOfGuests: this.$route.query.number_guests,
       myPrice: this.$route.query.price,
       myStartDate: this.$route.query.listing_start_date,
-      myEndDate: this.$route.query.listing_end_date
+      myEndDate: this.$route.query.listing_end_date,
+      reviewsFromDatabase: [new Review("Jane Doe", Date.now(),'Great house',5,1), new Review("Joe McClinksky", Date.now(), 'Awful house', 1, 2)],
+      wantedAmountOfStars: 3
     };
   },
   async mounted() {
@@ -89,8 +117,25 @@ export default {
     document.getElementsByClassName('bookingEndDateElement')[0].max = this.myEndDate;
 
     document.getElementById("postedByLink").to = this.postedByUsername;
+
   },
   methods: {
+    setToOneStar(){
+      this.wantedAmountOfStars = 1;
+      console.log("lol");
+    },
+    setToTwoStars(){
+      this.wantedAmountOfStars = 2;
+    },
+    setToThreeStars(){
+      this.wantedAmountOfStars = 3;
+    },
+    setToFourStars(){
+      this.wantedAmountOfStars = 4;
+    },
+    setToFiveStars(){
+      this.wantedAmountOfStars = 5;
+    },
     updateInfoBasedOnVersion() {
       //Update the State variables in terms of dynamically reflecting the data
       console.log(this.wantedVersion);
@@ -99,11 +144,46 @@ export default {
     },
     tryToBook() {
       //Implement so queries can be made and actually perform the real booking
+    },
+    tryToPostReview(){
+      //Implement so queries can be made and actually perform the real review posting
     }
   },
 };
 </script>
 <style scoped>
+.newReviewDivBox{
+  width:300px;
+  padding-left: 10px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  padding-top: 5px;
+  display:block;
+  margin-left:auto;
+  margin-right: auto;
+  background-color:white;
+  outline: solid 1px black;
+}
+.submitButton{
+  width: max-content;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 10px;
+}
+.commentArea{
+  margin-top: 5px;
+  width: 300px;
+  max-width: 300px;
+  overflow-x:scroll;
+  overflow:scroll;
+  overflow-y:scroll;
+  height: 200px;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  padding: 3px;
+}
 .bookButton{
   display:block;
   margin-left:auto;
@@ -119,7 +199,9 @@ export default {
 }
 .mainDiv{
   background-color:lightcyan;
-  height: 98vh;
+  min-height: 102vh;
+  padding-bottom: 20px;
+  height: max-content;
 }
 .navbar{
   background-color:lightcoral;
