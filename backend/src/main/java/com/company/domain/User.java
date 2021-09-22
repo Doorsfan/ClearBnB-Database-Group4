@@ -19,10 +19,6 @@ public class User {
     private List<Listing> listings = new ArrayList<>();
     @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
-    /*@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    List<Review> authorOfReviews = new ArrayList<>();
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    List<Review> targetOfReviews = new ArrayList<>();*/
 
     public User() {}
 
