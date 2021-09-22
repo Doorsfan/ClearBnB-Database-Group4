@@ -8,12 +8,17 @@
         <div class="inline">Title: </div>
         {{ myTitle }}
       </div>
+      <div class="hostedByTitle">
+        <div class="inline">Hosted by: </div>
+        <router-link id="postedByLink" :to="{ name: 'profile', params: { username: postedByUsername
+        }}">{{ postedByUsername }}</router-link>
+      </div>
       <div class="descriptionText">
         <div class="inline">Description: </div>
         {{ myDescription }}
       </div>
       <div class="imageURLText">
-        {{ myImageURL }}
+        <img src='' id="imageOfTheHouse" width="300" height="300">
       </div>
       <div class="locationText">
         <div class="inline">Location: </div>
@@ -35,8 +40,21 @@
         <div class="inline">Available until: </div>
         {{ myEndDate }}
       </div>
+        Version - 
+        <select @change="updateInfoBasedOnVersion" class="myGuests" v-model="wantedVersion">
+          <option v-for="(version, index) of versions" class="versionOption"
+        :key="index"
+        :version="version">{{ index + 1}}</option>
+        </select>
+      </div>
+      <div class="BookingDateDiv">
+      Book from the:
+        <input v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
+        Book until the:
+        <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
+      </div>
+      <button @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
     </div>
-  </div>
 </template>
 <script>
 import store from '../store.js';
@@ -44,6 +62,11 @@ export default {
   components: {},
   data() {
     return {
+      wantedStartDate: new Date(this.myStartDate),
+      wantedEndDate: new Date(this.myEndDate),
+      wantedVersion: 1.0,
+      versions: [],
+      postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
       myDescription: this.$route.query.description,
       myImageURL: this.$route.query.image_url,
@@ -55,16 +78,45 @@ export default {
     };
   },
   async mounted() {
-    console.log(this.$route.query.description);
+    //Query the DB for Versions on this point, to get them
+    this.versions = ['1.0', '2.0']
+    console.log(this.myEndDate);
+    document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
+    document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
+    document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
+
+    document.getElementsByClassName('bookingEndDateElement')[0].min = this.myStartDate;
+    document.getElementsByClassName('bookingEndDateElement')[0].max = this.myEndDate;
+
+    document.getElementById("postedByLink").to = this.postedByUsername;
   },
   methods: {
-    tryToPostLease() {
-      console.log("hello");
+    updateInfoBasedOnVersion() {
+      //Update the State variables in terms of dynamically reflecting the data
+      console.log(this.wantedVersion);
+      //Based on this Version, query the DB in terms of finding the respective
+      //version of it from the DB
     },
+    tryToBook() {
+      //Implement so queries can be made and actually perform the real booking
+    }
   },
 };
 </script>
 <style scoped>
+.bookButton{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  width:max-content;
+  margin-top: 20px;
+}
+.BookingDateDiv{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  width:max-content;
+}
 .mainDiv{
   background-color:lightcyan;
   height: 98vh;

@@ -20,8 +20,9 @@ export default createRouter({
       component: LoginPage,
     },
     {
-      path: '/profile/:id?',
+      path: '/profile/:username?',
       component: ProfilePage,
+      name: 'profile'
     },
     {
       path: '/leaseAHouse',
