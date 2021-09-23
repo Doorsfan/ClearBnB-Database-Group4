@@ -1,14 +1,17 @@
-/*package com.company.Entities;
+package com.company.domain;
 
 import jakarta.persistence.*;
-import java.time.*;
+import java.time.LocalDateTime;
 
 @Entity
+@IdClass(ReviewCompositeId.class)
 @Table(name = "Review")
-public class Review {
+public class Review implements Cloneable {
     @Id
     @Column(name = "review_id")
     private Integer reviewId;
+    @Id
+    private Integer version;
     private LocalDateTime timestamp;
     @ManyToOne
     @JoinColumn(name="author_id")
@@ -27,6 +30,14 @@ public class Review {
 
     public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public LocalDateTime getTimestamp() {
@@ -73,11 +84,25 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "reviewId=" + reviewId +
+                ", version=" + version +
                 ", timestamp=" + timestamp +
-                ", author=" + author +
-                ", target=" + target +
+                ", author=" + author.getUserId() +
+                ", target=" + target.getUserId() +
                 ", comment='" + comment + '\'' +
                 ", rating=" + rating +
                 '}';
     }
-}*/
+
+    @Override
+    public Review clone() {
+        Review review = new Review();
+        review.setReviewId(this.getReviewId());
+        review.setVersion(this.getVersion());
+        review.setTimestamp((this.getTimestamp()));
+        review.setAuthor(this.getAuthor());
+        review.setTarget(this.getTarget());
+        review.setComment(this.getComment());
+        review.setRating(this.getRating());
+        return review;
+    }
+}

@@ -7,7 +7,6 @@ import express.Express;
 import jakarta.persistence.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Application {
@@ -23,15 +22,12 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
-        EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
         UserHandler userHandler = new UserHandler(app,userRepository);
-        ListingRepository listingRepository = new ListingRepository(entityManager2);
-        BookingRepository bookingRepository = new BookingRepository(entityManager3);
+        ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
 
-
-        /*
+        /*** Tests for ReviewRepository ***/
         // create user object
         User user = new User();
         user.setUserId(1);
@@ -43,61 +39,46 @@ public class Application {
         // save user to db
         userRepository.save(user);
 
-        // create listing object
-        Listing listing = new Listing();
-        listing.setListingId(1);
-        listing.setVersion(1);
-        listing.setAuditedDatetime(LocalDateTime.now());
-        listing.setOwner(userRepository.findById(1));
-        listing.setTitle("TitleXXX");
-        listing.setDescription("DescriptionXXX");
-        listing.setImageUrl("https://www.rocketmortgage.com/resources-cmsassets/RocketMortgage.com/Article_Images/Large_Images/TypesOfHomes/types-of-homes-hero.jpg");
-        listing.setNumberGuests(1);
-        listing.setLocation("Malmö");
-        listing.setPrice(4200.00);
-        listing.setListingStartDate(LocalDate.now());
-        listing.setListingEndDate(LocalDate.now().plusMonths(1));
+        // create review object
+        Review review = new Review();
+        review.setReviewId(1);
+        review.setVersion(1);
+        review.setTimestamp(LocalDateTime.now());
+        review.setAuthor(user);
+        review.setTarget(user);
+        review.setComment("A good landlord");
+        review.setRating(5);
 
-        // save listing to db
-        listingRepository.save(listing);
+        // save review to db
+        reviewRepository.save(review);
+        System.out.println("\n" + reviewRepository.findAll() + "\n");
+        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
+        System.out.println("\n" + reviewRepository.findAllForAuthor(user) + "\n");
+        System.out.println("\n" + reviewRepository.findAllForTarget(user) + "\n");
 
-        // create booking object
-        Booking booking = new Booking();
-        booking.setBookingId(1);
-        booking.setListingBooked(1);
-        booking.setBookedByUser(user);
-        booking.setAmountPaid(1000.00);
-        booking.setBookingStartDate(LocalDate.now().plusDays(1));
-        booking.setBookingEndDate(LocalDate.now().plusDays(3));
-        booking.setCancelled(false);
+        // update review
+        reviewRepository.update(review.getReviewId(), "Actually not great", 3);
+        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
 
-        // save booking to db
-        bookingRepository.save(booking);
-        System.out.println("\n" + bookingRepository.findAll() + "\n");
-        System.out.println("\n" + bookingRepository.findById(1) + "\n");
-        System.out.println("\n" + bookingRepository.findForListing(listing) + "\n");
-        System.out.println("\n" + bookingRepository.findForUser(user) + "\n");
-
-        // update booking
-        bookingRepository.update(booking.getBookingId(), 4000.00, null, null);
-        System.out.println("\n" + bookingRepository.findById(1) + "\n");
-
+        reviewRepository.update(review.getReviewId(), "Changed My mind", 5);
         // remove booking (set cancelled to true)
-        bookingRepository.remove(booking.getBookingId());
-        System.out.println("\n" + bookingRepository.findById(1) + "\n");
+        reviewRepository.remove(review);
+        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
 
 
         // Close everything after program completes
-        entityManager.close();
-        entityManager2.close();
-        entityManager3.close();
-        entityManagerFactory.close();
+        //entityManager.close();
+        //entityManager2.close();
+        //entityManagerFactory.close();
 
-        */
+        /*** End of tests for ReviewRepository ***/
+        /*
         try{
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
+        */
+
     }
 }
