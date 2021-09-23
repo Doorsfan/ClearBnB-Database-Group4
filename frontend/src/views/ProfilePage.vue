@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="myProfileBox centerBox">My Profile</div>
-    <div class="myProfileInfoBoxUsername centerBox subBox1">Username: TEMP</div>
+    <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
     <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
     <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
     <p class="myLeasesP">My Leases</p>
@@ -26,10 +26,11 @@ export default {
   },
   data() {
     return {
+      username: this.$route.params.username
     };
   },
   async mounted() {
-
+    console.log(this.username);
   },
   methods: {
   },

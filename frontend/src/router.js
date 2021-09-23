@@ -6,6 +6,7 @@ import LoginPage from './views/LoginPage.vue';
 import ProfilePage from './views/ProfilePage.vue';
 import LeaseAHousePage from './views/LeaseAHousePage.vue';
 import RegisterPage from './views/RegisterPage.vue';
+import ListingPage from './views/ListingPage.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -19,8 +20,9 @@ export default createRouter({
       component: LoginPage,
     },
     {
-      path: '/profile/:id?',
+      path: '/profile/:username?',
       component: ProfilePage,
+      name: 'profile'
     },
     {
       path: '/leaseAHouse',
@@ -29,6 +31,10 @@ export default createRouter({
     {
       path: '/register',
       component: RegisterPage
+    },
+    {
+      path: '/ListingPage',
+      component: ListingPage
     }
   ],
 });
