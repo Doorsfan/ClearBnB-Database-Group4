@@ -58,6 +58,9 @@
       <div class="categoryBox">
         Available Until
       </div>
+      <div class="categoryBox">
+        Hosted By
+      </div>
       <Posting
         v-for="(listItem, index) of relevantListings"
         :key="index"
@@ -87,7 +90,7 @@ export default {
     return {
       chatOpened: false,
       relevantListings: [
-        new Listing("Kansas City Flat", "A small flat", "blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaha", "Kansas, Arkansas", 1, 1000, '2021-09-21', '201-09-30')
+        new Listing("john_mccain","Kansas City Flat", "A small flat", "https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1", "Kansas, Arkansas", 1, 1000, '2021-09-21', '2021-09-30')
       ]
     };
   },
