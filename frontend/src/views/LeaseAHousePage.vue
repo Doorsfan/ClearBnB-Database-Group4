@@ -67,8 +67,8 @@ export default {
         location: this.wantedLocation,
         numberGuests: this.wantedNumberOfGuests,
         price: this.wantedPrice,
-        listingStartDate: "2021-08-08",
-        listingEndDate: "2021-09-09"
+        listingStartDate: this.wantedListingStartDate,
+        listingEndDate: this.wantedListingEndDate
       }
       let res = await fetch('http://localhost:4000/listing', {
         method: 'POST',

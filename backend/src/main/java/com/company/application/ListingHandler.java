@@ -30,6 +30,15 @@ public class ListingHandler {
             myUser.setUserId(1);
             newListing.setAuditedDatetime(ldt);
             newListing.setOwner(myUser);
+            newListing.setListingId(5);
+            try{
+                Listing earlierVersionOfListing = this.theListingRepository.findMostRecentForId(5);
+                newListing.setVersion((earlierVersionOfListing.getVersion() + 1));
+            } catch(Exception e){
+                newListing.setVersion(1);
+            }
+
+
             res.append("Access-Control-Allow-Origin", "http://localhost:3000/leaseAHouse");
             res.append("Access-Control-Allow-Credentials", "true");
             try{
