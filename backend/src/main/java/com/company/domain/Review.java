@@ -1,7 +1,7 @@
-/*package com.company.Entities;
+package com.company.domain;
 
 import jakarta.persistence.*;
-import java.time.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Review")
@@ -9,6 +9,7 @@ public class Review {
     @Id
     @Column(name = "review_id")
     private Integer reviewId;
+    private Integer version;
     private LocalDateTime timestamp;
     @ManyToOne
     @JoinColumn(name="author_id")
@@ -27,6 +28,14 @@ public class Review {
 
     public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public LocalDateTime getTimestamp() {
@@ -73,11 +82,12 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "reviewId=" + reviewId +
+                ", version=" + version +
                 ", timestamp=" + timestamp +
-                ", author=" + author +
-                ", target=" + target +
+                ", author=" + author.getUserId() +
+                ", target=" + target.getUserId() +
                 ", comment='" + comment + '\'' +
                 ", rating=" + rating +
                 '}';
     }
-}*/
+}

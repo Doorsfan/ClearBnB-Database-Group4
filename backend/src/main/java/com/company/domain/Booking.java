@@ -22,6 +22,8 @@ public class Booking {
     private LocalDate bookingEndDate;
     private Boolean cancelled;
 
+    public Booking() { }
+
     public Integer getBookingId() {
         return bookingId;
     }
