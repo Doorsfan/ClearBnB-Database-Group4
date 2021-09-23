@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class ListingRepository {
@@ -52,8 +53,8 @@ public class ListingRepository {
     }
 
     public Listing update(Integer id, String title, String description, String imageUrl, String location,
-                          Integer numberGuests, Double price, LocalDate listingStartDate,
-                          LocalDate listingEndDate) {
+                          Integer numberGuests, Double price, Date listingStartDate,
+                          Date listingEndDate) {
         Listing listing = this.findMostRecentForId(id).clone();
         listing.setVersion(listing.getVersion() + 1);
         listing.setAuditedDatetime(LocalDateTime.now());

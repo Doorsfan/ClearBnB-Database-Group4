@@ -58,15 +58,17 @@ export default {
   async mounted() {},
   methods: {
     async tryToPostLease() {
+      let baseDate = new Date(this.wantedListingStartDate);
+      let endDate = new Date(this.wantedListingEndDate);
       let wantedListing = {
-        wantedListingTitle: this.wantedListingTitle,
-        wantedDescription: this.wantedDescription,
-        wantedImageURL: this.wantedImageURL,
-        wantedLocation: this.wantedLocation,
-        wantedNumberOfGuests: this.wantedNumberOfGuests,
-        wantedPrice: this.wantedPrice,
-        wantedListingStartDate: this.wantedListingStartDate,
-        wantedListingEndDate: this.wantedListingEndDate
+        title: this.wantedListingTitle,
+        description: this.wantedDescription,
+        imageUrl: this.wantedImageURL,
+        location: this.wantedLocation,
+        numberGuests: this.wantedNumberOfGuests,
+        price: this.wantedPrice,
+        listingStartDate: "2021-08-08",
+        listingEndDate: "2021-09-09"
       }
       let res = await fetch('http://localhost:4000/listing', {
         method: 'POST',

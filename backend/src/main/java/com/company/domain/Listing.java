@@ -1,8 +1,11 @@
 package com.company.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @IdClass(ListingCompositeId.class)
@@ -27,9 +30,9 @@ public class Listing implements Cloneable {
     private Integer numberGuests;
     private Double price;
     @Column(name = "listing_start_date")
-    private LocalDate listingStartDate;
+    private Date listingStartDate;
     @Column(name = "listing_end_date")
-    private LocalDate listingEndDate;
+    private Date listingEndDate;
 
     public Integer getListingId() {
         return listingId;
@@ -111,19 +114,19 @@ public class Listing implements Cloneable {
         this.price = price;
     }
 
-    public LocalDate getListingStartDate() {
+    public Date getListingStartDate() {
         return listingStartDate;
     }
 
-    public void setListingStartDate(LocalDate listingStartDate) {
+    public void setListingStartDate(Date listingStartDate) {
         this.listingStartDate = listingStartDate;
     }
 
-    public LocalDate getListingEndDate() {
+    public Date getListingEndDate() {
         return listingEndDate;
     }
 
-    public void setListingEndDate(LocalDate listingEndDate) {
+    public void setListingEndDate(Date listingEndDate) {
         this.listingEndDate = listingEndDate;
     }
 

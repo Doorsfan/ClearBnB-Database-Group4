@@ -29,7 +29,9 @@ public class Application {
         ListingRepository listingRepository = new ListingRepository(entityManager2);
         BookingRepository bookingRepository = new BookingRepository(entityManager3);
 
-        /*** Testing BookingRepository methods ***/
+        ListingHandler myListingHandler = new ListingHandler(app, listingRepository);
+
+        /*
         // create user object
         User user = new User();
         user.setUserId(1);
@@ -53,8 +55,8 @@ public class Application {
         listing.setNumberGuests(1);
         listing.setLocation("Malmö");
         listing.setPrice(4200.00);
-        listing.setListingStartDate(LocalDate.now());
-        listing.setListingEndDate(LocalDate.now().plusMonths(1));
+        //listing.setListingStartDate(Date.now());
+        //listing.setListingEndDate(Date.now().plusMonths(1));
 
         // save listing to db
         listingRepository.save(listing);
@@ -84,14 +86,13 @@ public class Application {
         bookingRepository.remove(booking.getBookingId());
         System.out.println("\n" + bookingRepository.findById(1) + "\n");
 
-        /*** end test ***/
 
         // Close everything after program completes
         entityManager.close();
         entityManager2.close();
         entityManager3.close();
         entityManagerFactory.close();
-
+        */
         try{
             con.close();
         } catch (Exception e) {
