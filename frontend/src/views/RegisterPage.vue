@@ -6,35 +6,56 @@
     <form @submit.prevent="tryToRegisterUser" class="registerForm">
       <div class="registerTitle">Register a new User</div>
       <div class="usernameTitle">Username</div>
-      <input type="text" class="nameInput inputField" placeholder="Username">
+      <input v-model="wantedUsername" type="text" class="nameInput inputField" placeholder="Username">
       <div class="passwordTitle">Password</div>
-      <input type="password" class="passwordInput inputField" placeholder="Password">
+      <input v-model="wantedPassword" type="password" class="passwordInput inputField" placeholder="Password">
       <div class="repeatPasswordTitle">Repeat Password</div>
-      <input type="password" class="repeatPasswordInput inputField" placeholder="Repeat Password">
+      <input v-model="repeatedPassword" type="password" class="repeatPasswordInput inputField" placeholder="Repeat Password">
       <div class="emailTitle">Email</div>
-      <input type="type" class="emailInput inputField" placeholder="E-mail">
+      <input v-model="wantedEmail" type="type" class="emailInput inputField" placeholder="E-mail">
       <div class="balanceTitle">Balance</div>
-      <input type="number" min=0 class="balanceInput inputField" placeholder="Balance">
+      <input v-model="availableFunds" type="number" min=0 class="balanceInput inputField" placeholder="Balance">
       <button type="submit" class="submitButton inputField" value="Register">Register</button>
     </form>
   </div>
 </template>
 <script>
-
+import User from '../jsClasses/User.js';
 export default {
   components: {
 
   },
   data() {
     return {
+      wantedUsername: '',
+      wantedPassword: '',
+      repeatedPassword: '',
+      wantedEmail: '',
+      availableFunds: 0
     };
   },
   async mounted() {
 
   },
   methods: {
-    tryToRegisterUser(){
-      console.log("hi");
+    async tryToRegisterUser(){
+      let wantedUser = {
+        username: this.wantedUsername, 
+        password: this.wantedPassword, 
+        email: this.wantedEmail, 
+        balance: this.availableFunds
+      }
+      let res = await fetch('http://localhost:4000/user', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(wantedUser),
+      }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        console.log(data);
+      });
+
     }
   },
 };

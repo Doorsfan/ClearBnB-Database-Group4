@@ -10,11 +10,13 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer userId;
     private String username;
     private String password;
     private String email;
     private Double balance;
+    /*
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Listing> listings = new ArrayList<>();
     @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
@@ -65,7 +67,7 @@ public class User {
     public void setBalance(Double balance) {
         this.balance = balance;
     }
-
+    /*
     public List<Listing> getListings() {
         return listings;
     }
@@ -81,6 +83,7 @@ public class User {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+    */
 
     @Override
     public String toString() {
@@ -90,8 +93,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", balance=" + balance +
-                ", listings" + listings +
-                ", bookings" + bookings +
                 '}';
     }
 }
