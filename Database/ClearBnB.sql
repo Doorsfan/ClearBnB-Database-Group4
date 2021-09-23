@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 8.0.26)
 # Database: ClearBnB
-# Generation Time: 2021-09-21 16:11:33 +0000
+# Generation Time: 2021-09-23 14:37:45 +0000
 # ************************************************************
 
 
@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `Review`;
 CREATE TABLE `Review` (
   `review_id` int NOT NULL,
   `version` int NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
   `author_id` int NOT NULL,
   `target_id` int NOT NULL,
   `comment` varchar(500) DEFAULT NULL,
@@ -117,7 +117,9 @@ CREATE TABLE `User` (
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `balance` double NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
