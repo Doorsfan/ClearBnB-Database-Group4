@@ -33,7 +33,40 @@
       <router-link class="Login" to="/login">Login</router-link>
       <router-link class="myProfileBox" to="/profile">My Profile</router-link>
     </div>
-    <div class="searchDiv"></div>
+    <div class="searchDiv">
+      <div class="categoryBox firstCategoryBox">
+        Title
+      </div>
+      <div class="categoryBox">
+        Description
+      </div>
+      <div class="categoryBox">
+        Image URL
+      </div>
+      <div class="categoryBox">
+        Location
+      </div>
+      <div class="categoryBox">
+        Nr Of Guests
+      </div>
+      <div class="categoryBox">
+        Price
+      </div>
+      <div class="categoryBox">
+        Available From
+      </div>
+      <div class="categoryBox">
+        Available Until
+      </div>
+      <div class="categoryBox">
+        Hosted By
+      </div>
+      <Posting
+        v-for="(listItem, index) of relevantListings"
+        :key="index"
+        :Listing="listItem"
+      />
+    </div>
     <div class="chatWindow" v-if="chatOpened">
       <div class="innerWindow">
         <input type="text" placeholder="Write your message here.." class="myMessageToSupport">
@@ -47,11 +80,18 @@
   </div>
 </template>
 <script>
+import Listing from '../jsClasses/Listing.js';
+import Posting from '../components/Posting.vue';
 export default {
-  components: {},
+  components: {
+    Posting
+  },
   data() {
     return {
-      chatOpened: false
+      chatOpened: false,
+      relevantListings: [
+        new Listing("john_mccain","Kansas City Flat", "A small flat", "https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1", "Kansas, Arkansas", 1, 1000, '2021-09-21', '2021-09-30')
+      ]
     };
   },
   async mounted() {},
@@ -69,6 +109,16 @@ export default {
 };
 </script>
 <style scoped>
+.firstCategoryBox{
+  margin-top: 20px;
+  margin-left: 100px;
+}
+.categoryBox{
+  display:inline-block;
+  width: 10vw;
+  outline: solid 1px black;
+  text-align:center;
+}
 .myMessageToSupport{
   position:absolute;
   bottom: 8px;
@@ -89,7 +139,7 @@ export default {
   z-index: 3;
   position:absolute;
   right: 20px;
-  top:89.5vh;
+  top:87vh;
 }
 .chatTab{
   position:absolute;
@@ -126,6 +176,6 @@ a:visited {
 }
 .searchDiv {
   background-color: lightcyan;
-  height: 100vh;
+  height: 98vh;
 }
 </style>

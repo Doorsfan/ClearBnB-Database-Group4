@@ -26,10 +26,12 @@ public class Application {
         EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
+        UserHandler userHandler = new UserHandler(app,userRepository);
         ListingRepository listingRepository = new ListingRepository(entityManager2);
         BookingRepository bookingRepository = new BookingRepository(entityManager3);
 
-        /*** Testing BookingRepository methods ***/
+
+        /*
         // create user object
         User user = new User();
         user.setUserId(1);
@@ -84,7 +86,6 @@ public class Application {
         bookingRepository.remove(booking.getBookingId());
         System.out.println("\n" + bookingRepository.findById(1) + "\n");
 
-        /*** end test ***/
 
         // Close everything after program completes
         entityManager.close();
@@ -92,6 +93,7 @@ public class Application {
         entityManager3.close();
         entityManagerFactory.close();
 
+        */
         try{
             con.close();
         } catch (Exception e) {
