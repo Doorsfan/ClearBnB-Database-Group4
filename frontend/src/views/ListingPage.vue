@@ -142,8 +142,28 @@ export default {
       //Based on this Version, query the DB in terms of finding the respective
       //version of it from the DB
     },
-    tryToBook() {
+    async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
+      let myUser = {
+
+      }
+      let wantedBooking = {
+        bookingId: 1,
+        
+        bookingStartDate: this.wantedStartDate,
+        bookingEndDate: this.wantedEndDate,
+        cancelled: 0
+      }
+      let res = await fetch('http://localhost:4000/booking', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(wantedBooking),
+      }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        console.log(data);
+      });
     },
     tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
