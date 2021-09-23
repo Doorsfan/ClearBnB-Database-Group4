@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.company.domain.User;
 import jakarta.persistence.EntityManager;
+import org.jetbrains.annotations.NotNull;
 
 public class UserHandler {
     private final Express app; //DEBUGABLE, made final
@@ -34,10 +35,11 @@ public class UserHandler {
                     }
 
                     // Hash password (encrypt password)
-                    String hashedPassword = HashPassword.hash(user.getPassword());
+
+                    String hashedPassword = HashPassword.hash(password);
+                    //String hashedPassword = HashPassword.hash(user.getPassword());
 
                     // Populate user
-                    //User test = new User();
                     user.setUserId(userId);
                     user.setUsername(username);
                     user.setPassword(hashedPassword);
@@ -50,7 +52,7 @@ public class UserHandler {
 
         });
     }
-    public void update(User user, String username, String password, String email, double balance) {
+    public void update(@NotNull User user, String username, String password, String email, double balance) {
 
         // Update a user
         userRepository.update(user.getUserId(), username, password, email, balance);
@@ -58,7 +60,7 @@ public class UserHandler {
         entityManager.close();
     }
 
-    public void remove(User user) {
+    public void remove(@NotNull User user) {
             // Remove a user
             userRepository.remove(user.getUserId());
             System.out.println(userRepository.findAll());

@@ -71,7 +71,8 @@ public class UserRepository {
         User user = this.findById(id);
         try {
             entityManager.getTransaction().begin();
-            entityManager.remove(user);
+            // TODO Change to version management
+            //entityManager.remove(user);
             entityManager.getTransaction().commit();
             return user;
         } catch (Exception e) {
