@@ -60,22 +60,25 @@ public class Application {
         reviewRepository.update(review.getReviewId(), "Actually not great", 3);
         System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
 
+        reviewRepository.update(review.getReviewId(), "Changed My mind", 5);
         // remove booking (set cancelled to true)
         reviewRepository.remove(review);
         System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
 
 
         // Close everything after program completes
-        entityManager.close();
-        entityManager2.close();
-        entityManagerFactory.close();
+        //entityManager.close();
+        //entityManager2.close();
+        //entityManagerFactory.close();
 
         /*** End of tests for ReviewRepository ***/
-
+        /*
         try{
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
+        */
+
     }
 }
