@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@IdClass(ReviewCompositeId.class)
 @Table(name = "Review")
-public class Review {
+public class Review implements Cloneable {
     @Id
     @Column(name = "review_id")
     private Integer reviewId;
+    @Id
     private Integer version;
     private LocalDateTime timestamp;
     @ManyToOne
@@ -89,5 +91,18 @@ public class Review {
                 ", comment='" + comment + '\'' +
                 ", rating=" + rating +
                 '}';
+    }
+
+    @Override
+    public Review clone() {
+        Review review = new Review();
+        review.setReviewId(this.getReviewId());
+        review.setVersion(this.getVersion());
+        review.setTimestamp((this.getTimestamp()));
+        review.setAuthor(this.getAuthor());
+        review.setTarget(this.getTarget());
+        review.setComment(this.getComment());
+        review.setRating(this.getRating());
+        return review;
     }
 }
