@@ -29,7 +29,7 @@ public class UserRepository {
     public User save(User user) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(user);
+            entityManager.merge(user);
             entityManager.getTransaction().commit();
             return user;
         } catch (Exception e) {
