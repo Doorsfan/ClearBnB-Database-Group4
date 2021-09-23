@@ -145,11 +145,17 @@ export default {
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
       let myUser = {
-
+          userId: 1,
+          username: "no",
+          password: "no",
+          email: "no",
+          balance: 1000
       }
       let wantedBooking = {
         bookingId: 1,
-        
+        amountPaid: 1000,
+        bookedByUser: myUser,
+        listingBooked: 1,
         bookingStartDate: this.wantedStartDate,
         bookingEndDate: this.wantedEndDate,
         cancelled: 0
