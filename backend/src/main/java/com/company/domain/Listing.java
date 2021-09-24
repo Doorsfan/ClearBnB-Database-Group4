@@ -27,9 +27,9 @@ public class Listing implements Cloneable {
     private Integer numberGuests;
     private Double price;
     @Column(name = "listing_start_date")
-    private LocalDate listingStartDate;
+    private String listingStartDate;
     @Column(name = "listing_end_date")
-    private LocalDate listingEndDate;
+    private String listingEndDate;
 
     public Listing() { }
 
@@ -113,19 +113,19 @@ public class Listing implements Cloneable {
         this.price = price;
     }
 
-    public LocalDate getListingStartDate() {
+    public String getListingStartDate() {
         return listingStartDate;
     }
 
-    public void setListingStartDate(LocalDate listingStartDate) {
+    public void setListingStartDate(String listingStartDate) {
         this.listingStartDate = listingStartDate;
     }
 
-    public LocalDate getListingEndDate() {
+    public String getListingEndDate() {
         return listingEndDate;
     }
 
-    public void setListingEndDate(LocalDate listingEndDate) {
+    public void setListingEndDate(String listingEndDate) {
         this.listingEndDate = listingEndDate;
     }
 

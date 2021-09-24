@@ -22,12 +22,14 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+        EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
+        ListingRepository listingRepository = new ListingRepository(entityManager3);
 
         UserHandler userHandler = new UserHandler(app,userRepository);
-        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository);
+        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository);
 
         /*** Tests for ReviewRepository ***/
         // create user object
@@ -53,6 +55,7 @@ public class Application {
 
         // save review to db
         reviewRepository.save(review);
+        /*
         System.out.println("\n" + reviewRepository.findAll() + "\n");
         System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
         System.out.println("\n" + reviewRepository.findAllForAuthor(user) + "\n");
@@ -66,7 +69,7 @@ public class Application {
         // remove booking (set cancelled to true)
         reviewRepository.remove(review);
         System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
-
+        */
 
         // Close everything after program completes
         //entityManager.close();

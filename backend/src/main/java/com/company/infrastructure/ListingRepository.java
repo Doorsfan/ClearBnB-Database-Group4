@@ -51,6 +51,8 @@ public class ListingRepository {
         return null;
     }
 
+
+
     public Listing update(Integer id, String title, String description, String imageUrl, String location,
                           Integer numberGuests, Double price, LocalDate listingStartDate,
                           LocalDate listingEndDate) {
@@ -77,10 +79,10 @@ public class ListingRepository {
             listing.setPrice(price);
         }
         if (listingStartDate != null) {
-            listing.setListingStartDate(listingStartDate);
+            listing.setListingStartDate(listingStartDate.toString());
         }
         if (listingEndDate != null) {
-            listing.setListingEndDate(listingEndDate);
+            listing.setListingEndDate(listingEndDate.toString());
         }
 
         return this.save(listing);
