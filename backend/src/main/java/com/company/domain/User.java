@@ -25,6 +25,8 @@ public class User {
     List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
     List<Review> targetOfReviews = new ArrayList<>();
+    @OneToMany(mappedBy = "writtenByUser", cascade = CascadeType.ALL)
+    List<Message> messages = new ArrayList<>();
 
     public User() {}
 
@@ -104,6 +106,15 @@ public class User {
         this.targetOfReviews = targetOfReviews;
     }
 
+    @JsonIgnore
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -116,6 +127,7 @@ public class User {
                 ", bookings=" + bookings +
                 ", authorOfReviews=" + authorOfReviews +
                 ", targetOfReviews=" + targetOfReviews +
+                ", messages=" + messages +
                 '}';
     }
 }
