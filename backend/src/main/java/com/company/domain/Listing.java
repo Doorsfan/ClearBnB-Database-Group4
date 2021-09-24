@@ -34,6 +34,8 @@ public class Listing implements Cloneable {
     @Column(name = "listing_end_date")
     private Date listingEndDate;
 
+    public Listing() { }
+
     public Integer getListingId() {
         return listingId;
     }

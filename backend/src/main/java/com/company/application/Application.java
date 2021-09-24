@@ -7,7 +7,6 @@ import express.Express;
 import jakarta.persistence.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Application {
@@ -23,11 +22,10 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
-        EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
-        ListingRepository listingRepository = new ListingRepository(entityManager2);
-        BookingRepository bookingRepository = new BookingRepository(entityManager3);
+        UserHandler userHandler = new UserHandler(app,userRepository);
+        ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
 
         ListingHandler myListingHandler = new ListingHandler(app, listingRepository);
         
@@ -36,5 +34,7 @@ public class Application {
         } catch (Exception e) {
             System.out.println(e);
         }
+        */
+
     }
 }

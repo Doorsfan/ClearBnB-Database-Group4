@@ -1,5 +1,6 @@
 export default class Listing {
-  constructor(title, description, image_url, location, number_guests, price, listing_start_date, listing_end_date) {
+  constructor(postedByUsername, title, description, image_url, location, number_guests, price, listing_start_date, listing_end_date) {
+    this.postedByUsername = postedByUsername;
     this.title = title;
     this.description = description;
     this.image_url = image_url;

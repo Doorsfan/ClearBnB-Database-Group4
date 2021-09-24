@@ -1,5 +1,6 @@
 package com.company.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer userId;
     private String username;
     private String password;
@@ -19,10 +21,10 @@ public class User {
     private List<Listing> listings = new ArrayList<>();
     @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
-    /*@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
-    List<Review> targetOfReviews = new ArrayList<>();*/
+    List<Review> targetOfReviews = new ArrayList<>();
 
     public User() {}
 
@@ -66,6 +68,7 @@ public class User {
         this.balance = balance;
     }
 
+    @JsonIgnore
     public List<Listing> getListings() {
         return listings;
     }
@@ -74,12 +77,31 @@ public class User {
         this.listings = listings;
     }
 
+    @JsonIgnore
     public List<Booking> getBookings() {
         return bookings;
     }
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    @JsonIgnore
+    public List<Review> getAuthorOfReviews() {
+        return authorOfReviews;
+    }
+
+    public void setAuthorOfReviews(List<Review> authorOfReviews) {
+        this.authorOfReviews = authorOfReviews;
+    }
+
+    @JsonIgnore
+    public List<Review> getTargetOfReviews() {
+        return targetOfReviews;
+    }
+
+    public void setTargetOfReviews(List<Review> targetOfReviews) {
+        this.targetOfReviews = targetOfReviews;
     }
 
     @Override
@@ -90,8 +112,10 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", balance=" + balance +
-                ", listings" + listings +
-                ", bookings" + bookings +
+                ", listings=" + listings +
+                ", bookings=" + bookings +
+                ", authorOfReviews=" + authorOfReviews +
+                ", targetOfReviews=" + targetOfReviews +
                 '}';
     }
 }
