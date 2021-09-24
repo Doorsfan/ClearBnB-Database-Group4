@@ -5,7 +5,6 @@ import com.company.domain.*;
 import com.company.infrastructure.*;
 import express.Express;
 import jakarta.persistence.*;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 
@@ -25,13 +24,13 @@ public class Application {
 
         UserRepository userRepository = new UserRepository(entityManager);
         BookingRepository bookingRepository = new BookingRepository(entityManager);
-        ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
+        MessageRepository messageRepository = new MessageRepository(entityManager);
 
         UserHandler userHandler = new UserHandler(app,userRepository);
         BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
 
 
-        /*** Tests for ReviewRepository ***/
+        /*** Tests for MessageRepository ***/
         // create user object
         User user = new User();
         user.setUserId(1);
@@ -44,36 +43,17 @@ public class Application {
         userRepository.save(user);
 
         // create review object
-        Review review = new Review();
-        review.setReviewId(1);
-        review.setVersion(1);
-        review.setTimestamp(LocalDateTime.now());
-        review.setAuthor(user);
-        review.setTarget(user);
-        review.setComment("A good landlord");
-        review.setRating(5);
+        Message message = new Message();
+        message.setMessageId(1);
+        message.setWrittenByUser(user);
+        message.setContent("Hello all");
+        message.setTimestamp(LocalDateTime.now());
 
         // save review to db
-        reviewRepository.save(review);
-        System.out.println("\n" + reviewRepository.findAll() + "\n");
-        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
-        System.out.println("\n" + reviewRepository.findAllForAuthor(user) + "\n");
-        System.out.println("\n" + reviewRepository.findAllForTarget(user) + "\n");
-
-        // update review
-        reviewRepository.update(review.getReviewId(), "Actually not great", 3);
-        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
-
-        reviewRepository.update(review.getReviewId(), "Changed My mind", 5);
-        // remove booking (set cancelled to true)
-        reviewRepository.remove(review);
-        System.out.println("\n" + reviewRepository.findMostRecentForId(1) + "\n");
-
-
-        // Close everything after program completes
-        //entityManager.close();
-        //entityManager2.close();
-        //entityManagerFactory.close();
+        messageRepository.save(message);
+        System.out.println("\n" + messageRepository.findAll() + "\n");
+        System.out.println("\n" + messageRepository.findById(1) + "\n");
+        System.out.println("\n" + messageRepository.findAllForUser(user) + "\n");
 
         /*** End of tests for ReviewRepository ***/
         /*

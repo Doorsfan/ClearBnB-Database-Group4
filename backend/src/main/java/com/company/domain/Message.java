@@ -14,4 +14,46 @@ public class Message {
     private User writtenByUser;
     private String content;
     private LocalDateTime timestamp;
+
+    public Integer getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Integer messageId) {
+        this.messageId = messageId;
+    }
+
+    public User getWrittenByUser() {
+        return writtenByUser;
+    }
+
+    public void setWrittenByUser(User writtenByUser) {
+        this.writtenByUser = writtenByUser;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "messageId=" + messageId +
+                ", writtenByUser=" + writtenByUser.getUserId() +
+                ", content='" + content + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
