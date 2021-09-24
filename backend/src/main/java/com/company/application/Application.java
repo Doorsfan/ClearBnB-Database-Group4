@@ -24,8 +24,10 @@ public class Application {
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
-        UserHandler userHandler = new UserHandler(app,userRepository);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
+
+        UserHandler userHandler = new UserHandler(app,userRepository);
+        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository);
 
         /*** Tests for ReviewRepository ***/
         // create user object

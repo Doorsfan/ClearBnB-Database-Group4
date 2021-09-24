@@ -108,6 +108,7 @@ export default {
   async mounted() {
     //Query the DB for Versions on this point, to get them
     this.versions = ['1.0', '2.0']
+
     console.log(this.myEndDate);
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
@@ -118,6 +119,33 @@ export default {
 
     document.getElementById("postedByLink").to = this.postedByUsername;
 
+    let wantedListing = {
+      version: this.wantedVersion,
+      auditedDatetime: this.auditedDatetime,
+      owner: {
+        userId: 1,
+        username: "John_mccain"
+      },
+      title: this.myTitle,
+      description: this.description,
+      imageUrl: this.myImageURL,
+      location: this.myLocation,
+      numberGuests: this.myNumberOfGuests,
+      price: this.myPrice,
+      listingStartDate: this.myStartDate,
+      listingEndDate: this.myEndDate
+    }
+
+    let firstRes = await fetch('http://localhost:4000/review', {
+      method: 'POST',
+      more: 'cors',
+      credentials: 'include',
+      body: JSON.stringify(wantedListing)
+    }).then(function(response){
+      return response.json();
+    }).then(function(data){
+      console.log(data);
+    });
   },
   methods: {
     setToOneStar(){
@@ -147,6 +175,7 @@ export default {
     },
     tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
+      
     }
   },
 };
