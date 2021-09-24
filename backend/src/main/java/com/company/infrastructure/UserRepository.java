@@ -2,7 +2,7 @@ package com.company.infrastructure;
 
 import com.company.domain.User;
 import jakarta.persistence.*;
-import java.util.*;
+import java.util.List;
 
 public class UserRepository {
     private final EntityManager entityManager; //DEBUGABLE Set to final
@@ -34,7 +34,7 @@ public class UserRepository {
     public User save(User user) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(user);
+            entityManager.merge(user);
             entityManager.getTransaction().commit();
             return user;
         } catch (Exception e) {

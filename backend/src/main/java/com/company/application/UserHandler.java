@@ -22,8 +22,22 @@ public class UserHandler {
     public void register(int userId, String username, String password, String email) {
         // Register user
         app.post("/api/register", (req, res) -> {
-                    User user = req.body(User.class);
-                    double defaultBalance = 40000.00;
+            User user = req.body(User.class);
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            try{
+                User seeIfTheUserExists = userRepository.findByUsername(user.getUsername());
+                if(seeIfTheUserExists.getClass().equals(User.class)){
+
+                    res.json("That username is already taken.");
+                    return;
+                }
+            }
+            catch(Exception e){
+                if(e.getMessage() == "No entity found for query"){
+                    theUserRepository.save(user);
+                    res.json("Made a new user!");
+                                       double defaultBalance = 40000.00;
 
                     // Check if email is not taken
                     User exists = this.userRepository.findByEmail(email);
@@ -49,8 +63,12 @@ public class UserHandler {
                     // Save user to db
                     userRepository.save(user);
                     System.out.println(userRepository.findAll());
-
-        });
+                }
+                else{
+                    res.json(e);
+                }
+            }
+         });
     }
     public void update(@NotNull User user, String username, String password, String email, double balance) {
 
