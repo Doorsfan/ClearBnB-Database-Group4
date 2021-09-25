@@ -26,13 +26,11 @@ public class Application {
         UserRepository userRepository = new UserRepository(entityManager);
         BookingRepository bookingRepository = new BookingRepository(entityManager);
         MessageRepository messageRepository = new MessageRepository(entityManager);
-
-        UserHandler userHandler = new UserHandler(app,userRepository);
-        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
         ListingRepository listingRepository = new ListingRepository(entityManager3);
 
         UserHandler userHandler = new UserHandler(app,userRepository);
+        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
         ListingHandler myListingHandler = new ListingHandler(app, listingRepository);
         //ReviewHandler myReviewHandler = new ReviewHandler(app, reviewRepository, listingRepository);
         try{

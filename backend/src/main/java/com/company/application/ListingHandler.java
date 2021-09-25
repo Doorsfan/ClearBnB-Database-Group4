@@ -4,8 +4,6 @@ import com.company.domain.Listing;
 import com.company.domain.User;
 import com.company.infrastructure.ListingRepository;
 import express.Express;
-import org.bson.json.JsonObject;
-import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

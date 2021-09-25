@@ -109,7 +109,7 @@ export default {
     //Query the DB for Versions on this point, to get them
     this.versions = ['1.0', '2.0']
     console.log(this.myEndDate);
-    document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
+    document.getElementById('imageOfTheHouse').src = this.myImageURL;
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
     document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
 
@@ -173,6 +173,16 @@ export default {
     },
     tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
+      let res = await fetch('http://localhost:4000/user', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(wantedUser),
+      }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        console.log(data);
+      });
     }
   },
 };
