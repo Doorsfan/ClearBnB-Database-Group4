@@ -22,19 +22,20 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+        EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
-        UserHandler userHandler = new UserHandler(app,userRepository);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
+        ListingRepository listingRepository = new ListingRepository(entityManager3);
 
+        UserHandler userHandler = new UserHandler(app,userRepository);
         ListingHandler myListingHandler = new ListingHandler(app, listingRepository);
-        
+        //ReviewHandler myReviewHandler = new ReviewHandler(app, reviewRepository, listingRepository);
         try{
             con.close();
         } catch (Exception e) {
             System.out.println(e);
         }
-        */
 
     }
 }

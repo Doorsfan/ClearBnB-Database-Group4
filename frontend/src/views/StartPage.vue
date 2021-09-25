@@ -90,11 +90,34 @@ export default {
     return {
       chatOpened: false,
       relevantListings: [
-        new Listing("john_mccain","Kansas City Flat", "A small flat", "https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1", "Kansas, Arkansas", 1, 1000, '2021-09-21', '2021-09-30')
       ]
     };
   },
-  async mounted() {},
+  async mounted() {
+    let myRelevantListings = [];
+    let res = await fetch('http://localhost:4000/listing', {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include'
+    }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        let myJSON = data;
+        let max = Object.keys(myJSON).length;
+        let current = 0;
+      
+        while(current < max){
+          let theStartDate = new Date(data[current].listingStartDate);
+          let theEndDate = new Date(data[current].listingEndDate);
+          myRelevantListings.push(
+          new Listing(data[current].owner.username, data[current].title, data[current].description, data[current].imageUrl, data[current].location, data[current].numberGuests, data[current].price, (theStartDate.getFullYear() + "-" + (theStartDate.getMonth() < 10 ? '0' + theStartDate.getMonth(): theStartDate.getMonth()) + '-' + (theStartDate.getDate() < 10 ? '0' + theStartDate.getDate() : theStartDate.getDate())),
+          theEndDate.getFullYear() + '-' + theEndDate.getMonth() + '-' + theEndDate.getDate()));
+          current += 1;
+        }
+        console.log(myRelevantListings);
+      });
+      this.relevantListings = myRelevantListings;
+  },
   methods: {
     search() {},
     openSupportChat() {

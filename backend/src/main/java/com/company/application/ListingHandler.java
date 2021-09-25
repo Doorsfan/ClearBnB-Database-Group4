@@ -4,9 +4,12 @@ import com.company.domain.Listing;
 import com.company.domain.User;
 import com.company.infrastructure.ListingRepository;
 import express.Express;
+import org.bson.json.JsonObject;
+import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ListingHandler {
@@ -22,6 +25,13 @@ public class ListingHandler {
 
 
     private void initListingHandler() {
+        app.get("/listing", (req, res) -> {
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            ArrayList<Listing> listOfAllListings = (ArrayList<Listing>) theListingRepository.findAll();
+            res.json(listOfAllListings);
+        });
+
         app.post("/listing", (req, res) -> {
             Listing newListing = req.body(Listing.class);
             Date today = new Date();
@@ -30,7 +40,6 @@ public class ListingHandler {
             myUser.setUserId(1);
             newListing.setAuditedDatetime(ldt);
             newListing.setOwner(myUser);
-            newListing.setListingId(5);
             try{
                 Listing earlierVersionOfListing = this.theListingRepository.findMostRecentForId(5);
                 newListing.setVersion((earlierVersionOfListing.getVersion() + 1));
