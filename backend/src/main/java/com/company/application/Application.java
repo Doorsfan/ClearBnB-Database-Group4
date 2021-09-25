@@ -5,7 +5,6 @@ import com.company.domain.*;
 import com.company.infrastructure.*;
 import express.Express;
 import jakarta.persistence.*;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 
@@ -25,6 +24,11 @@ public class Application {
         EntityManager entityManager3 = entityManagerFactory.createEntityManager();
 
         UserRepository userRepository = new UserRepository(entityManager);
+        BookingRepository bookingRepository = new BookingRepository(entityManager);
+        MessageRepository messageRepository = new MessageRepository(entityManager);
+
+        UserHandler userHandler = new UserHandler(app,userRepository);
+        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager2);
         ListingRepository listingRepository = new ListingRepository(entityManager3);
 
