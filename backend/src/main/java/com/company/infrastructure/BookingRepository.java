@@ -54,10 +54,10 @@ public class BookingRepository {
                 booking.setAmountPaid(amountPaid);
             }
             if (bookingStartDate != null) {
-                booking.setBookingStartDate(bookingStartDate);
+                booking.setBookingStartDate(bookingStartDate.toString());
             }
             if (bookingEndDate != null) {
-                booking.setBookingEndDate(bookingEndDate);
+                booking.setBookingEndDate(bookingEndDate.toString());
             }
             entityManager.getTransaction().commit();
             return booking;

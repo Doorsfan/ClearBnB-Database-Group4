@@ -17,9 +17,9 @@ public class Booking {
     @Column(name = "amount_paid")
     private Double amountPaid;
     @Column(name = "booking_start_date")
-    private LocalDate bookingStartDate;
+    private String bookingStartDate;
     @Column(name = "booking_end_date")
-    private LocalDate bookingEndDate;
+    private String bookingEndDate;
     private Boolean cancelled;
 
     public Booking() { }
@@ -56,19 +56,19 @@ public class Booking {
         this.amountPaid = amountPaid;
     }
 
-    public LocalDate getBookingStartDate() {
+    public String getBookingStartDate() {
         return bookingStartDate;
     }
 
-    public void setBookingStartDate(LocalDate bookingStartDate) {
+    public void setBookingStartDate(String bookingStartDate) {
         this.bookingStartDate = bookingStartDate;
     }
 
-    public LocalDate getBookingEndDate() {
+    public String getBookingEndDate() {
         return bookingEndDate;
     }
 
-    public void setBookingEndDate(LocalDate bookingEndDate) {
+    public void setBookingEndDate(String bookingEndDate) {
         this.bookingEndDate = bookingEndDate;
     }
 
