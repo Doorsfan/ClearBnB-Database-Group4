@@ -139,7 +139,6 @@ export default {
             let currentIndex = 0;
             this.reviewsFromDatabase = []
             while(currentIndex < Object.keys(data).length){
-              console.log("INTO THE ACTUAL DATABASE; THE COMMENT VALUE OF: " + data[currentIndex].comment + " WAS MOUNTED.");
               this.reviewsFromDatabase.push(
                 new Review(
                   data[currentIndex].author.username, 
@@ -155,7 +154,7 @@ export default {
               currentIndex += 1;
             }
           });
-
+    console.log("I WAS WENT INTO");
   },
   methods: {
     setToOneStar(){
@@ -247,7 +246,6 @@ export default {
             let currentIndex = 0;
             this.reviewsFromDatabase = []
 
-            console.log("INTO THE ACTUAL DATABASE; THE COMMENT VALUE OF: " + data[currentIndex].comment + " WAS INSERTED INTO TABLES.");
             while(currentIndex < Object.keys(data).length){
               console.log(data[currentIndex].comment);
               this.reviewsFromDatabase.push(

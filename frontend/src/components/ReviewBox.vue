@@ -41,7 +41,6 @@ export default {
   methods: {
   },
   async mounted() {
-    console.log("IN THE REVIEW BOX, THE COMMENT WAS: " + this.comment);
   }
 };
 </script>

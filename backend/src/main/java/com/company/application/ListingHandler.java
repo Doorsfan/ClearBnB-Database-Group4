@@ -1,5 +1,6 @@
 package com.company.application;
 
+import com.company.domain.Listing;
 import com.company.domain.Review;
 import com.company.infrastructure.BookingRepository;
 import com.company.infrastructure.ListingRepository;
@@ -21,6 +22,14 @@ public class ListingHandler {
         initListingHandler();
     }
     private void initListingHandler() {
+
+        app.post("/getAllListings", (req, res) -> {
+            List<Listing> allListings = this.theListingRepository.findAll();
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(allListings);
+        });
+
         app.post("/getSpecificListing", (req, res) -> {
             Object mySetofQueryParams = req.body();
             String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
@@ -33,13 +42,14 @@ public class ListingHandler {
             queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+
             splitString = queryParamsString.split("SPLITHERE");
             //Title, Description, Image URL, Location, Guests, Price, start, end
             //1    , 2          ,  3       ,    4    ,  5    ,  6   , 7    , 8
-            System.out.println(splitString[1].toString());
+
             int index = 0;
+
             for(String myString : splitString){
-                System.out.println("INDEX " + index + ")" + myString);
                 index += 1;
             }
 
