@@ -2,6 +2,7 @@ package com.company.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     private Integer userId;
     private String username;
     private String password;

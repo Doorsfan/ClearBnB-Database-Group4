@@ -51,6 +51,27 @@ public class ListingRepository {
         return null;
     }
 
+    public Integer findSpecifiedListing(String title, String description, String image_url, String location,
+                                        Integer number_guests, Double price, String listing_start_date,
+                                        String listing_end_date){
+        List<Listing> result = entityManager.createQuery("SELECT l FROM Listing l WHERE l.title = :title AND " +
+                "l.description = :description AND l.imageUrl = :imageUrl AND l.location = :location AND " +
+                "l.numberGuests = :number_guests AND l.price = :price AND l.listingStartDate = :listingStartDate AND " +
+                "l.listingEndDate = :listingEndDate")
+                .setParameter("title", title)
+                .setParameter("description", description)
+                .setParameter("imageUrl", image_url)
+                .setParameter("location", location)
+                .setParameter("number_guests", number_guests)
+                .setParameter("price", price)
+                .setParameter("listingStartDate", listing_start_date)
+                .setParameter("listingEndDate", listing_end_date)
+                .getResultList();
+        if(result.size() > 0){
+            return result.get(0).getListingId();
+        }
+        return -1;
+    }
 
 
     public Listing update(Integer id, String title, String description, String imageUrl, String location,
