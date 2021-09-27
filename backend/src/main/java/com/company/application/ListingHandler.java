@@ -2,11 +2,18 @@ package com.company.application;
 
 import com.company.domain.Listing;
 import com.company.domain.Review;
+import com.company.domain.User;
 import com.company.infrastructure.BookingRepository;
 import com.company.infrastructure.ListingRepository;
 import com.company.infrastructure.ReviewRepository;
 import express.Express;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListingHandler {
@@ -22,6 +29,15 @@ public class ListingHandler {
         initListingHandler();
     }
     private void initListingHandler() {
+
+        app.post("/makeANewLease", (req, res) -> {
+            Listing myListing = req.body(Listing.class);
+            res.append("Access-Control-Allow-Origin", "*");
+            res.append("Access-Control-Allow-Credentials", "true");
+            System.out.println(myListing.toString());
+            this.theListingRepository.save(myListing);
+            res.json("hi");
+        });
 
         app.post("/getAllListings", (req, res) -> {
             List<Listing> allListings = this.theListingRepository.findAll();

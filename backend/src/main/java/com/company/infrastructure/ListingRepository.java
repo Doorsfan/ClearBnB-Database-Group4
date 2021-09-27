@@ -79,7 +79,7 @@ public class ListingRepository {
                           LocalDate listingEndDate) {
         Listing listing = this.findMostRecentForId(id).clone();
         listing.setVersion(listing.getVersion() + 1);
-        listing.setAuditedDatetime(LocalDateTime.now());
+        listing.setAuditedDatetime(LocalDateTime.now().toString());
 
         if (title != null) {
             listing.setTitle(title);

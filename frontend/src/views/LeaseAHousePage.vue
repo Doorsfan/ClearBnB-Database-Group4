@@ -6,35 +6,35 @@
       </div>
       <div class="centerBox">
         <div class="myTitleTitle centerBox">Title</div>
-        <input type="text" placeholder="My Title">
+        <input v-model="myTitle" type="text" placeholder="My Title">
       </div>
       <div class="centerBox">
         <div class="ImageURL centerBox">ImageURL of the Lease</div>
-        <input type="text" placeholder="Image URL">
+        <input v-model="myImageURL" type="text" placeholder="Image URL">
       </div>
       <div class="centerBox">
         <div class="Description centerBox">Description</div>
-        <textarea placeholder="Description"></textarea>
+        <textarea v-model="myDescription" placeholder="Description"></textarea>
       </div>
       <div class="centerBox">
         <div class="Location centerBox">Location</div>
-        <input type="text" placeholder="Location">
+        <input v-model="myLocation" type="text" placeholder="Location">
       </div>
       <div class="centerBox">
         <div class="nrOfGuests centerBox">Nr of Guests</div>
-        <input type="number" min=1 placeholder="Guests">
+        <input v-model="myGuests" type="number" min=1 placeholder="Guests">
       </div>
       <div class="centerBox">
         <div class="price centerBox">Price/Night</div>
-        <input type="number" min=1 placeholder="Pricing">
+        <input v-model="myPrice" type="number" min=1 placeholder="Pricing">
       </div>
       <div class="centerBox">
         <div class="leaseStartDate centerBox">Available From</div>
-        <input min="2021-09-21" type="date" />
+        <input v-model="myStartDate" min="2021-09-21" type="date" />
       </div>
       <div class="leaseEndDate exceptionCenterBox">Stops Being Available From</div>
       <div class="centerBox noPaddingCenterBox">
-        <input min="2021-09-21" type="date" />
+        <input v-model="myEndDate" min="2021-09-21" type="date" />
       </div>
       <button class="centeredButton" type="submit" value="Submit">Submit</button>
     </form>
@@ -44,12 +44,55 @@
 export default {
   components: {},
   data() {
-    return {};
+    return {
+      myTitle: '',
+      myImageURL: '',
+      myDescription: '',
+      myLocation: '',
+      myGuests: 0,
+      myPrice: 0,
+      myStartDate: '',
+      myEndDate: ''
+    };
   },
   async mounted() {},
   methods: {
-    tryToPostLease() {
-      console.log("hello");
+    async tryToPostLease() {
+      let myUser = {
+        userId: 1
+      }
+      let now = new Date();
+      let year = now.getFullYear();
+      let month = (now.getMonth() + 1) < 10 ? ('0' + (now.getMonth() + 1)) : (now.getMonth() + 1);
+      let date = now.getDate();
+
+      let hour = now.getHours();
+      let minute = now.getMinutes();
+
+      let newLease = {
+        title: this.myTitle,
+        description: this.myDescription,
+        imageUrl: this.myImageURL,
+        location: this.myLocation,
+        numberGuests: this.myGuests,
+        price: this.myPrice,
+        listingStartDate: this.myStartDate,
+        listingEndDate: this.myEndDate,
+        auditedDatetime: year + '-' + month + '-' + date + ' ' + hour + ':' + minute,
+        version: 1,
+        listingId: 1,
+        owner: myUser,
+      }
+      
+      let res = await fetch('http://localhost:4000/makeANewLease', {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(newLease),
+        }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            console.log(data);
+          });
     },
   },
 };
