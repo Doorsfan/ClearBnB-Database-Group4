@@ -1,13 +1,21 @@
 export default class Review {
   constructor(
-    writtenByUser,
-    timestamp,
+    author,
+    postedAtYear,
+    postedAtMonth,
+    postedAtDay,
+    postedAtHour,
+    postedAtMinute,
     comment,
     rating,
     version
   ) {
-    this.writtenByUser = writtenByUser,
-    this.timestamp = timestamp,
+    this.author = author,
+    this.postedAtYear = postedAtYear,
+    this.postedAtMonth = postedAtMonth,
+    this.postedAtDay = postedAtDay,
+    this.postedAtHour = postedAtHour,
+    this.postedAtMinute = postedAtMinute,
     this.comment = comment,
     this.rating = rating,
     this.version = version

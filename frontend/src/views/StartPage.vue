@@ -90,11 +90,57 @@ export default {
     return {
       chatOpened: false,
       relevantListings: [
-        new Listing("john_mccain","Kansas City Flat", "A small flat", "https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1", "Kansas, Arkansas", 1, 1000, '2021-09-21', '2021-09-30')
       ]
     };
   },
-  async mounted() {},
+  async mounted() {
+    console.log("test");
+    let res = await fetch('http://localhost:4000/getAllListings', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: ''
+        }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            let currentIndex = 0;
+            this.relevantListings = []
+            let currentVersion = 0;
+            let currentId = 0;
+
+            const groupBy = (objectArray, property) => {
+                return objectArray.reduce(function (total, obj) {
+                  let key = obj[property];
+                  if (!total[key]) {
+                    total[key] = [];
+                  }
+                  total[key].push(obj);
+                  return total;
+                }, {});
+              }
+
+              let groupedListings = groupBy(data, 'listingId');
+
+              for(var listing in groupedListings){
+                let currentListing = groupedListings[listing];
+                let relevantListing = currentListing[currentListing.length - 1];
+                let latestVersionOfListing = new Listing(
+                  relevantListing.owner.username, 
+                  relevantListing.title, 
+                  relevantListing.description, 
+                  relevantListing.imageUrl, 
+                  relevantListing.location, 
+                  relevantListing.numberGuests, 
+                  relevantListing.price, 
+                  relevantListing.listingStartDate,
+                  relevantListing.listingEndDate
+                );
+
+                this.relevantListings.push(latestVersionOfListing);
+              }     
+          });
+
+  },
   methods: {
     search() {},
     openSupportChat() {

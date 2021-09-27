@@ -5,7 +5,7 @@ import com.company.domain.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 public class ReviewRepository {
     private EntityManager entityManager;
@@ -20,6 +20,12 @@ public class ReviewRepository {
                 .setParameter("reviewId", reviewId)
                 .setMaxResults(1)
                 .getSingleResult();
+    }
+
+    public List<Review> findAllReviewsForListingOfId(Integer wantedId){
+        return entityManager.createQuery("SELECT r FROM Review r WHERE r.postedToListingId = :wantedId")
+                .setParameter("wantedId", wantedId)
+                .getResultList();
     }
 
     public List<Review> findAllForId(Integer reviewId) {
@@ -44,10 +50,34 @@ public class ReviewRepository {
         return entityManager.createQuery("from Review").getResultList();
     }
 
+
     public Review save(Review review) {
         try {
+            if(review.getReviewId() == null){
+                var result = entityManager.createQuery("SELECT r.reviewId FROM Review r " +
+                        "ORDER BY r.version DESC");
+
+                var myResultList = result.getResultList();
+                if(myResultList.size() > 0){
+                    for(int i = 0; i < myResultList.size() + 1 ; i++){
+                        System.out.println("i was: " + i);
+                        if(i == myResultList.size()){
+                            review.setReviewId((i+1));
+                            break;
+                        }
+                        else if((i + 1) != Integer.parseInt(myResultList.get(i).toString())){
+                            review.setReviewId((i+1));
+                            break;
+                        }
+                    }
+
+                }
+                else{
+                    review.setReviewId(1);
+                }
+            }
             entityManager.getTransaction().begin();
-            entityManager.merge(review);
+            entityManager.persist(review);
             entityManager.getTransaction().commit();
             return review;
         } catch (Exception e) {
@@ -73,7 +103,7 @@ public class ReviewRepository {
 
     public Review remove(Review review) {
         Review nullReview = this.update(review.getReviewId(), null, null);
-        nullReview.setTimestamp(null);
+        nullReview.setTimestamp("Removed");
         return this.save(nullReview);
     }
 }

@@ -21,39 +21,22 @@ public class Application {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+        EntityManager entityManager3 = entityManagerFactory.createEntityManager();
+        EntityManager entityManager4 = entityManagerFactory.createEntityManager();
 
+        // Repositories
         UserRepository userRepository = new UserRepository(entityManager);
-        BookingRepository bookingRepository = new BookingRepository(entityManager);
+        BookingRepository bookingRepository = new BookingRepository(entityManager2);
+        ReviewRepository reviewRepository = new ReviewRepository(entityManager3);
+        ListingRepository listingRepository = new ListingRepository(entityManager4);
         MessageRepository messageRepository = new MessageRepository(entityManager);
 
-        UserHandler userHandler = new UserHandler(app,userRepository);
+        //Handlers
         BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
+        UserHandler userHandler = new UserHandler(app,userRepository);
+        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
+        ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);
 
-
-        /*** Tests for MessageRepository ***/
-        // create user object
-        User user = new User();
-        user.setUserId(1);
-        user.setUsername("Matt");
-        user.setPassword("password");
-        user.setEmail("matt@yahoo.com");
-        user.setBalance(1000.00);
-
-        // save user to db
-        userRepository.save(user);
-
-        // create review object
-        Message message = new Message();
-        message.setMessageId(1);
-        message.setWrittenByUser(user);
-        message.setContent("Hello all");
-        message.setTimestamp(LocalDateTime.now());
-
-        // save review to db
-        messageRepository.save(message);
-        System.out.println("\n" + messageRepository.findAll() + "\n");
-        System.out.println("\n" + messageRepository.findById(1) + "\n");
-        System.out.println("\n" + messageRepository.findAllForUser(user) + "\n");
 
         /*** End of tests for ReviewRepository ***/
         /*

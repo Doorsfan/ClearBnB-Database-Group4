@@ -21,6 +21,9 @@ export default {
   },
   methods: {
   },
+  mounted() {
+    console.log("LISTING IS: " + this.Listing);
+  }
 };
 </script>
 <style scoped>

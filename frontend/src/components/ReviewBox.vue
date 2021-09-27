@@ -1,10 +1,14 @@
 <template>
   <div class="reviewBox">
-    {{ unformattedTimeOfPosting.getFullYear() + '-' + (unformattedTimeOfPosting.getMonth() < 10 ? '0' + unformattedTimeOfPosting.getMonth() : unformattedTimeOfPosting.getMonth()) + '-' + unformattedTimeOfPosting.getDate() }} 
-    {{ (unformattedTimeOfPosting.getHours() < 10 ? '0' + unformattedTimeOfPosting.getHours() : unformattedTimeOfPosting.getHours()) + ':' + (unformattedTimeOfPosting.getMinutes() < 10 ? '0' + unformattedTimeOfPosting.getMinutes() : unformattedTimeOfPosting.getMinutes()) }} 
+    <div class="dateBox">
+      {{ year }} - {{ month }} - {{ day }}
+    </div>
+    <div class="hourBox">
+      {{ hour }}:{{ minute }}
+    </div>
     <div class="usernameBox">
-      <router-link id="postedByLink" :to="{ name: 'profile', params: { username: userName
-        }}">{{ userName }}</router-link> left the following review: 
+      <router-link id="postedByLink" :to="{ name: 'profile', params: { author: author
+        }}">{{ author }}</router-link> left the following review: 
     </div>
     <div class="ratingBox">
       <span>&#11088;</span>
@@ -13,8 +17,8 @@
       <span v-if="rating > 3">&#11088;</span>
       <span v-if="rating > 4">&#11088;</span>
     </div>
-    <div class="contentBox">
-      {{ content }}
+    <div class="commentBox">
+      {{ comment }}
     </div>
   </div>
 </template>
@@ -23,16 +27,20 @@ export default {
   props: ['Content'],
   data() {
     return {
-      unformattedTimeOfPosting: new Date(this.Content.timestamp),
-      userName: this.Content.writtenByUser,
+      year: this.Content.postedAtYear,
+      month: this.Content.postedAtMonth < 10 ? '0' + this.Content.postedAtMonth : this.Content.postedAtMonth,
+      day: this.Content.postedAtDay < 10 ? '0' + this.Content.postedAtDay : this.Content.postedAtDay,
+      hour: this.Content.postedAtHour < 10 ? '0' + this.Content.postedAtHour : this.Content.postedAtHour,
+      minute: this.Content.postedAtMinute < 10 ? '0' + this.Content.postedAtMinute : this.Content.postedAtMinute,
+      second: this.Content.postedAtSecond,
+      author: this.Content.author,
       rating: this.Content.rating,
-      content: this.Content.comment
+      comment: this.Content.comment
     };
   },
   methods: {
   },
   async mounted() {
-    console.log(this.Content);
   }
 };
 </script>
@@ -52,5 +60,10 @@ a {
   outline: solid 1px black;
   padding: 2px;
   background-color:white;
+}
+.commentBox{
+  display:block;
+  height:max-content;
+  min-height:20px;
 }
 </style>

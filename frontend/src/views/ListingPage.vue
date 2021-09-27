@@ -71,7 +71,7 @@
             <span @click="setToThreeStars" v-if="wantedAmountOfStars < 3" class="fa fa-star"></span>
             <span @click="setToFourStars" v-if="wantedAmountOfStars < 4" class="fa fa-star"></span>
             <span @click="setToFiveStars" v-if="wantedAmountOfStars < 5" class="fa fa-star"></span>
-            <textarea class="commentArea" wrap="hard"></textarea>
+            <textarea v-model="myComment" class="commentArea" wrap="hard"></textarea>
             <input class="submitButton" type="submit" value="Post Review">
           </form>
         </div>
@@ -82,6 +82,7 @@
 import store from '../store.js';
 import Review from '../jsClasses/Review.js';
 import ReviewBox from '../components/ReviewBox.vue';
+import User from '../jsClasses/User.js';
 export default {
   components: {
     ReviewBox
@@ -101,14 +102,14 @@ export default {
       myPrice: this.$route.query.price,
       myStartDate: this.$route.query.listing_start_date,
       myEndDate: this.$route.query.listing_end_date,
-      reviewsFromDatabase: [new Review("Jane Doe", Date.now(),'Great house',5,1), new Review("Joe McClinksky", Date.now(), 'Awful house', 1, 2)],
-      wantedAmountOfStars: 3
+      reviewsFromDatabase: [],
+      wantedAmountOfStars: 3,
+      myComment: ''
     };
   },
   async mounted() {
     //Query the DB for Versions on this point, to get them
     this.versions = ['1.0', '2.0']
-    console.log(this.myEndDate);
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
     document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
@@ -117,12 +118,47 @@ export default {
     document.getElementsByClassName('bookingEndDateElement')[0].max = this.myEndDate;
 
     document.getElementById("postedByLink").to = this.postedByUsername;
-
+    let queryParams = {
+        title: this.$route.query.title,
+        description: this.$route.query.description,
+        image_url: this.$route.query.image_url,
+        location: this.$route.query.location,
+        number_guests: this.$route.query.number_guests,
+        price: this.$route.query.price,
+        listing_start_date: this.$route.query.listing_start_date,
+        listing_end_date: this.$route.query.listing_end_date,
+      }
+      let res = await fetch('http://localhost:4000/getSpecificListing', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: JSON.stringify(queryParams),
+        }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            let currentIndex = 0;
+            this.reviewsFromDatabase = []
+            while(currentIndex < Object.keys(data).length){
+              this.reviewsFromDatabase.push(
+                new Review(
+                  data[currentIndex].author.username, 
+                  data[currentIndex].timestamp.year, 
+                  data[currentIndex].timestamp.monthValue, 
+                  data[currentIndex].timestamp.dayOfMonth, 
+                  data[currentIndex].timestamp.hour,
+                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].comment, 
+                  data[currentIndex].rating, 
+                  data[currentIndex].version
+                ));
+              currentIndex += 1;
+            }
+          });
+    console.log("I WAS WENT INTO");
   },
   methods: {
     setToOneStar(){
       this.wantedAmountOfStars = 1;
-      console.log("lol");
     },
     setToTwoStars(){
       this.wantedAmountOfStars = 2;
@@ -138,7 +174,6 @@ export default {
     },
     updateInfoBasedOnVersion() {
       //Update the State variables in terms of dynamically reflecting the data
-      console.log(this.wantedVersion);
       //Based on this Version, query the DB in terms of finding the respective
       //version of it from the DB
     },
@@ -171,8 +206,63 @@ export default {
         console.log(data);
       });
     },
-    tryToPostReview(){
+    async tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
+      let myUser = {
+        userId: 1,
+        username: "John McCain",
+        email: "John@cain.com",
+        balance: 0
+      }
+      //author_id, comment, rating, target_id, timestamp, version, reviewId
+      
+      let queryParams = {
+        title: this.$route.query.title,
+        description: this.$route.query.description,
+        image_url: this.$route.query.image_url,
+        location: this.$route.query.location,
+        number_guests: this.$route.query.number_guests,
+        price: this.$route.query.price,
+        listing_start_date: this.$route.query.listing_start_date,
+        listing_end_date: this.$route.query.listing_end_date,
+      }
+      let myReview = {
+        author: myUser,
+        comment: this.myComment,
+        rating: this.wantedAmountOfStars,
+        target: myUser,
+        timestamp: new Date(),
+        version: 1,
+        myQueryParameters: queryParams
+      }
+        let res = await fetch('http://localhost:4000/review', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: JSON.stringify(myReview, queryParams),
+          }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            let currentIndex = 0;
+            this.reviewsFromDatabase = []
+
+            while(currentIndex < Object.keys(data).length){
+              console.log(data[currentIndex].comment);
+              this.reviewsFromDatabase.push(
+                new Review(
+                  data[currentIndex].author.username, 
+                  data[currentIndex].timestamp.year, 
+                  data[currentIndex].timestamp.monthValue, 
+                  data[currentIndex].timestamp.dayOfMonth, 
+                  data[currentIndex].timestamp.hour,
+                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].comment, 
+                  data[currentIndex].rating, 
+                  data[currentIndex].version
+                ));
+              currentIndex += 1;
+            }
+          });
     }
   },
 };

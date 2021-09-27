@@ -1,31 +1,44 @@
 package com.company.domain;
 
 import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
-@IdClass(ReviewCompositeId.class)
 @Table(name = "Review")
-public class Review implements Cloneable {
+public class Review implements Cloneable, Serializable {
     @Id
-    @Column(name = "review_id")
+    @Column(name = "reviewId")
     private Integer reviewId;
     @Id
     private Integer version;
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="author_id")
     private User author;
-    @ManyToOne
     @JoinColumn(name="target_id")
-    private User target;
+    private Integer target;
     private String comment;
     private Integer rating;
+    private Integer postedToListingId;
 
     public Review() {}
 
     public Integer getReviewId() {
         return reviewId;
+    }
+
+    public Integer getRefersToListingId() {
+        return postedToListingId;
+    }
+
+    public void setRefersToListingId(Integer postedToListingId) {
+        this.postedToListingId = postedToListingId;
     }
 
     public void setReviewId(Integer reviewId) {
@@ -48,6 +61,13 @@ public class Review implements Cloneable {
         this.timestamp = timestamp;
     }
 
+    public void setTimestamp(String myWantedTime) {
+        Instant instant = Instant.parse(myWantedTime);
+        ZoneId z = ZoneId.of("Europe/Paris");
+        LocalDateTime convertedTime = LocalDateTime.ofInstant(instant,z);
+        this.timestamp = convertedTime;
+    }
+
     public User getAuthor() {
         return author;
     }
@@ -56,11 +76,11 @@ public class Review implements Cloneable {
         this.author = author;
     }
 
-    public User getTarget() {
+    public Integer getTarget() {
         return target;
     }
 
-    public void setTarget(User target) {
+    public void setTarget(Integer target) {
         this.target = target;
     }
 
@@ -80,16 +100,18 @@ public class Review implements Cloneable {
         this.rating = rating;
     }
 
+
     @Override
     public String toString() {
         return "Review{" +
                 "reviewId=" + reviewId +
                 ", version=" + version +
                 ", timestamp=" + timestamp +
-                ", author=" + author.getUserId() +
-                ", target=" + target.getUserId() +
+                ", author=" + author +
+                ", target=" + target +
                 ", comment='" + comment + '\'' +
                 ", rating=" + rating +
+                ", refersToListingId=" + postedToListingId +
                 '}';
     }
 
@@ -103,6 +125,7 @@ public class Review implements Cloneable {
         review.setTarget(this.getTarget());
         review.setComment(this.getComment());
         review.setRating(this.getRating());
+        review.setRefersToListingId(this.getRefersToListingId());
         return review;
     }
 }

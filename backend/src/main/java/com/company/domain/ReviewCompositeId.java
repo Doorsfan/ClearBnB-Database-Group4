@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ReviewCompositeId implements Serializable {
-    private Integer reviewId;
+    private Integer ReviewId;
     private Integer version;
 
     public ReviewCompositeId() { }
 
-    public ReviewCompositeId(Integer listingId, Integer version) {
-        this.reviewId = listingId;
+    public ReviewCompositeId(Integer ReviewId, Integer version) {
+        this.ReviewId = ReviewId;
         this.version = version;
     }
 
     public Integer getReviewId() {
-        return reviewId;
+        return ReviewId;
     }
 
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
+    public void setReviewId(Integer ReviewId) {
+        this.ReviewId = ReviewId;
     }
 
     public Integer getVersion() {
@@ -30,9 +30,9 @@ public class ReviewCompositeId implements Serializable {
         this.version = version;
     }
 
-    public boolean equals(ReviewCompositeId reviewCompositeId) {
-        return Objects.equals(this.getReviewId(), reviewCompositeId.getReviewId()) &&
-                Objects.equals(this.getVersion(), reviewCompositeId.getVersion());
+    public boolean equals(ReviewCompositeId ReviewCompositeId) {
+        return Objects.equals(this.getReviewId(), ReviewCompositeId.getReviewId()) &&
+                Objects.equals(this.getVersion(), ReviewCompositeId.getVersion());
     }
 
     @Override
@@ -40,3 +40,4 @@ public class ReviewCompositeId implements Serializable {
         return Objects.hash(this.getReviewId(), this.getVersion());
     }
 }
+
