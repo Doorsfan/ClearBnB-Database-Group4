@@ -1,14 +1,11 @@
 <template>
   <div class="mainDiv">
-    <div class="navbar">
-      <router-link class="clearBnBlogo" to="/">ClearBnB</router-link>
-    </div>
     <div class="loginForm">
       <p class="usernameText">Username</p>
       <p class="passwordText">Password</p>
       <form @submit.prevent="tryToLogIn" class="inputForm">
-        <input class="usernameInput" type="text" placeholder="Username">
-        <input class="passwordInput" type="password" placeholder="Password">
+        <input v-model="username" class="usernameInput" type="text" placeholder="Username">
+        <input v-model="password" class="passwordInput" type="password" placeholder="Password">
         <input class="submitButton" type="submit" value="Log In">
       </form>
     </div>
@@ -23,14 +20,21 @@ export default {
   },
   data() {
     return {
+      username: "",
+      password: "",
     };
   },
   async mounted() {
 
   },
   methods: {
-    tryToLogIn() {
-      console.log("hi");
+    async tryToLogIn() {
+      await this.$store.dispatch("login", {username: this.username, password: this.password})
+      if (this.$store.state.user) {
+        this.$router.push("/");
+      } else {
+        alert("Username and/or password do not exist")
+      }
     }
   },
 };

@@ -29,7 +29,6 @@ public class Application {
         BookingRepository bookingRepository = new BookingRepository(entityManager2);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager3);
         ListingRepository listingRepository = new ListingRepository(entityManager4);
-        MessageRepository messageRepository = new MessageRepository(entityManager);
 
         //Handlers
         BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
@@ -37,8 +36,6 @@ public class Application {
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);
 
-
-        /*** End of tests for ReviewRepository ***/
         /*
         try{
             con.close();

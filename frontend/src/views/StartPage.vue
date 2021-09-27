@@ -30,8 +30,6 @@
         </div>
       </div>
       <button class="searchButton" @click="search" type="button">Search</button>
-      <router-link class="Login" to="/login">Login</router-link>
-      <router-link class="myProfileBox" to="/profile">My Profile</router-link>
     </div>
     <div class="searchDiv">
       <div class="categoryBox firstCategoryBox">
