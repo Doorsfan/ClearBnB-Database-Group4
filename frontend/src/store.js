@@ -17,6 +17,23 @@ export default createStore({
 
       store.commit('setUser', user)
     },
+
+    async register(store, credentials) {
+      let res = await fetch('/api/register', {
+        method: 'POST',
+        body: JSON.stringify(credentials)
+      })
+
+      let loggedInUser = await res.json()
+
+      if (loggedInUser.error) {
+        store.commit('setUser', null)
+        return
+      }
+
+      store.commit('setUser', loggedInUser)
+    },
+
     async login(store, credentials) {
       let res = await fetch('/api/login', {
         method: 'POST',
@@ -31,6 +48,7 @@ export default createStore({
       }
       store.commit('setUser', loggedInUser)
     },
+    
     async logout(store) {
       let res = await fetch('/api/logout')
 

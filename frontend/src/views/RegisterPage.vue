@@ -36,13 +36,27 @@ export default {
   },
   methods: {
     async tryToRegisterUser(){
+      if (this.wantedPassword !== this.repeatedPassword) {
+        alert("Passwords do not match")
+        return
+      }
+
       let wantedUser = {
         username: this.wantedUsername, 
         password: this.wantedPassword, 
         email: this.wantedEmail, 
         balance: this.availableFunds
       }
-      let res = await fetch('http://localhost:4000/user', {
+
+      await this.$store.dispatch("register", wantedUser)
+
+      if (this.$store.state.user) {
+        this.$router.push("/");
+      } else {
+        alert("Username or email has aleady been used")
+      }
+
+      /*let res = await fetch('http://localhost:4000/user', {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
@@ -51,9 +65,7 @@ export default {
         return response.json();
       }).then(function(data){
         console.log(data);
-      });
-
-      
+      });*/
     }
   },
 };

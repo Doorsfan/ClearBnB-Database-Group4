@@ -12,49 +12,43 @@ import static nosqlite.Database.collection;
 public class UserHandler {
 
     private final Express app;
-    private final UserRepository theUserRepository;
+    private final UserRepository userRepository;
 
     public UserHandler(Express app, UserRepository theUserRepository){
         this.app = app;
-        this.theUserRepository = theUserRepository;
+        this.userRepository = theUserRepository;
         initUserHandler();
     }
 
 
     private void initUserHandler() {
-        app.post("/user", (req, res) -> {
-            User newUser = req.body(User.class);
+        app.post("/api/register", (req, res) -> {
+            User user = req.body(User.class);
+
+            // check if user exists
+            if (userRepository.findByUsername(user.getUsername()) != null) {
+                res.json(Map.of("error", "User already exists"));
+                return;
+            }
 
             // hash password (encrypt password)
-            String hashedPassword = HashPassword.hash(newUser.getPassword());
-            newUser.setPassword(hashedPassword);
+            String hashedPassword = HashPassword.hash(user.getPassword());
+            user.setPassword(hashedPassword);
 
-            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
-            res.append("Access-Control-Allow-Credentials", "true");
-            try{
-                User seeIfTheUserExists = theUserRepository.findByUsername(newUser.getUsername());
-                if(seeIfTheUserExists.getClass().equals(User.class)){
+            // save new user
+            userRepository.save(user);
 
-                    res.json("That username is already taken.");
-                    return;
-                }
-            }
-            catch(Exception e){
-                if(e.getMessage() == "No entity found for query"){
-                    theUserRepository.save(newUser);
-                    res.json("Made a new user!");
-                }
-                else{
-                    res.json(e);
-                }
-            }
+            // log user in
+            req.session("current-user", user);
+
+            res.json(user);
         });
 
         // login user
         app.post("/api/login", (req, res) -> {
             User user = req.body(User.class);
 
-            User userInDatabase = theUserRepository.findByUsername(user.getUsername());
+            User userInDatabase = userRepository.findByUsername(user.getUsername());
 
             if(userInDatabase == null) {
                 res.json(Map.of("error", "Bad credentials"));
