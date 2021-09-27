@@ -16,9 +16,14 @@ public class UserRepository {
     }
 
     public User findByUsername(String username) {
-        User user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
+        User user;
+        try {
+            user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (Exception e) {
+            user = null;
+        }
         return user;
     }
 

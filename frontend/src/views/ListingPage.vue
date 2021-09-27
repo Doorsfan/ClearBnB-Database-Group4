@@ -1,8 +1,5 @@
 <template>
   <div class="mainDiv">
-    <div class="navbar">
-      <router-link to="/" class="clearBnBLogo">ClearBnB</router-link>
-    </div>
     <div class="centralDiv">
       <div class="titleText">
         <div class="inline">Title: </div>
