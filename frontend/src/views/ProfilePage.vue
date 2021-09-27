@@ -1,9 +1,6 @@
 <template>
   <div class="mainDiv">
     <div class="navbar">
-      <div class="backToStartPage">
-        <router-link to="/">ClearBNB</router-link>
-      </div>
     </div>
     <div class="myProfileBox centerBox">My Profile</div>
     <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
