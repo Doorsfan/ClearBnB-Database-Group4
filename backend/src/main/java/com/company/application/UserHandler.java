@@ -16,8 +16,10 @@ public class UserHandler {
 
 
     private void initUserHandler() {
+
         app.post("/user", (req, res) -> {
             User newUser = req.body(User.class);
+
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
             try{

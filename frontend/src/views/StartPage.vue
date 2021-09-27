@@ -108,6 +108,12 @@ export default {
             let currentVersion = 0;
             let currentId = 0;
 
+            // listingId 4, versionId 1
+            // listingId 4, versionId 2
+            // listingId 5, versionId 1
+            //
+            // listingId5 {1: versionId: 1, 2: versionId: 2}
+            // 
             const groupBy = (objectArray, property) => {
                 return objectArray.reduce(function (total, obj) {
                   let key = obj[property];
@@ -120,6 +126,8 @@ export default {
               }
 
               let groupedListings = groupBy(data, 'listingId');
+
+              console.log(groupedListings);
 
               for(var listing in groupedListings){
                 let currentListing = groupedListings[listing];
