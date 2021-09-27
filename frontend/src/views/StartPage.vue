@@ -4,29 +4,29 @@
       <div class="locationBox Box">
         Location
         <div class="locationBar">
-          <input type="text" placeholder="Location" class="searchBar" />
+          <input @change="updateMyLocation" type="text" placeholder="Location" class="myLocationInput searchBar" />
         </div>
       </div>
       <div class="guestBox Box">
         Guests
         <div class="guestsBar">
-          <input type="number" min="1" placeholder="Guests" class="guestsBar" />
+          <input @change="updateMyGuests" type="number" min="1" placeholder="Guests" class="myGuestsInput guestsBar" />
         </div>
       </div>
       <div class="startDateBox Box">
         Start Date
-        <div class="startDateBar"><input min="2021-09-17" type="date" /></div>
+        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" min="2021-09-17" type="date" /></div>
       </div>
       <div class="endDateBox Box">
         End Date
         <div class="endDateBar">
-          <input type="date" min="2021-09-17" max="2021-10-17" />
+          <input class="myMaxDateInput" @change="updateMyMaxDate" type="date" min="2021-09-17" max="2021-10-17" />
         </div>
       </div>
       <div class="priceBox Box">
         Below Price Of
         <div class="priceBar">
-          <input placeholder="0" type="number" min="0" />
+          <input class="myPriceInput" @change="updateMyPrice" placeholder="0" type="number" min="0" />
         </div>
       </div>
       <button class="searchButton" @click="search" type="button">Search</button>
@@ -87,60 +87,99 @@ export default {
   data() {
     return {
       chatOpened: false,
-      relevantListings: [
-      ]
+      relevantListings: [],
+      myLocation: '',
+      numberGuests: 1,
+      myMinDate: '',
+      myMaxDate: '',
+      myPrice: 0
     };
   },
   async mounted() {
     console.log("test");
     let res = await fetch('http://localhost:4000/getAllListings', {
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
-          body: ''
-        }).then((response) => {
-            return response.json();
-          }).then((data) => {
-            let currentIndex = 0;
-            this.relevantListings = []
-            let currentVersion = 0;
-            let currentId = 0;
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      body: ''
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+      let currentIndex = 0;
+      this.relevantListings = []
+      let currentVersion = 0;
+      let currentId = 0;
 
-            const groupBy = (objectArray, property) => {
-                return objectArray.reduce(function (total, obj) {
-                  let key = obj[property];
-                  if (!total[key]) {
-                    total[key] = [];
-                  }
-                  total[key].push(obj);
-                  return total;
-                }, {});
-              }
+      // listingId 4, versionId 1
+      // listingId 4, versionId 2
+      // listingId 5, versionId 1
+      //
+      // listingId5 {1: versionId: 1, 2: versionId: 2}
+      // 
+      const groupBy = (objectArray, property) => {
+          return objectArray.reduce(function (total, obj) {
+            let key = obj[property];
+            if (!total[key]) {
+              total[key] = [];
+            }
+            total[key].push(obj);
+            return total;
+          }, {});
+        }
 
-              let groupedListings = groupBy(data, 'listingId');
+        let groupedListings = groupBy(data, 'listingId');
 
-              for(var listing in groupedListings){
-                let currentListing = groupedListings[listing];
-                let relevantListing = currentListing[currentListing.length - 1];
-                let latestVersionOfListing = new Listing(
-                  relevantListing.owner.username, 
-                  relevantListing.title, 
-                  relevantListing.description, 
-                  relevantListing.imageUrl, 
-                  relevantListing.location, 
-                  relevantListing.numberGuests, 
-                  relevantListing.price, 
-                  relevantListing.listingStartDate,
-                  relevantListing.listingEndDate
-                );
+        console.log(groupedListings);
 
-                this.relevantListings.push(latestVersionOfListing);
-              }     
-          });
-
+        for(var listing in groupedListings){
+          let currentListing = groupedListings[listing];
+          let relevantListing = currentListing[currentListing.length - 1];
+          let latestVersionOfListing = new Listing(
+            relevantListing.owner.username, 
+            relevantListing.title, 
+            relevantListing.description, 
+            relevantListing.imageUrl, 
+            relevantListing.location, 
+            relevantListing.numberGuests, 
+            relevantListing.price, 
+            relevantListing.listingStartDate,
+            relevantListing.listingEndDate
+          );
+          this.relevantListings.push(latestVersionOfListing);
+        }     
+    });
   },
   methods: {
-    search() {},
+    updateMyPrice() {
+      this.myPrice = document.getElementsByClassName('myPriceInput')[0].value;
+    },
+    updateMyLocation() {
+      this.myLocation = document.getElementsByClassName('myLocationInput')[0].value;
+    },
+    updateMyGuests() {
+      this.numberGuests = document.getElementsByClassName('myGuestsInput')[0].value;
+    },
+    updateMyMinDate() {
+      this.myMinDate = document.getElementsByClassName('myMinDateInput')[0].value;
+    },
+    updateMyMaxDate() {
+      this.myMaxDate = document.getElementsByClassName('myMaxDateInput')[0].value;
+    },
+    async search() {
+      let myQueryParams = {
+        location: this.myLocation,
+        numberGuests: this.numberGuests,
+        myMinDate: this.myMinDate,
+        myMaxDate: this.myMaxDate,
+        myPrice: this.myPrice
+      }
+      console.log(myQueryParams);
+      let res = await fetch('http://localhost:4000/getResultsFromFiltering?' + 
+      new URLSearchParams(myQueryParams), {
+        method: 'GET',
+        mode: 'cors'
+      });
+    },
     openSupportChat() {
       if(this.chatOpened){
         this.chatOpened = false;

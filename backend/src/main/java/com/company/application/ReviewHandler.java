@@ -33,6 +33,8 @@ public class ReviewHandler {
     private void initReviewHandler() {
         app.post("/review", (req, res) -> {
             Object myReview = req.body();
+            // { rating=3, comment=i wrote a comment, myQueryParameters={ username=mikael, password=temp, balance=0 }
+            //
             String[] myStringArray = myReview.toString().split("myQueryParameters");
 
             String baseForLeft = myStringArray[0];
@@ -82,6 +84,7 @@ public class ReviewHandler {
             Review wantedReview = new Review();
 
             User wantedUser = this.theUserRepository.findById(wantedUserId);
+
             wantedReview.setAuthor(wantedUser);
             wantedReview.setComment(wantedComment);
             wantedReview.setTimestamp(wantedTimeStamp);

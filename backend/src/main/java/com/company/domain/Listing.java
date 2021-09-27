@@ -14,7 +14,7 @@ public class Listing implements Cloneable {
     @Id
     private Integer version;
     @Column(name = "audited_datetime")
-    private LocalDateTime auditedDatetime;
+    private String auditedDatetime;
     @ManyToOne
     @JoinColumn(name="owner_id")
     private User owner;
@@ -49,11 +49,11 @@ public class Listing implements Cloneable {
         this.version = version;
     }
 
-    public LocalDateTime getAuditedDatetime() {
+    public String getAuditedDatetime() {
         return auditedDatetime;
     }
 
-    public void setAuditedDatetime(LocalDateTime auditedDatetime) {
+    public void setAuditedDatetime(String auditedDatetime) {
         this.auditedDatetime = auditedDatetime;
     }
 

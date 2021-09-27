@@ -232,11 +232,13 @@ export default {
         version: 1,
         myQueryParameters: queryParams
       }
+
+        
         let res = await fetch('http://localhost:4000/review', {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
-          body: JSON.stringify(myReview, queryParams),
+          body: JSON.stringify(myReview),
           }).then((response) => {
             return response.json();
           }).then((data) => {
