@@ -32,9 +32,9 @@ public class ListingRepository {
 
         return entityManager.createQuery("SELECT l FROM Listing l WHERE l.location LIKE :location AND :numberGuests <= l.numberGuests" +
                 " AND :price >= l.price AND :listingStartDate >= l.listingStartDate AND :listingEndDate <= l.listingEndDate")
-                .setParameter("location", (location.length() == 0 ? '%' : '%' + location + '%'))
-                .setParameter("numberGuests", (numberGuests < 1 ? '%' : numberGuests))
-                .setParameter("price", (price == 0 ? '%' : price))
+                .setParameter("location", (location.length() == 0 ? "%" : "%" + location + "%"))
+                .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
+                .setParameter("price", (price == 0 ? 100000.0 : price))
                 .setParameter("listingStartDate", (listingStartDate.length() == 0 ? dtf.format(now): listingStartDate))
                 .setParameter("listingEndDate", (listingEndDate.length() == 0 ? dtf.format(tenYearsAhead) : listingEndDate))
                 .getResultList();

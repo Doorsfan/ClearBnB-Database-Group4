@@ -56,17 +56,10 @@ public class ListingHandler {
 
         app.get("/getResultsFromFiltering", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
-            System.out.println("The location was: " + req.query("location"));
-            System.out.println("The numberGuests was: " + req.query("numberGuests"));
-            System.out.println("The price was: " + req.query("myPrice"));
-            System.out.println("The mindate was: " + req.query("myMinDate"));
-            System.out.println("The maxDate was: " + req.query("myMaxDate"));
-            System.out.println(this.theListingRepository.findFilteredListings(req.query("location"),
+            List<Listing> filteredListings = this.theListingRepository.findFilteredListings(req.query("location"),
                     Integer.parseInt(req.query("numberGuests")),
-                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate")));
-            //List<Listing> filteredListings = this.theListingRepository.findFilteredListings(myParams.get("location"),
-            //        myParams.get("myGuests"), myParams.get("myMinDate"), myParams.get("myMaxDate"),
-            //        myParams.get("myPrice"));
+                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate"));
+            res.json(filteredListings);
         });
 
         app.post("/getAllListings", (req, res) -> {
