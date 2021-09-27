@@ -55,17 +55,6 @@ export default {
       } else {
         alert("Username or email has aleady been used")
       }
-
-      /*let res = await fetch('http://localhost:4000/user', {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body: JSON.stringify(wantedUser),
-      }).then(function(response){
-        return response.json();
-      }).then(function(data){
-        console.log(data);
-      });*/
     }
   },
 };
