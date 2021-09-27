@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ListingRepository {
@@ -21,6 +22,29 @@ public class ListingRepository {
                 .setParameter("listingId", listingId)
                 .setMaxResults(1)
                 .getSingleResult();
+    }
+
+    public List<Listing> findFilteredListings(String location, int numberGuests, double price,
+                                              String listingStartDate, String listingEndDate){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tenYearsAhead = now.plusYears(10);
+
+        return entityManager.createQuery("SELECT l FROM Listing l WHERE l.location LIKE :location AND :numberGuests <= l.numberGuests" +
+                " AND :price >= l.price AND :listingStartDate >= l.listingStartDate AND :listingEndDate <= l.listingEndDate")
+                .setParameter("location", (location.length() == 0 ? '%' : '%' + location + '%'))
+                .setParameter("numberGuests", (numberGuests < 1 ? '%' : numberGuests))
+                .setParameter("price", (price == 0 ? '%' : price))
+                .setParameter("listingStartDate", (listingStartDate.length() == 0 ? dtf.format(now): listingStartDate))
+                .setParameter("listingEndDate", (listingEndDate.length() == 0 ? dtf.format(tenYearsAhead) : listingEndDate))
+                .getResultList();
+        //" AND l.numberGuests >= :numberGuests " +
+        //                "AND l.price <= :price AND l.listingStartDate >= :listingStartDate " +
+        //                "AND l.listingEndDate <= :listingEndDate"
+        //.setParameter("numberGuests", numberGuests)
+        //                .setParameter("price", price)
+        //                .setParameter("listingStartDate", ((listingStartDate.length() == 0) ? LocalDate.now().toString() : listingStartDate))
+        //                .setParameter("listingEndDate", ((listingEndDate.length() == 0) ? LocalDate.now().toString() : listingEndDate))
     }
 
     public List<Listing> findAllForId(Integer listingId) {
