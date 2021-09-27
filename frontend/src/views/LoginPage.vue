@@ -28,8 +28,13 @@ export default {
 
   },
   methods: {
-    tryToLogIn() {
-      this.$store.dispatch("login", {username: this.username, password: this.password})
+    async tryToLogIn() {
+      await this.$store.dispatch("login", {username: this.username, password: this.password})
+      if (this.$store.state.user) {
+        this.$router.push("/");
+      } else {
+        alert("Username and/or password do not exist")
+      }
     }
   },
 };
