@@ -1,8 +1,5 @@
 <template>
   <div class="mainDiv">
-    <div class="navBar">
-      <router-link to="/" class="backToStartPageLink">ClearBnB</router-link>
-    </div>
     <form @submit.prevent="tryToRegisterUser" class="registerForm">
       <div class="registerTitle">Register a new User</div>
       <div class="usernameTitle">Username</div>
@@ -39,23 +36,25 @@ export default {
   },
   methods: {
     async tryToRegisterUser(){
+      if (this.wantedPassword !== this.repeatedPassword) {
+        alert("Passwords do not match")
+        return
+      }
+
       let wantedUser = {
         username: this.wantedUsername, 
         password: this.wantedPassword, 
         email: this.wantedEmail, 
         balance: this.availableFunds
       }
-      let res = await fetch('http://localhost:4000/user', {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body: JSON.stringify(wantedUser),
-      }).then(function(response){
-        return response.json();
-      }).then(function(data){
-        console.log(data);
-      });
 
+      await this.$store.dispatch("register", wantedUser)
+
+      if (this.$store.state.user) {
+        this.$router.push("/");
+      } else {
+        alert("Username or email has aleady been used")
+      }
     }
   },
 };
