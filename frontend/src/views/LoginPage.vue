@@ -7,8 +7,8 @@
       <p class="usernameText">Username</p>
       <p class="passwordText">Password</p>
       <form @submit.prevent="tryToLogIn" class="inputForm">
-        <input class="usernameInput" type="text" placeholder="Username">
-        <input class="passwordInput" type="password" placeholder="Password">
+        <input v-model="username" class="usernameInput" type="text" placeholder="Username">
+        <input v-model="password" class="passwordInput" type="password" placeholder="Password">
         <input class="submitButton" type="submit" value="Log In">
       </form>
     </div>
@@ -23,6 +23,8 @@ export default {
   },
   data() {
     return {
+      username: "",
+      password: "",
     };
   },
   async mounted() {
@@ -30,7 +32,7 @@ export default {
   },
   methods: {
     tryToLogIn() {
-      console.log("hi");
+      this.$store.dispatch("login", {username: this.username, password: this.password})
     }
   },
 };
