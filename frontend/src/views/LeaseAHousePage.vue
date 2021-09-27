@@ -1,9 +1,6 @@
 <template>
   <div class="mainDiv">
     <form @submit.prevent="tryToPostLease">
-      <div class="navbar">
-        <router-link class="clearBnBlogo" to="/">ClearBnB</router-link>
-      </div>
       <div class="centerBox">
         <div class="myTitleTitle centerBox">Title</div>
         <input type="text" placeholder="My Title">

@@ -1,8 +1,5 @@
 <template>
   <div class="mainDiv">
-    <div class="navBar">
-      <router-link to="/" class="backToStartPageLink">ClearBnB</router-link>
-    </div>
     <form @submit.prevent="tryToRegisterUser" class="registerForm">
       <div class="registerTitle">Register a new User</div>
       <div class="usernameTitle">Username</div>

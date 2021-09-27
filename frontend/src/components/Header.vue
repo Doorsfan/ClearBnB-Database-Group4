@@ -51,7 +51,12 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  background-color: lightcoral;
+}
+
 ul {
+  margin: 0 40px;
   list-style: none;
   display: flex;
   justify-content: space-between;

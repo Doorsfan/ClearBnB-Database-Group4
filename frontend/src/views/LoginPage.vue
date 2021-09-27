@@ -1,8 +1,5 @@
 <template>
   <div class="mainDiv">
-    <div class="navbar">
-      <router-link class="clearBnBlogo" to="/">ClearBnB</router-link>
-    </div>
     <div class="loginForm">
       <p class="usernameText">Username</p>
       <p class="passwordText">Password</p>
