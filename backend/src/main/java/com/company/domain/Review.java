@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 public class Review implements Cloneable {
     @Id
     @Column(name = "review_id")
-    private Integer reviewId;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long reviewId;
     @Id
     private Integer version;
     private LocalDateTime timestamp;
@@ -24,11 +25,11 @@ public class Review implements Cloneable {
 
     public Review() {}
 
-    public Integer getReviewId() {
+    public Long getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(Integer reviewId) {
+    public void setReviewId(Long reviewId) {
         this.reviewId = reviewId;
     }
 

@@ -15,7 +15,7 @@ public class ListingRepository {
         this.entityManager = entityManager;
     }
 
-    public Listing findMostRecentForId(Integer listingId) {
+    public Listing findMostRecentForId(Long listingId) {
         return entityManager.createQuery("SELECT l FROM Listing l WHERE l.listingId = :listingId " +
                 "ORDER BY l.version DESC", Listing.class)
                 .setParameter("listingId", listingId)
@@ -23,7 +23,7 @@ public class ListingRepository {
                 .getSingleResult();
     }
 
-    public List<Listing> findAllForId(Integer listingId) {
+    public List<Listing> findAllForId(Long listingId) {
         return entityManager.createQuery("SELECT l FROM Listing l WHERE l.listingId = :listingId", Listing.class)
                 .setParameter("listingId", listingId)
                 .getResultList();
@@ -51,7 +51,7 @@ public class ListingRepository {
         return null;
     }
 
-    public Listing update(Integer id, String title, String description, String imageUrl, String location,
+    public Listing update(Long id, String title, String description, String imageUrl, String location,
                           Integer numberGuests, Double price, LocalDate listingStartDate,
                           LocalDate listingEndDate) {
         Listing listing = this.findMostRecentForId(id).clone();

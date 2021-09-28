@@ -8,9 +8,10 @@ import java.time.LocalDate;
 public class Booking {
     @Id
     @Column(name = "booking_id")
-    private Integer bookingId;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long bookingId;
     @Column(name = "listing_booked")
-    private Integer listingBooked;
+    private Long listingBooked;
     @ManyToOne
     @JoinColumn(name="booked_by_user")
     private User bookedByUser;
@@ -24,19 +25,19 @@ public class Booking {
 
     public Booking() { }
 
-    public Integer getBookingId() {
+    public Long getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(Integer bookingId) {
+    public void setBookingId(Long bookingId) {
         this.bookingId = bookingId;
     }
 
-    public Integer getListingBooked() {
+    public Long getListingBooked() {
         return listingBooked;
     }
 
-    public void setListingBooked(Integer listingBooked) {
+    public void setListingBooked(Long listingBooked) {
         this.listingBooked = listingBooked;
     }
 

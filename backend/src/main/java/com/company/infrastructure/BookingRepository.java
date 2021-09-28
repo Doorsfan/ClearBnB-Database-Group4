@@ -14,7 +14,7 @@ public class BookingRepository {
         this.entityManager = entityManager;
     }
 
-    public Booking findById(Integer id) {
+    public Booking findById(Long id) {
         return entityManager.find(Booking.class, id);
     }
 
@@ -46,7 +46,7 @@ public class BookingRepository {
         return null;
     }
 
-    public Booking update(Integer id, Double amountPaid, LocalDate bookingStartDate, LocalDate bookingEndDate) {
+    public Booking update(Long id, Double amountPaid, LocalDate bookingStartDate, LocalDate bookingEndDate) {
         Booking booking = this.findById(id);
         try {
             entityManager.getTransaction().begin();
@@ -67,7 +67,7 @@ public class BookingRepository {
         return null;
     }
 
-    public Booking remove(Integer id) {
+    public Booking remove(Long id) {
         Booking booking = this.findById(id);
         try {
             entityManager.getTransaction().begin();

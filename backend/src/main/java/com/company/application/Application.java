@@ -23,7 +23,7 @@ public class Application {
 
         UserHandler userHandler = new UserHandler(app, entityManager);
         try{
-            System.out.println("Finished registering API");
+        System.out.println("Finished registering API");
             //entityManagerFactory.close();
             //con.close();
         } catch (Exception e) {

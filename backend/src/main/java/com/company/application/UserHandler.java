@@ -6,6 +6,7 @@ import com.company.infrastructure.UserRepository;
 import express.Express;
 import java.util.Map;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.jetbrains.annotations.NotNull;
 
 public class UserHandler {
@@ -17,6 +18,11 @@ public class UserHandler {
         this.app = app;
         this.entityManager = entityManager;
         this.userRepository = new UserRepository(entityManager);
+        this.register();
+        this.login();
+        this.logout();
+        this.whoami();
+        this.remove();
     }
 
     public void register() {
@@ -38,30 +44,26 @@ public class UserHandler {
                     double defaultBalance = 40000.00;
 
                     // Check if email is not taken
-                    User exists = this.userRepository.findByEmail(user.getEmail());
-
-                    // Email is taken
-                    if (exists != null) {
+                    User exists;
+                    try {
+                        exists = this.userRepository.findByEmail(user.getEmail());
                         res.json(Map.of("error", "User already exists"));
                         return;
+                    } catch(NoResultException nre) {
+                        // Hash password (encrypt password)
+
+                        String hashedPassword = HashPassword.hash(user.getPassword());
+                        //String hashedPassword = HashPassword.hash(user.getPassword());
+
+                        user.setPassword(hashedPassword);
+                        user.setBalance(defaultBalance);
+                        user.setUserId();
+
+                        // Save user to db
+                        userRepository.save(user);
+                        System.out.println(userRepository.findAll());
+                        res.json("User created");
                     }
-
-                    // Hash password (encrypt password)
-
-                    String hashedPassword = HashPassword.hash(user.getPassword());
-                    //String hashedPassword = HashPassword.hash(user.getPassword());
-
-                    // Populate user
-                    user.setUserId(user.getUserId());
-                    user.setUsername(user.getUsername());
-                    user.setPassword(hashedPassword);
-                    user.setEmail(user.getEmail());
-                    user.setBalance(user.getBalance());
-
-                    // Save user to db
-                    userRepository.save(user);
-                    System.out.println(userRepository.findAll());
-                    res.json("User created");
                 }
                 else{
                     System.out.println(e.getMessage());
@@ -71,26 +73,24 @@ public class UserHandler {
          });
     }
 
-    public void update(@NotNull User user, String username, String password, String email, double balance) {
-
-        // Update a user
-        userRepository.update(user.getUserId(), username, password, email, balance);
-        System.out.println(userRepository.findAll());
-        entityManager.close();
+    public void update() {
+        app.post("/api/updateuser", (req, res) -> {
+            User user = req.body(User.class);
+            // Update a user
+            userRepository.update(user.getUserId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getBalance());
+            System.out.println(userRepository.findAll());
+            entityManager.close();
+        });
     }
 
-    public void remove(@NotNull User user) {
+    public void remove() {
         // Remove a user
-        userRepository.remove(user.getUserId());
-        System.out.println(userRepository.findAll());
-        entityManager.close();
-    }
-
-    public void remove(int userId) {
-        // Remove a user
-        userRepository.remove(userId);
-        System.out.println(userRepository.findAll());
-        entityManager.close();
+        app.post("/api/removeuser", (req, res) -> {
+            User user = req.body(User.class);
+            userRepository.remove(user.getUserId());
+            System.out.println(userRepository.findAll());
+            entityManager.close();
+        });
     }
 
     public void login() {

@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 public class Listing implements Cloneable {
     @Id
     @Column(name = "listing_id")
-    private Integer listingId;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long listingId;
     @Id
     private Integer version;
     @Column(name = "audited_datetime")
@@ -33,11 +34,11 @@ public class Listing implements Cloneable {
 
     public Listing() { }
 
-    public Integer getListingId() {
+    public Long getListingId() {
         return listingId;
     }
 
-    public void setListingId(Integer listingId) {
+    public void setListingId(Long listingId) {
         this.listingId = listingId;
     }
 

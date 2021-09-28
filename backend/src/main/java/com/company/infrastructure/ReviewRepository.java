@@ -14,7 +14,7 @@ public class ReviewRepository {
         this.entityManager = entityManager;
     }
 
-    public Review findMostRecentForId(Integer reviewId) {
+    public Review findMostRecentForId(Long reviewId) {
         return entityManager.createQuery("SELECT r FROM Review r WHERE r.reviewId = :reviewId " +
                 "ORDER BY r.version DESC", Review.class)
                 .setParameter("reviewId", reviewId)
@@ -22,7 +22,7 @@ public class ReviewRepository {
                 .getSingleResult();
     }
 
-    public List<Review> findAllForId(Integer reviewId) {
+    public List<Review> findAllForId(Long reviewId) {
         return entityManager.createQuery("SELECT r FROM Review r WHERE r.reviewId = :reviewId", Review.class)
                 .setParameter("reviewId", reviewId)
                 .getResultList();
@@ -56,7 +56,7 @@ public class ReviewRepository {
         return null;
     }
 
-    public Review update(Integer id, String comment, Integer rating) {
+    public Review update(Long id, String comment, Integer rating) {
         Review review = this.findMostRecentForId(id).clone();
         review.setVersion(review.getVersion() + 1);
         review.setTimestamp(LocalDateTime.now());

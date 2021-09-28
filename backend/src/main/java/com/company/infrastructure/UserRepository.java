@@ -11,7 +11,7 @@ public class UserRepository {
         this.entityManager = entityManager;
     }
 
-    public User findById(Integer id) {
+    public User findById(Long id) {
         return entityManager.find(User.class, id);
     }
 
@@ -43,7 +43,7 @@ public class UserRepository {
         return null;
     }
 
-    public User update(Integer id, String username, String password, String email, Double balance) {
+    public User update(Long id, String username, String password, String email, Double balance) {
         User user = this.findById(id);
         try {
             entityManager.getTransaction().begin();
@@ -67,7 +67,7 @@ public class UserRepository {
         return null;
     }
 
-    public User remove(Integer id) {
+    public User remove(Long id) {
         User user = this.findById(id);
         try {
             entityManager.getTransaction().begin();
