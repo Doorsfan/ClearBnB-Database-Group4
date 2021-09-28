@@ -2,6 +2,7 @@ package com.company.domain;
 
 import java.sql.*;
 
+
 public enum MySQL {
     INSTANCE;
     Connection con;

@@ -7,86 +7,82 @@
       <p class="usernameText">Username</p>
       <p class="passwordText">Password</p>
       <form @submit.prevent="tryToLogIn" class="inputForm">
-        <input class="usernameInput" type="text" placeholder="Username">
-        <input class="passwordInput" type="password" placeholder="Password">
-        <input class="submitButton" type="submit" value="Log In">
+        <input class="usernameInput" type="text" placeholder="Username" />
+        <input class="passwordInput" type="password" placeholder="Password" />
+        <input class="submitButton" type="submit" value="Log In" />
       </form>
     </div>
-    <router-link to="/register" class="registerLink">Register New Account</router-link>
+    <router-link to="/register" class="registerLink"
+      >Register New Account</router-link
+    >
   </div>
 </template>
 <script>
-
 export default {
-  components: {
-
-  },
+  components: {},
   data() {
-    return {
-    };
+    return {};
   },
-  async mounted() {
-
-  },
+  async mounted() {},
   methods: {
     tryToLogIn() {
       console.log("hi");
-    }
+    },
   },
 };
 </script>
 <style scoped>
-.mainDiv{
-  height:98vh;
-  background-color:lightcyan;
+.mainDiv {
+  height: 98vh;
+  background-color: lightcyan;
 }
-a{
-  text-decoration:none;
+a {
+  text-decoration: none;
 }
-.clearBnBlogo{
-  color:black;
+.clearBnBlogo {
+  color: black;
   font-size: 25px;
   position: absolute;
   left: 30px;
   top: 25px;
 }
-.navbar{
-  background-color:lightcoral;
-  width:99vw;
-  height:7vh;
+.navbar {
+  background-color: lightcoral;
+  width: 99vw;
+  height: 7vh;
 }
-.inputForm{
-  position:absolute;
-  left:45vw;
+.inputForm {
+  position: absolute;
+  left: 45vw;
   top: 40vh;
 }
-.usernameInput{
-  width:max-content;
-  display:block;
+.usernameInput {
+  width: max-content;
+  display: block;
   margin-bottom: 50px;
 }
-.passwordInput{
-  width:max-content;
-  display:block;
-  margin-bottom:20px;
+.passwordInput {
+  width: max-content;
+  display: block;
+  margin-bottom: 20px;
 }
-.usernameText{
-  position:absolute;
+.usernameText {
+  position: absolute;
   top: 36vh;
   left: 47.5vw;
 }
-.passwordText{
-  position:absolute;
+.passwordText {
+  position: absolute;
   top: 43vh;
   left: 47.5vw;
 }
-.submitButton{
+.submitButton {
   margin-left: 55px;
 }
-.registerLink{
-  position:absolute;
+.registerLink {
+  position: absolute;
   top: 54vh;
   left: 45.6vw;
-  color:blue;
+  color: blue;
 }
 </style>
