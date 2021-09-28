@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 8.0.26)
 # Database: ClearBnB
-# Generation Time: 2021-09-23 14:37:45 +0000
+# Generation Time: 2021-09-27 20:21:33 +0000
 # ************************************************************
 
 
@@ -26,9 +26,9 @@ SET NAMES utf8mb4;
 DROP TABLE IF EXISTS `Booking`;
 
 CREATE TABLE `Booking` (
-  `booking_id` int NOT NULL AUTO_INCREMENT,
-  `listing_booked` int NOT NULL,
-  `booked_by_user` int NOT NULL,
+  `booking_id` bigint NOT NULL AUTO_INCREMENT,
+  `listing_booked` bigint NOT NULL,
+  `booked_by_user` bigint NOT NULL,
   `amount_paid` double NOT NULL DEFAULT '0',
   `booking_start_date` date NOT NULL,
   `booking_end_date` date NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `Booking` (
   KEY `booked_by_user` (`booked_by_user`),
   CONSTRAINT `booking_ibfk_3` FOREIGN KEY (`listing_booked`) REFERENCES `Listing` (`listing_id`),
   CONSTRAINT `booking_ibfk_4` FOREIGN KEY (`booked_by_user`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -48,10 +48,10 @@ CREATE TABLE `Booking` (
 DROP TABLE IF EXISTS `Listing`;
 
 CREATE TABLE `Listing` (
-  `listing_id` int NOT NULL,
+  `listing_id` bigint NOT NULL,
   `version` int NOT NULL,
   `audited_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `owner_id` int NOT NULL,
+  `owner_id` bigint NOT NULL,
   `title` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `image_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -73,14 +73,14 @@ CREATE TABLE `Listing` (
 DROP TABLE IF EXISTS `Message`;
 
 CREATE TABLE `Message` (
-  `message_id` int NOT NULL AUTO_INCREMENT,
-  `written_by_id` int NOT NULL,
+  `message_id` bigint NOT NULL AUTO_INCREMENT,
+  `written_by_id` bigint NOT NULL,
   `content` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`message_id`),
   KEY `written_by_id` (`written_by_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`written_by_id`) REFERENCES `User` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -90,11 +90,11 @@ CREATE TABLE `Message` (
 DROP TABLE IF EXISTS `Review`;
 
 CREATE TABLE `Review` (
-  `review_id` int NOT NULL,
+  `review_id` bigint NOT NULL,
   `version` int NOT NULL,
   `timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
-  `author_id` int NOT NULL,
-  `target_id` int NOT NULL,
+  `author_id` bigint NOT NULL,
+  `target_id` bigint NOT NULL,
   `comment` varchar(500) DEFAULT NULL,
   `rating` int DEFAULT NULL,
   PRIMARY KEY (`review_id`,`version`),
@@ -112,9 +112,9 @@ CREATE TABLE `Review` (
 DROP TABLE IF EXISTS `User`;
 
 CREATE TABLE `User` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL AUTO_INCREMENT,
   `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `password` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `balance` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`),
