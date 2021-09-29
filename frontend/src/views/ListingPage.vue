@@ -150,6 +150,7 @@ export default {
   },
   async mounted() {
     console.log(this.currentUsername);
+    this.wantedVersion = this.versions[-1];
     //Query the DB for Versions on this point, to get them
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
@@ -341,18 +342,18 @@ export default {
     },
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
+      console.log(this.$store.getters.user);
       let myUser = {
-          userId: 1,
-          username: "no",
-          password: "no",
-          email: "no",
-          balance: 1000
+          userId: this.$store.getters.user.userId,
+          username: this.$store.getters.user.username,
+          password: "",
+          email: this.$store.getters.user.email,
+          balance: this.$store.getters.user.balance
       }
       let wantedBooking = {
-        bookingId: 1,
         amountPaid: 1000,
         bookedByUser: myUser,
-        listingBooked: 1,
+        listingBooked: this.myListingId,
         bookingStartDate: this.wantedStartDate,
         bookingEndDate: this.wantedEndDate,
         cancelled: 0

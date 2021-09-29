@@ -37,7 +37,7 @@ public class BookingRepository {
     public Booking save(Booking booking) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(booking);
+            entityManager.merge(booking);
             entityManager.getTransaction().commit();
             return booking;
         } catch (Exception e) {
