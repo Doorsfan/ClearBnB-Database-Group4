@@ -26,7 +26,8 @@ public class UserHandler {
             User user = req.body(User.class);
 
             // check if user exists
-            if (userRepository.findByUsername(user.getUsername()) != null) {
+            System.out.println(userRepository.findByUsername(user.getUsername()));
+            if (userRepository.findByUsername(user.getUsername()).size() != 0) {
                 res.json(Map.of("error", "User already exists"));
                 return;
             }
