@@ -31,6 +31,13 @@ public class ListingHandler {
     }
     private void initListingHandler() {
 
+        app.post("/updateLease", (req, res) -> {
+            res.append("Access-Control-Allow-Origin", "*");
+            res.append("Access-Control-Allow-Credentials", "true");
+
+            this.theListingRepository.update()
+        });
+
         app.post("/makeANewLease", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
             res.append("Access-Control-Allow-Credentials", "true");
@@ -69,7 +76,7 @@ public class ListingHandler {
             res.json(allListings);
         });
 
-        app.post("/getSpecificListing", (req, res) -> {
+        app.post("/getAllVersionsOfListing", (req, res) -> {
             Object mySetofQueryParams = req.body();
             String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
             String[] splitString = new String[20];
@@ -107,10 +114,10 @@ public class ListingHandler {
                     Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
                     wantedStart, wantedEnd);
             System.out.println(listingId);
-            List<Review> listOfRelevantReviews = theReviewRepository.findAllReviewsForListingOfId(listingId);
+            List<Listing> myListing = theListingRepository.findAllForId(listingId);
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(listOfRelevantReviews);
+            res.json(myListing);
 
         });
     }

@@ -1,9 +1,14 @@
 <template>
   <div class="mainDiv">
     <div class="centralDiv">
+      <div class="updateDiv">
+        <button v-if="!editMode" @click="changeToEditMode" class="button">Edit Lease</button>
+        <button v-if="editMode" @click="saveChanges" class="button">Save Changes</button>
+      </div>
       <div class="titleText">
         <div class="inline">Title: </div>
-        {{ myTitle }}
+        <div v-if="!editMode" class="inline">{{ myTitle }}</div>
+        <input v-model="newTitle" v-if="editMode" type="text" class="inline" :placeholder=myTitle>
       </div>
       <div class="hostedByTitle">
         <div class="inline">Hosted by: </div>
@@ -12,45 +17,62 @@
       </div>
       <div class="descriptionText">
         <div class="inline">Description: </div>
-        {{ myDescription }}
+        <div v-if="!editMode" class="inline">{{ myDescription }}</div>
+        <input v-model="newDescription" v-if="editMode" type="text" class="inline" :placeholder=myDescription>
       </div>
       <div class="imageURLText">
-        <img src='' id="imageOfTheHouse" width="300" height="300">
+        <div v-if="editMode" class="inline">ImageURL: </div><img v-if="!editMode" :src=myImageURL id="imageOfTheHouse" width="300" height="300">
+        <input v-model="newImageURL" v-if="editMode" type="text" class="inline" :placeholder=myImageURL>
       </div>
       <div class="locationText">
         <div class="inline">Location: </div>
-        {{ myLocation }}
+        <div v-if="!editMode" class="inline">{{ myLocation }}</div>
+        <input v-model="newLocation" v-if="editMode" type="text" class="inline" :placeholder=myLocation>
       </div>
       <div class="numberOfGuestsText">
         <div class="inline">Number of Guests: </div>
-        {{ myNumberOfGuests }}
+        <div v-if="!editMode" class="inline">{{ myNumberOfGuests }}</div>
+        <input v-model="newNumberOfGuests" v-if="editMode" type="text" class="inline" :placeholder=myNumberOfGuests>
       </div>
       <div class="priceText">
         <div class="inline">Price: </div>
-        {{ myPrice }}
+        <div v-if="!editMode" class="inline">{{ myPrice }}</div>
+        <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
       <div class="startDateText">
         <div class="inline">Available from: </div>
-        {{ myStartDate }}
+        <div v-if="!editMode" class="inline">{{ myStartDate }}</div>
+        <div class="centerText" v-if="editMode">Year:</div>
+        <input v-model="newFromYear" v-if="editMode" type="text" class="inline">
+        <div class="centerText" v-if="editMode">Month</div>
+        <input v-model="newFromMonth" v-if="editMode" type="text" class="inline">
+        <div class="centerText" v-if="editMode">Day</div>
+        <input v-model="newFromDay" v-if="editMode" type="text" class="inline">
       </div>
       <div class="endDateText">
         <div class="inline">Available until: </div>
-        {{ myEndDate }}
+        <div v-if="!editMode" class="inline">{{ myEndDate }}</div>
+        <div class="centerText" v-if="editMode">Year:</div>
+        <input v-model="newEndYear" v-if="editMode" type="text" class="inline">
+        <div class="centerText" v-if="editMode">Month</div>
+        <input v-model="newEndMonth" v-if="editMode" type="text" class="inline">
+        <div class="centerText" v-if="editMode">Day</div>
+        <input v-model="newEndDay" v-if="editMode" type="text" class="inline">
       </div>
-        Version - 
-        <select @change="updateInfoBasedOnVersion" class="myGuests" v-model="wantedVersion">
+        <div v-if="!editMode" class="inline">Version -</div> 
+        <select v-if="!editMode" @change="updateInfoBasedOnVersion" class="myGuests" v-model="wantedVersion">
           <option v-for="(version, index) of versions" class="versionOption"
         :key="index"
         :version="version">{{ index + 1}}</option>
         </select>
       </div>
-      <div class="BookingDateDiv">
+      <div v-if="!editMode" class="BookingDateDiv">
       Book from the:
         <input v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
         Book until the:
         <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
-      <button @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <button v-if="!editMode" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of reviewsFromDatabase"
@@ -98,15 +120,33 @@ export default {
       myNumberOfGuests: this.$route.query.number_guests,
       myPrice: this.$route.query.price,
       myStartDate: this.$route.query.listing_start_date,
+      myStartYear: this.$route.query.listing_start_date.substring(0,4),
+      myStartMonth: this.$route.query.listing_start_date.substring(5,7),
+      myStartDay: this.$route.query.listing_start_date.substring(8,10),
       myEndDate: this.$route.query.listing_end_date,
+      myEndYear: this.$route.query.listing_end_date.substring(0,4),
+      myEndMonth: this.$route.query.listing_end_date.substring(5,7),
+      myEndDay: this.$route.query.listing_end_date.substring(8,10),
       reviewsFromDatabase: [],
       wantedAmountOfStars: 3,
-      myComment: ''
+      myComment: '',
+      editMode: false,
+      newTitle: '',
+      newDescription: '',
+      newImageURL: '',
+      newLocation: '',
+      newNumberOfGuests: '',
+      newPrice: '',
+      newFromYear: '',
+      newFromMonth: '',
+      newFromDay: '',
+      newEndYear: '',
+      newEndMonth: '',
+      newEndDay: ''
     };
   },
   async mounted() {
     //Query the DB for Versions on this point, to get them
-    this.versions = ['1.0', '2.0']
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
     document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
@@ -125,7 +165,22 @@ export default {
         listing_start_date: this.$route.query.listing_start_date,
         listing_end_date: this.$route.query.listing_end_date,
       }
-      let res = await fetch('http://localhost:4000/getSpecificListing', {
+
+      let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(queryParams),
+      }).then((response) => {
+        return response.json();
+      }).then((data) => {
+        let currentIndex = 0;
+        while(currentIndex < Object.keys(data).length){
+          this.versions.push(data[currentIndex].version)
+          currentIndex += 1;
+        }
+      })
+      let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
@@ -151,9 +206,90 @@ export default {
               currentIndex += 1;
             }
           });
-    console.log("I WAS WENT INTO");
   },
   methods: {
+    changeToEditMode(){
+      if(!this.editMode){
+        this.editMode = true;
+      }
+    },
+    saveChanges(){
+      let changedSomething = false;
+      if(this.myTitle != this.newTitle && this.newTitle.length > 0){
+        this.myTitle = this.newTitle;
+        changedSomething = true;
+      }
+      if(this.myDescription != this.newDescription && this.newDescription.length > 0){
+        this.myDescription = this.newDescription;
+        changedSomething = true;
+      }
+      if(this.myImageURL != this.newImageURL && this.newImageURL.length > 0){
+        this.myImageURL = this.newImageURL;
+        changedSomething = true;
+      }
+      if(this.myLocation != this.newLocation && this.newLocation.length > 0){
+        this.myLocation = this.newLocation;
+        changedSomething = true;
+      }
+      if(this.myNumberOfGuests != this.newNumberOfGuests && this.newNumberOfGuests.length > 0){
+        this.myNumberOfGuests = this.newNumberOfGuests;
+        changedSomething = true;
+      }
+      if(this.myPrice != this.newPrice && this.newPrice.length > 0){
+        this.myPrice = this.newPrice;
+        changedSomething = true;
+      }
+      if(this.myStartYear != this.newFromYear && this.newFromYear.length > 0){
+        this.myStartYear = this.newFromYear;
+        changedSomething = true;
+      }
+      if(this.myStartMonth != this.newFromMonth && this.newFromMonth.length > 0){
+        this.myStartMonth = this.newFromMonth;
+        changedSomething = true;
+      }
+      if(this.myStartDay != this.newFromDay && this.newFromDay.length > 0){
+        this.myStartDay = this.newFromDay;
+        changedSomething = true;
+      }
+      if(this.myStartDate != (this.myStartYear + '-' + this.myStartMonth + '-' + this.myStartDay)
+        && (this.myStartYear + '-' + this.myStartMonth + '-' + this.myStartDay).length == this.myStartDate.length){
+          this.myStartDate = (this.myStartYear + '-' + this.myStartMonth + '-' + this.myStartDay)
+          changedSomething = true;
+      }
+      if (this.myEndYear != this.newEndYear && this.newEndYear.length > 0) {
+        this.myEndYear = this.newEndYear;
+        changedSomething = true;
+      }
+      if (this.myEndMonth != this.newEndMonth && this.newEndMonth.length > 0) {
+        this.myEndMonth = this.newEndMonth;
+        changedSomething = true;
+      }
+      if (this.myEndDay != this.newEndDay && this.newEndDay.length > 0) {
+        this.myEndDay = this.newEndDay;
+        changedSomething = true;
+      }
+      if (
+        this.myEndDate != (this.myEndYear + '-' + this.myEndMonth + '-' + this.myEndDay) &&
+        (this.myEndYear + '-' + this.myEndMonth + '-' + this.myEndDay).length == this.myEndDate.length) {
+        this.myEndDate =
+          (this.myEndYear + '-' + this.myEndMonth + '-' + this.myEndDay);
+        changedSomething = true;
+      }
+      let res = await fetch('http://localhost:4000/updateLease', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify(wantedBooking),
+      }).then(function(response){
+        return response.json();
+      }).then(function(data){
+        console.log(data);
+      });
+      if(this.editMode){
+        this.editMode = false;
+      }
+      console.log(this.myStartDate);
+    },
     setToOneStar(){
       this.wantedAmountOfStars = 1;
     },
@@ -267,6 +403,21 @@ export default {
 };
 </script>
 <style scoped>
+.startDateText, .endDateText{
+  width:max-content;
+  margin-left: auto;
+  margin-right:auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.centerText{
+  width:max-content;
+}
+.updateDiv{
+  margin-left:auto;
+  margin-right:auto;
+  width:max-content;
+}
 .newReviewDivBox{
   width:300px;
   padding-left: 10px;
@@ -336,6 +487,6 @@ export default {
   width:max-content;
   margin-left:auto;
   margin-right:auto;
-  margin-top: 20vh;
+  padding-top: 20px;
 }
 </style>
