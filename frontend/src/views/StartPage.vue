@@ -232,6 +232,7 @@ export default {
   padding-right: 15px;
   font-weight:bolder;
   font-size: 20px;
+  cursor: pointer;
 }
 .bottomFooter {
   height: 50px;

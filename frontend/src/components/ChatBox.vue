@@ -35,7 +35,7 @@ export default {
 
       this.socket.onmessage = event => {
         console.log('Message from server:', event.data);
-        this.addMsg('Message from server: ' + JSON.parse(event.data).msg);
+        this.addMsg(JSON.parse(event.data).writtenByUser.username + ': ' + JSON.parse(event.data).content);
       };
 
       this.socket.onopen = event => {
@@ -81,8 +81,23 @@ export default {
 }
 #chat-input {
   position:absolute;
-  bottom: 8px;
+  bottom: 32px;
   right: 8px;
   width: 275px;
+}
+#chat-send {
+  position:absolute;
+  bottom: 8px;
+  left: 10px;
+}
+#connect {
+  position:absolute;
+  bottom: 8px;
+  left: 58px;
+}
+#disconnect {
+  position:absolute;
+  bottom: 8px;
+  left: 124px;
 }
 </style>
