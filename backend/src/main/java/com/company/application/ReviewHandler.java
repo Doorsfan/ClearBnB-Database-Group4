@@ -9,6 +9,7 @@ import com.company.infrastructure.UserRepository;
 import express.Express;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,17 +34,30 @@ public class ReviewHandler {
     private void initReviewHandler() {
 
         app.post("/postReviewAboutOtherUser", (req, res) -> {
-            Review myBody = req.body(Review.class);
-            System.out.println(myBody.toString());
-            res.json("hi");
+            Review myReview = req.body(Review.class);
+            myReview.setReviewsUserIdOf(this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
+            myReview.setAuthor(this.theUserRepository.findById(Integer.parseInt(req.query("author_id"))));
+            myReview.setTimestamp(LocalDateTime.now());
+            myReview.setVersion(1);
+            Review mySavedReview = theReviewRepository.save(myReview);
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(this.theReviewRepository.findAllForTarget(
+                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId())
+            );
         });
 
         app.get("/getReviewsForUser", (req, res) -> {
-            List<Review> myListOfReviews = this.theReviewRepository.findAllForTarget(this.theUserRepository.findByUsername(
-                    req.query("wantedUsername")).getUserId());
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(myListOfReviews);
+            try{
+                List<Review> myReviews = this.theReviewRepository.findAllForTarget(this.theUserRepository.findByUsername(
+                        req.query("wantedUsername")).get(0).getUserId());
+                res.json(myReviews);
+            }
+            catch(Exception e){
+                res.json("Did not find any reviews.");
+            }
         });
 
         app.post("/review", (req, res) -> {

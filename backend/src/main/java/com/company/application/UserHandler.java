@@ -48,7 +48,7 @@ public class UserHandler {
         app.post("/api/login", (req, res) -> {
             User user = req.body(User.class);
 
-            User userInDatabase = userRepository.findByUsername(user.getUsername());
+            User userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
 
             if(userInDatabase == null) {
                 res.json(Map.of("error", "Bad credentials"));

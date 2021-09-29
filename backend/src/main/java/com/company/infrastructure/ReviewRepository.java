@@ -60,7 +60,6 @@ public class ReviewRepository {
                 var myResultList = result.getResultList();
                 if(myResultList.size() > 0){
                     for(int i = 0; i < myResultList.size() + 1 ; i++){
-                        System.out.println("i was: " + i);
                         if(i == myResultList.size()){
                             review.setReviewId((i+1));
                             break;

@@ -1,23 +1,27 @@
 <template>
   <div class="mainDiv">
-    <div class="navbar">
+    <div class="upperDiv">
+      <div class="navbar">
+      </div>
+      <div class="myProfileBox centerBox">My Profile</div>
+      <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
+      <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
+      <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
+      <p class="myLeasesP">My Leases</p>
+      <div class="myProfileInfoBoxLinks centerBox subBox4">
+        <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
+        <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
+        <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
+        <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
+      </div>
     </div>
-    <div class="myProfileBox centerBox">My Profile</div>
-    <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
-    <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
-    <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
-    <p class="myLeasesP">My Leases</p>
-    <div class="myProfileInfoBoxLinks centerBox subBox4">
-      <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
-      <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
-      <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
-      <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
-      <ReviewBox
+    <div class="reviewsDiv">
+      <UserReview
           v-for="(listItem, index) of reviewsFromDatabase"
           :key="index"
           :Content="listItem"
         />
-        <div class="newReviewDivBox">
+        <div v-if="loggedInUser && !samePerson" class="newReviewDivBox">
           <form @submit.prevent="tryToPostReview" class="reviewForm">
             <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
             <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
@@ -32,27 +36,35 @@
             <input class="submitButton" type="submit" value="Post Review">
           </form>
         </div>
+      <div v-if="!loggedInUser" class="notLoggedInDiv">
+        <router-link class="loginLink" to="/login">Want to post a review of this User? Log in!</router-link>
+      </div>
+      <div v-if="samePerson" class="errorDiv">
+        <p class="reviewsAboutYourselfP">You cannot post reviews about yourself.</p>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import ReviewBox from '../components/ReviewBox.vue';
+import UserReview from '../components/UserReview.vue';
 import store from '../store.js';
 
 export default {
   components: {
-    ReviewBox
+    UserReview
   },
   data() {
     return {
-      username: this.$route.params.username,
+      username: (this.$route.params.username) ? (this.$route.params.username) : (this.$store.state.user.username),
       reviewsFromDatabase: [],
       myComment: '',
-      wantedAmountOfStars: 3
+      wantedAmountOfStars: 3,
+      loggedInUser: this.$store.state.user,
+      samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false,
     };
   },
   async mounted() {
-
+        console.log(this.$store.state.user)
         let myQueryParams = {
           wantedUsername: this.$route.params.username
         }
@@ -64,15 +76,23 @@ export default {
           return response.json();
         }).then((data) => {
           console.log(data);
+          let currentIndex = 0;
+          if(data == "Did not find any reviews"){
+            return;
+          }
+          while(currentIndex < Object.keys(data).length){
+            this.reviewsFromDatabase.push(data[currentIndex])
+            currentIndex += 1;
+          }
         });
   },
   methods: {
     async tryToPostReview(){
         let myQueryParams = {
-          username: this.username,
           author_id: this.$store.state.user.userId,
-          postedAbout: this.$route.query.username
+          postedAbout: this.username
         }
+        console.log(this.$store.state.user);
         let comment = {
           comment: this.myComment,
           rating: this.wantedAmountOfStars,
@@ -88,19 +108,60 @@ export default {
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data);
+          this.reviewsFromDatabase = [];
+          let currentIndex = 0;
+          while(currentIndex < Object.keys(data).length){
+            this.reviewsFromDatabase.push(data[currentIndex])
+            currentIndex += 1;
+          }
         }); 
-    }
+    },
+    setToOneStar(){
+      this.wantedAmountOfStars = 1;
+    },
+    setToTwoStars(){
+      this.wantedAmountOfStars = 2;
+    },
+    setToThreeStars(){
+      this.wantedAmountOfStars = 3;
+    },
+    setToFourStars(){
+      this.wantedAmountOfStars = 4;
+    },
+    setToFiveStars(){
+      this.wantedAmountOfStars = 5;
+    },
   },
 };
 </script>
 <style scoped>
-.commentArea{
+.reviewsAboutYourselfP{
+  font-size: 20px;
+  font-weight: bolder;
+}
+.notLoggedInDiv{
+  width:max-content;
+  display:inline-block;
   position: absolute;
-  top: 200px;
-  left: 10px;
-  width: 300px;
-  height: 150px;
+  margin-left:-100px;
+  margin-top: 20px;
+  padding-bottom: 50px;
+}
+.loginLink{
+  font-size: 30px;
+  font-weight:bolder;
+}
+.upperDiv{
+  display:block;
+}
+.reviewsDiv{
+  display:block;
+  position: absolute;
+  top: 650px;
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  left: 43vw;
 }
 .mainDiv{
   height:100vh;
@@ -163,20 +224,27 @@ a {
   margin-left:auto;
   margin-right:auto;
   margin-top: 10px;
-  position: absolute;
-  top: 500px;
 }
 .newReviewDivBox{
-  width:300px;
+  width:280px;
   padding-left: 10px;
   padding-right: 15px;
   padding-bottom: 10px;
   padding-top: 5px;
-  height: 200px;
+  height: 220px;
   display:block;
   margin-left:auto;
   margin-right: auto;
   background-color:white;
   outline: solid 1px black;
+}
+.commentArea{
+  display:block;
+  width: 280px;
+  height: 160px;
+  min-height: 160px;
+  min-width: 280px;
+  max-height: 160px;
+  max-width: 280px;
 }
 </style>
