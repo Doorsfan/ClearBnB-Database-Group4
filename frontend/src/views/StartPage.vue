@@ -178,7 +178,28 @@ export default {
       new URLSearchParams(myQueryParams), {
         method: 'GET',
         mode: 'cors'
-      });
+      }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.relevantListings = [];
+          let currentIndex = 0;
+          while(currentIndex < Object.keys(data).length){
+            let latestVersionOfListing = new Listing(
+              data[currentIndex].owner.username, 
+              data[currentIndex].title, 
+              data[currentIndex].description, 
+              data[currentIndex].imageUrl, 
+              data[currentIndex].location, 
+              data[currentIndex].numberGuests, 
+              data[currentIndex].price, 
+              data[currentIndex].listingStartDate,
+              data[currentIndex].listingEndDate
+            );
+            this.relevantListings.push(latestVersionOfListing);
+            currentIndex += 1;
+          }
+          
+        });
     },
     openSupportChat() {
       if(this.chatOpened){

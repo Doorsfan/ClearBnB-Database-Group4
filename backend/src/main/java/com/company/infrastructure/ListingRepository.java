@@ -30,11 +30,14 @@ public class ListingRepository {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenYearsAhead = now.plusYears(10);
 
-        return entityManager.createQuery("SELECT l FROM Listing l WHERE l.location LIKE :location AND :numberGuests <= l.numberGuests" +
-                " AND :price >= l.price AND :listingStartDate >= l.listingStartDate AND :listingEndDate <= l.listingEndDate")
-                .setParameter("location", (location.length() == 0 ? '%' : '%' + location + '%'))
-                .setParameter("numberGuests", (numberGuests < 1 ? '%' : numberGuests))
-                .setParameter("price", (price == 0 ? '%' : price))
+        return entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
+                "LIKE :location AND :numberGuests <= l.numberGuests" +
+                " AND :price >= l.price" +
+                " AND :listingStartDate = l.listingStartDate" +
+                " AND :listingEndDate = l.listingEndDate")
+                .setParameter("location", "%" + location + "%")
+                .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
+                .setParameter("price", (price == 0 ? 100000.0 : price))
                 .setParameter("listingStartDate", (listingStartDate.length() == 0 ? dtf.format(now): listingStartDate))
                 .setParameter("listingEndDate", (listingEndDate.length() == 0 ? dtf.format(tenYearsAhead) : listingEndDate))
                 .getResultList();
@@ -75,21 +78,21 @@ public class ListingRepository {
         return null;
     }
 
-    public Integer findSpecifiedListing(String title, String description, String image_url, String location,
-                                        Integer number_guests, Double price, String listing_start_date,
-                                        String listing_end_date){
+    public Integer findSpecifiedListing(String title, String description, String imageUrl, String location,
+                                        Integer numberGuests, Double price, String listingStartDate,
+                                        String listingEndDate){
         List<Listing> result = entityManager.createQuery("SELECT l FROM Listing l WHERE l.title = :title AND " +
                 "l.description = :description AND l.imageUrl = :imageUrl AND l.location = :location AND " +
-                "l.numberGuests = :number_guests AND l.price = :price AND l.listingStartDate = :listingStartDate AND " +
+                "l.numberGuests = :numberGuests AND l.price = :price AND l.listingStartDate = :listingStartDate AND " +
                 "l.listingEndDate = :listingEndDate")
                 .setParameter("title", title)
                 .setParameter("description", description)
-                .setParameter("imageUrl", image_url)
+                .setParameter("imageUrl", imageUrl)
                 .setParameter("location", location)
-                .setParameter("number_guests", number_guests)
+                .setParameter("numberGuests", numberGuests)
                 .setParameter("price", price)
-                .setParameter("listingStartDate", listing_start_date)
-                .setParameter("listingEndDate", listing_end_date)
+                .setParameter("listingStartDate", listingStartDate)
+                .setParameter("listingEndDate", listingEndDate)
                 .getResultList();
         if(result.size() > 0){
             return result.get(0).getListingId();

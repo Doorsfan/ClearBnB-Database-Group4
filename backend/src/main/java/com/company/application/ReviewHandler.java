@@ -60,12 +60,12 @@ public class ReviewHandler {
             for(String myString : myStringArray){
                 myString = myString.replaceAll("\\btitle=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\blocation=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bprice=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
                 splitArray = myString.split("SPLITHERE");
             }
 
@@ -96,14 +96,14 @@ public class ReviewHandler {
             List<Review> updatedListOfReviews = this.theReviewRepository.findAllReviewsForListingOfId(theIdOfTheListing);
 
             /*
-                Title, Description, image_url, location, number of guests, price, startDate, endDate
+                Title, Description, imageUrl, location, number of guests, price, startDate, endDate
              */
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
             res.json(updatedListOfReviews);
             /*
             myReview.setVersion(1);
-            myReview.setRefers_to_listing_id(1);
+            myReview.setRefers_to_listingId(1);
             this.theReviewRepository.save(myReview);
             res.json("Yes");
             //this.theReviewRepository.findAll();
