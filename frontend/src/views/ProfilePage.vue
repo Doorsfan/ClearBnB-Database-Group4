@@ -44,6 +44,7 @@
       </div>
     </div>
   </div>
+  <router-link class="hidden" to="/login">-</router-link>
 </template>
 <script>
 import UserReview from '../components/UserReview.vue';
@@ -55,7 +56,9 @@ export default {
   },
   data() {
     return {
-      username: (this.$route.params.username) ? (this.$route.params.username) : (this.$store.state.user.username),
+      username: (this.$route.params.username) ? 
+      (this.$route.params.username) : ((this.$store.state.user) ? 
+        (this.$store.state.user.username) : "Not Logged In"),
       reviewsFromDatabase: [],
       myComment: '',
       wantedAmountOfStars: 3,
@@ -64,7 +67,9 @@ export default {
     };
   },
   async mounted() {
-        console.log(this.$store.state.user)
+    if(this.username == "Not Logged In"){
+      document.getElementsByClassName("hidden")[0].click();
+    }
         let myQueryParams = {
           wantedUsername: this.$route.params.username
         }
@@ -135,6 +140,9 @@ export default {
 };
 </script>
 <style scoped>
+.hidden{
+  display:none;
+}
 .reviewsAboutYourselfP{
   font-size: 20px;
   font-weight: bolder;
