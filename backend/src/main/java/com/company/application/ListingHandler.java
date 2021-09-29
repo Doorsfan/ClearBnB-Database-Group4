@@ -56,17 +56,10 @@ public class ListingHandler {
 
         app.get("/getResultsFromFiltering", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
-            System.out.println("The location was: " + req.query("location"));
-            System.out.println("The numberGuests was: " + req.query("numberGuests"));
-            System.out.println("The price was: " + req.query("myPrice"));
-            System.out.println("The mindate was: " + req.query("myMinDate"));
-            System.out.println("The maxDate was: " + req.query("myMaxDate"));
-            System.out.println(this.theListingRepository.findFilteredListings(req.query("location"),
+            List<Listing> filteredListings = this.theListingRepository.findFilteredListings(req.query("location"),
                     Integer.parseInt(req.query("numberGuests")),
-                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate")));
-            //List<Listing> filteredListings = this.theListingRepository.findFilteredListings(myParams.get("location"),
-            //        myParams.get("myGuests"), myParams.get("myMinDate"), myParams.get("myMaxDate"),
-            //        myParams.get("myPrice"));
+                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate"));
+            res.json(filteredListings);
         });
 
         app.post("/getAllListings", (req, res) -> {
@@ -82,12 +75,12 @@ public class ListingHandler {
             String[] splitString = new String[20];
             queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blocation=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
 
             splitString = queryParamsString.split("SPLITHERE");
             //Title, Description, Image URL, Location, Guests, Price, start, end
