@@ -75,12 +75,12 @@ public class ListingHandler {
             String[] splitString = new String[20];
             queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blocation=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
 
             splitString = queryParamsString.split("SPLITHERE");
             //Title, Description, Image URL, Location, Guests, Price, start, end
