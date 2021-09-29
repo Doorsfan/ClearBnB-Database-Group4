@@ -14,9 +14,9 @@ public class UserHandler {
     private final Express app;
     private final UserRepository userRepository;
 
-    public UserHandler(Express app, UserRepository theUserRepository){
+    public UserHandler(Express app, UserRepository userRepository){
         this.app = app;
-        this.userRepository = theUserRepository;
+        this.userRepository = userRepository;
         initUserHandler();
     }
 
