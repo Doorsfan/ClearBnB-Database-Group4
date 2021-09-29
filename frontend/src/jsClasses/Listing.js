@@ -1,5 +1,6 @@
 export default class Listing {
-  constructor(postedByUsername, title, description, image_url, location, number_guests, price, listing_start_date, listing_end_date) {
+  constructor(listingId, postedByUsername, title, description, image_url, location, number_guests, price, listing_start_date, listing_end_date) {
+    this.listingId = listingId;
     this.postedByUsername = postedByUsername;
     this.title = title;
     this.description = description;
@@ -9,6 +10,14 @@ export default class Listing {
     this.price = price;
     this.listing_start_date = listing_start_date;
     this.listing_end_date = listing_end_date;
+  }
+  
+  setListingId(newId) {
+    this.listingId = newId;
+  }
+
+  getListingId() {
+    return this.listingId;
   }
   
   retrieveTheTitleOfTheListing() {

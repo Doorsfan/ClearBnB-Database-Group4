@@ -10,6 +10,16 @@ export default createStore({
       state.user = user
     },
   },
+  getters: {
+    user: state => {
+      return state.user
+    }
+  },
+  computed: {
+    currentUser() {
+      return store.state.user
+    }
+  },
   actions: {
     async whoAmI(store) {
       let res = await fetch('/api/whoami')

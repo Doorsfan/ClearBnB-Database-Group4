@@ -1,7 +1,7 @@
 <template>
   <div class="mainDiv">
     <div class="centralDiv">
-      <div class="updateDiv">
+      <div v-if="currentUsername == postedByUsername" class="updateDiv">
         <button v-if="!editMode" @click="changeToEditMode" class="button">Edit Lease</button>
         <button v-if="editMode" @click="saveChanges" class="button">Save Changes</button>
       </div>
@@ -112,6 +112,9 @@ export default {
       wantedEndDate: new Date(this.myEndDate),
       wantedVersion: 1.0,
       versions: [],
+      versionsOfListing: [],
+      currentUsername: (this.$store.getters.user) ? (this.$store.getters.user.username) : '',
+      myListingId: this.$route.query.listingId,
       postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
       myDescription: this.$route.query.description,
@@ -146,6 +149,7 @@ export default {
     };
   },
   async mounted() {
+    console.log(this.currentUsername);
     //Query the DB for Versions on this point, to get them
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
@@ -176,7 +180,8 @@ export default {
       }).then((data) => {
         let currentIndex = 0;
         while(currentIndex < Object.keys(data).length){
-          this.versions.push(data[currentIndex].version)
+          this.versions.push(data[currentIndex].version);
+          this.versionsOfListing.push(data[currentIndex]);
           currentIndex += 1;
         }
       })
@@ -213,7 +218,7 @@ export default {
         this.editMode = true;
       }
     },
-    saveChanges(){
+    async saveChanges(){
       let changedSomething = false;
       if(this.myTitle != this.newTitle && this.newTitle.length > 0){
         this.myTitle = this.newTitle;
@@ -275,15 +280,30 @@ export default {
           (this.myEndYear + '-' + this.myEndMonth + '-' + this.myEndDay);
         changedSomething = true;
       }
+
+      let queryParams = {
+        listingId: this.myListingId,
+        title: this.myTitle,
+        description: this.myDescription,
+        imageUrl: this.imageUrl,
+        location: this.location,
+        numberGuests: this.numberGuests,
+        price: this.price,
+        listingStartDate: this.myStartDate,
+        listingEndDate: this.myEndDate
+      }
       let res = await fetch('http://localhost:4000/updateLease', {
         method: 'POST',
         mode: 'cors',
-        credentials: 'include',
-        body: JSON.stringify(wantedBooking),
+        body: JSON.stringify(queryParams)
       }).then(function(response){
         return response.json();
       }).then(function(data){
-        console.log(data);
+        let currentIndex = 0;
+        while(currentIndex < Object.keys(data).length){
+          currentIndex += 1;
+          this.versions.push(currentIndex);
+        } 
       });
       if(this.editMode){
         this.editMode = false;
@@ -309,6 +329,15 @@ export default {
       //Update the State variables in terms of dynamically reflecting the data
       //Based on this Version, query the DB in terms of finding the respective
       //version of it from the DB
+      this.myTitle = this.versionsOfListing[this.wantedVersion - 1].title;
+      this.myDescription = this.versionsOfListing[this.wantedVersion - 1].description;
+      this.myImageURL = this.versionsOfListing[this.wantedVersion - 1].imageUrl;
+      this.myLocation = this.versionsOfListing[this.wantedVersion - 1].location;
+      this.myNumberOfGuests = this.versionsOfListing[this.wantedVersion - 1].numberGuests;
+      this.myPrice = this.versionsOfListing[this.wantedVersion - 1].price;
+      this.myStartDate = this.versionsOfListing[this.wantedVersion - 1].listingStartDate;
+      this.myEndDate = this.versionsOfListing[this.wantedVersion - 1].listingEndDate;
+      console.log(this.versionsOfListing[this.wantedVersion - 1]);
     },
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking

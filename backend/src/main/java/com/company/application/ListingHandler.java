@@ -12,7 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +34,17 @@ public class ListingHandler {
     private void initListingHandler() {
 
         app.post("/updateLease", (req, res) -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
             res.append("Access-Control-Allow-Origin", "*");
             res.append("Access-Control-Allow-Credentials", "true");
+            Listing myListing = req.body(Listing.class);
+            this.theListingRepository.update(myListing.getListingId(), myListing.getTitle(),
+                    myListing.getDescription(), myListing.getImageUrl(),
+                    myListing.getLocation(), myListing.getNumberGuests(),
+                    myListing.getPrice(), LocalDate.parse(myListing.getListingStartDate(), formatter),
+                    LocalDate.parse(myListing.getListingEndDate(), formatter));
 
-            this.theListingRepository.update()
+            res.json(this.theListingRepository.findAllForId(myListing.getListingId()));
         });
 
         app.post("/makeANewLease", (req, res) -> {
