@@ -66,9 +66,7 @@
       />
     </div>
     <div class="chatWindow" v-if="chatOpened">
-      <div class="innerWindow">
         <ChatBox></ChatBox>
-      </div>
     </div>
     <footer class="bottomFooter">
       <div @click="openSupportChat" class="chatTab">

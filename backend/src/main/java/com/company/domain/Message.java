@@ -1,5 +1,7 @@
 package com.company.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +15,7 @@ public class Message {
     @JoinColumn(name="written_by_id")
     private User writtenByUser;
     private String content;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime timestamp;
 
     public Integer getMessageId() {
