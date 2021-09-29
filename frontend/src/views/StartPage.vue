@@ -129,8 +129,6 @@ export default {
 
         let groupedListings = groupBy(data, 'listingId');
 
-        console.log(groupedListings);
-
         for(var listing in groupedListings){
           let currentListing = groupedListings[listing];
           let relevantListing = currentListing[currentListing.length - 1];

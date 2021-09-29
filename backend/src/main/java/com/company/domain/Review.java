@@ -21,11 +21,19 @@ public class Review implements Cloneable, Serializable {
     @OneToOne
     @JoinColumn(name="author_id")
     private User author;
-    @JoinColumn(name="target_id")
-    private Integer target;
+    @JoinColumn(name="reviewsUserIdOf")
+    private Integer reviewsUserIdOf;
     private String comment;
     private Integer rating;
     private Integer postedToListingId;
+
+    public Integer getPostedToListingId() {
+        return postedToListingId;
+    }
+
+    public void setPostedToListingId(Integer postedToListingId) {
+        this.postedToListingId = postedToListingId;
+    }
 
     public Review() {}
 
@@ -76,13 +84,7 @@ public class Review implements Cloneable, Serializable {
         this.author = author;
     }
 
-    public Integer getTarget() {
-        return target;
-    }
 
-    public void setTarget(Integer target) {
-        this.target = target;
-    }
 
     public String getComment() {
         return comment;
@@ -100,20 +102,14 @@ public class Review implements Cloneable, Serializable {
         this.rating = rating;
     }
 
-
-    @Override
-    public String toString() {
-        return "Review{" +
-                "reviewId=" + reviewId +
-                ", version=" + version +
-                ", timestamp=" + timestamp +
-                ", author=" + author +
-                ", target=" + target +
-                ", comment='" + comment + '\'' +
-                ", rating=" + rating +
-                ", refersToListingId=" + postedToListingId +
-                '}';
+    public Integer getReviewsUserIdOf() {
+        return reviewsUserIdOf;
     }
+
+    public void setReviewsUserIdOf(Integer reviewsUserIdOf) {
+        this.reviewsUserIdOf = reviewsUserIdOf;
+    }
+
 
     @Override
     public Review clone() {
@@ -122,7 +118,7 @@ public class Review implements Cloneable, Serializable {
         review.setVersion(this.getVersion());
         review.setTimestamp((this.getTimestamp()));
         review.setAuthor(this.getAuthor());
-        review.setTarget(this.getTarget());
+        review.setReviewsUserIdOf(this.getReviewsUserIdOf());
         review.setComment(this.getComment());
         review.setRating(this.getRating());
         review.setRefersToListingId(this.getRefersToListingId());

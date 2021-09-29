@@ -68,6 +68,8 @@ public class UserHandler {
 
         app.get("/api/whoami", (req, res) -> {
             // return user saved in session
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
             res.json(req.session("current-user"));
         });
 

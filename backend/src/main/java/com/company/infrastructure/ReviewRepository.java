@@ -40,9 +40,9 @@ public class ReviewRepository {
                 .getResultList();
     }
 
-    public List<Review> findAllForTarget(User target) {
-        return entityManager.createQuery("SELECT r FROM Review r WHERE r.target = :target", Review.class)
-                .setParameter("target", target)
+    public List<Review> findAllForTarget(int reviewsUserIdOf) {
+        return entityManager.createQuery("SELECT r FROM Review r WHERE r.reviewsUserIdOf = :reviewsUserIdOf", Review.class)
+                .setParameter("reviewsUserIdOf", reviewsUserIdOf)
                 .getResultList();
     }
 

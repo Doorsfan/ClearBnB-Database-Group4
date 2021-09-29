@@ -31,6 +31,21 @@ public class ReviewHandler {
     }
 
     private void initReviewHandler() {
+
+        app.post("/postReviewAboutOtherUser", (req, res) -> {
+            Review myBody = req.body(Review.class);
+            System.out.println(myBody.toString());
+            res.json("hi");
+        });
+
+        app.get("/getReviewsForUser", (req, res) -> {
+            List<Review> myListOfReviews = this.theReviewRepository.findAllForTarget(this.theUserRepository.findByUsername(
+                    req.query("wantedUsername")).getUserId());
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(myListOfReviews);
+        });
+
         app.post("/review", (req, res) -> {
             Object myReview = req.body();
             // { rating=3, comment=i wrote a comment, myQueryParameters={ username=mikael, password=temp, balance=0 }

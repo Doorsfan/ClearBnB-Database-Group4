@@ -25,7 +25,7 @@ public class User {
     private List<Booking> bookings = new ArrayList<>();
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     List<Review> authorOfReviews = new ArrayList<>();
-    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reviewsUserIdOf", cascade = CascadeType.ALL)
     List<Review> targetOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "writtenByUser", cascade = CascadeType.ALL)
     List<Message> messages = new ArrayList<>();
