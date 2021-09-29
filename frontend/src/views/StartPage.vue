@@ -67,7 +67,7 @@
     </div>
     <div class="chatWindow" v-if="chatOpened">
       <div class="innerWindow">
-        <input type="text" placeholder="Write your message here.." class="myMessageToSupport">
+        <ChatBox></ChatBox>
       </div>
     </div>
     <footer class="bottomFooter">
@@ -80,9 +80,12 @@
 <script>
 import Listing from '../jsClasses/Listing.js';
 import Posting from '../components/Posting.vue';
+import ChatBox from '../components/ChatBox.vue';
+
 export default {
   components: {
-    Posting
+    Posting,
+    ChatBox,
   },
   data() {
     return {
