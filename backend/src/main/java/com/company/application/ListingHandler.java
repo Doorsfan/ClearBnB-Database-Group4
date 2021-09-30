@@ -12,7 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,20 @@ public class ListingHandler {
         initListingHandler();
     }
     private void initListingHandler() {
+
+        app.post("/updateLease", (req, res) -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            res.append("Access-Control-Allow-Origin", "*");
+            res.append("Access-Control-Allow-Credentials", "true");
+            Listing myListing = req.body(Listing.class);
+            this.theListingRepository.update(myListing.getListingId(), myListing.getTitle(),
+                    myListing.getDescription(), myListing.getImageUrl(),
+                    myListing.getLocation(), myListing.getNumberGuests(),
+                    myListing.getPrice(), LocalDate.parse(myListing.getListingStartDate(), formatter),
+                    LocalDate.parse(myListing.getListingEndDate(), formatter));
+
+            res.json(this.theListingRepository.findAllForId(myListing.getListingId()));
+        });
 
         app.post("/makeANewLease", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
@@ -56,17 +72,10 @@ public class ListingHandler {
 
         app.get("/getResultsFromFiltering", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
-            System.out.println("The location was: " + req.query("location"));
-            System.out.println("The numberGuests was: " + req.query("numberGuests"));
-            System.out.println("The price was: " + req.query("myPrice"));
-            System.out.println("The mindate was: " + req.query("myMinDate"));
-            System.out.println("The maxDate was: " + req.query("myMaxDate"));
-            System.out.println(this.theListingRepository.findFilteredListings(req.query("location"),
+            List<Listing> filteredListings = this.theListingRepository.findFilteredListings(req.query("location"),
                     Integer.parseInt(req.query("numberGuests")),
-                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate")));
-            //List<Listing> filteredListings = this.theListingRepository.findFilteredListings(myParams.get("location"),
-            //        myParams.get("myGuests"), myParams.get("myMinDate"), myParams.get("myMaxDate"),
-            //        myParams.get("myPrice"));
+                    Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate"));
+            res.json(filteredListings);
         });
 
         app.post("/getAllListings", (req, res) -> {
@@ -76,10 +85,11 @@ public class ListingHandler {
             res.json(allListings);
         });
 
-        app.post("/getSpecificListing", (req, res) -> {
+        app.post("/getAllVersionsOfListing", (req, res) -> {
             Object mySetofQueryParams = req.body();
             String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
             String[] splitString = new String[20];
+            System.out.print(queryParamsString);
             queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
@@ -113,10 +123,10 @@ public class ListingHandler {
                     Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
                     wantedStart, wantedEnd);
             System.out.println(listingId);
-            List<Review> listOfRelevantReviews = theReviewRepository.findAllReviewsForListingOfId(listingId);
+            List<Listing> myListing = theListingRepository.findAllForId(listingId);
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(listOfRelevantReviews);
+            res.json(myListing);
 
         });
     }

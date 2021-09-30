@@ -15,13 +15,14 @@ public class UserRepository {
         return entityManager.find(User.class, id);
     }
 
-    public User findByUsername(String username) {
-        User user;
+    public List<User> findByUsername(String username) {
+        List<User> user;
         try {
-            user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+            user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username")
                     .setParameter("username", username)
-                    .getSingleResult();
+                    .getResultList();
         } catch (Exception e) {
+            System.out.println(e);
             user = null;
         }
         return user;

@@ -33,7 +33,7 @@ public class Application {
         MessageRepository messageRepository = new MessageRepository(entityManager5);
 
         //Handlers
-        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository);
+        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository);
         UserHandler userHandler = new UserHandler(app,userRepository);
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);

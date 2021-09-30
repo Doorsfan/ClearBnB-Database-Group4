@@ -9,26 +9,26 @@ import java.time.LocalDateTime;
 @Table(name = "Listing")
 public class Listing implements Cloneable {
     @Id
-    @Column(name = "listing_id")
+    @Column(name = "listingId")
     private Integer listingId;
     @Id
     private Integer version;
-    @Column(name = "audited_datetime")
+    @Column(name = "auditedDatetime")
     private String auditedDatetime;
     @ManyToOne
-    @JoinColumn(name="owner_id")
+    @JoinColumn(name="ownerId")
     private User owner;
     private String title;
     private String description;
-    @Column(name = "image_url")
+    @Column(name = "imageUrl")
     private String imageUrl;
     private String location;
-    @Column(name = "number_guests")
+    @Column(name = "numberGuests")
     private Integer numberGuests;
     private Double price;
-    @Column(name = "listing_start_date")
+    @Column(name = "listingStartDate")
     private String listingStartDate;
-    @Column(name = "listing_end_date")
+    @Column(name = "listingEndDate")
     private String listingEndDate;
 
     public Listing() { }
@@ -85,8 +85,8 @@ public class Listing implements Cloneable {
         return imageUrl;
     }
 
-    public void setImageUrl(String image_url) {
-        this.imageUrl = image_url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getLocation() {

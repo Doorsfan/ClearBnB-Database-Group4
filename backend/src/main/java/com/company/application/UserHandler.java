@@ -48,7 +48,7 @@ public class UserHandler {
         app.post("/api/login", (req, res) -> {
             User user = req.body(User.class);
 
-            User userInDatabase = userRepository.findByUsername(user.getUsername());
+            User userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
 
             if(userInDatabase == null) {
                 res.json(Map.of("error", "Bad credentials"));
@@ -68,6 +68,8 @@ public class UserHandler {
 
         app.get("/api/whoami", (req, res) -> {
             // return user saved in session
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
             res.json(req.session("current-user"));
         });
 

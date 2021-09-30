@@ -97,7 +97,6 @@ export default {
     };
   },
   async mounted() {
-    console.log("test");
     let res = await fetch('http://localhost:4000/getAllListings', {
       method: 'POST',
       mode: 'cors',
@@ -117,6 +116,7 @@ export default {
       //
       // listingId5 {1: versionId: 1, 2: versionId: 2}
       // 
+      console.log(data);
       const groupBy = (objectArray, property) => {
           return objectArray.reduce(function (total, obj) {
             let key = obj[property];
@@ -130,12 +130,12 @@ export default {
 
         let groupedListings = groupBy(data, 'listingId');
 
-        console.log(groupedListings);
-
         for(var listing in groupedListings){
+          console.log(listing);
           let currentListing = groupedListings[listing];
           let relevantListing = currentListing[currentListing.length - 1];
           let latestVersionOfListing = new Listing(
+            relevantListing.listingId,
             relevantListing.owner.username, 
             relevantListing.title, 
             relevantListing.description, 
@@ -179,7 +179,28 @@ export default {
       new URLSearchParams(myQueryParams), {
         method: 'GET',
         mode: 'cors'
-      });
+      }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.relevantListings = [];
+          let currentIndex = 0;
+          while(currentIndex < Object.keys(data).length){
+            let latestVersionOfListing = new Listing(
+              data[currentIndex].owner.username, 
+              data[currentIndex].title, 
+              data[currentIndex].description, 
+              data[currentIndex].imageUrl, 
+              data[currentIndex].location, 
+              data[currentIndex].numberGuests, 
+              data[currentIndex].price, 
+              data[currentIndex].listingStartDate,
+              data[currentIndex].listingEndDate
+            );
+            this.relevantListings.push(latestVersionOfListing);
+            currentIndex += 1;
+          }
+          
+        });
     },
     openSupportChat() {
       if(this.chatOpened){

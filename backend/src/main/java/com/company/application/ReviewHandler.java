@@ -9,6 +9,7 @@ import com.company.infrastructure.UserRepository;
 import express.Express;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,79 @@ public class ReviewHandler {
     }
 
     private void initReviewHandler() {
+
+        app.post("/postReviewAboutOtherUser", (req, res) -> {
+            Review myReview = req.body(Review.class);
+            myReview.setReviewsUserIdOf(this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
+            myReview.setAuthor(this.theUserRepository.findById(Integer.parseInt(req.query("author_id"))));
+            myReview.setTimestamp(LocalDateTime.now());
+            myReview.setVersion(1);
+            Review mySavedReview = theReviewRepository.save(myReview);
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(this.theReviewRepository.findAllForTarget(
+                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId())
+            );
+        });
+
+        app.get("/getReviewsForUser", (req, res) -> {
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            try{
+                List<Review> myReviews = this.theReviewRepository.findAllForTarget(this.theUserRepository.findByUsername(
+                        req.query("wantedUsername")).get(0).getUserId());
+                res.json(myReviews);
+            }
+            catch(Exception e){
+                res.json("Did not find any reviews.");
+            }
+        });
+
+        app.post("/getReviewsForListing", (req, res) -> {
+            Object mySetofQueryParams = req.body();
+            String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
+            String[] splitString = new String[20];
+            System.out.print(queryParamsString);
+            queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blocation=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+
+            splitString = queryParamsString.split("SPLITHERE");
+            //Title, Description, Image URL, Location, Guests, Price, start, end
+            //1    , 2          ,  3       ,    4    ,  5    ,  6   , 7    , 8
+
+            int index = 0;
+
+            for(String myString : splitString){
+                index += 1;
+            }
+
+            String wantedTitle = splitString[1].substring(0,splitString[1].length()-2);
+            String wantedDescription = splitString[2].substring(0,splitString[2].length()-2);
+            String wantedImageURL = splitString[3].substring(0,splitString[3].length()-2);
+            String wantedLocation = splitString[4].substring(0,splitString[4].length()-2);
+            String wantedGuests = splitString[5].substring(0,splitString[5].length()-2);
+            String wantedPrice = splitString[6].substring(0,splitString[6].length()-2);
+            String wantedStart = splitString[7].substring(0,splitString[7].length()-2);
+            String wantedEnd = splitString[8].substring(0,splitString[8].length());
+
+            int listingId = theListingRepository.findSpecifiedListing(wantedTitle,
+                    wantedDescription, wantedImageURL, wantedLocation,
+                    Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
+                    wantedStart, wantedEnd);
+            System.out.println(listingId);
+            List<Review> listOfRelevantReviews = theReviewRepository.findAllReviewsForListingOfId(listingId);
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(listOfRelevantReviews);
+
+        });
+
         app.post("/review", (req, res) -> {
             Object myReview = req.body();
             // { rating=3, comment=i wrote a comment, myQueryParameters={ username=mikael, password=temp, balance=0 }
@@ -68,7 +142,9 @@ public class ReviewHandler {
                 myString = myString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
                 splitArray = myString.split("SPLITHERE");
             }
-
+            for(String test : splitArray){
+                System.out.println("IN SPLITARRAY: " + test);
+            }
             String wantedTitle = splitArray[1].substring(0, (splitArray[1].length() - 2));
             String wantedDescription = splitArray[2].substring(0, (splitArray[2].length() - 2));;
             String wantedImageURL = splitArray[3].substring(0, (splitArray[3].length() - 2));
@@ -96,14 +172,14 @@ public class ReviewHandler {
             List<Review> updatedListOfReviews = this.theReviewRepository.findAllReviewsForListingOfId(theIdOfTheListing);
 
             /*
-                Title, Description, image_url, location, number of guests, price, startDate, endDate
+                Title, Description, imageUrl, location, number of guests, price, startDate, endDate
              */
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
             res.json(updatedListOfReviews);
             /*
             myReview.setVersion(1);
-            myReview.setRefers_to_listing_id(1);
+            myReview.setRefers_to_listingId(1);
             this.theReviewRepository.save(myReview);
             res.json("Yes");
             //this.theReviewRepository.findAll();
