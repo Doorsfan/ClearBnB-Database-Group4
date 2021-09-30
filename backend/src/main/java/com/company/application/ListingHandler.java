@@ -123,24 +123,16 @@ public class ListingHandler {
                     Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
                     wantedStart, wantedEnd);
             System.out.println(listingId);
-            List<Listing> myListing = theListingRepository.findAllForId(listingId);
-            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+
+           List<Listing> myListing = theListingRepository.findAllForId(listingId);
+           res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
             res.json(myListing);
 
-
             app.get("/getListingsByOwner", (req, res) -> {
-                res.append("Access-Control-Allow-Origin", "*");
-                List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(req.query("owner");
+                List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(req.query("owner"));
                 res.json(findAllForOwner);
-            });
-
-            app.post("/getListingsByOwner", (req, res) -> {
-                List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner();
-                res.append("Access-Control-Allow-Origin", "http://localhost:3000");
-                res.append("Access-Control-Allow-Credentials", "true");
-                res.json(findAllForOwner);
-            });
+                });
 
 
         });
