@@ -35,7 +35,7 @@ export default {
 
       this.socket.onmessage = event => {
         console.log('Message from server:', event.data);
-        this.addMsg(JSON.parse(event.data).writtenByUser.username + ': ' + JSON.parse(event.data).content);
+        this.addMsg(JSON.parse(event.data).writtenByUser.username + ' (' + JSON.parse(event.data).timestamp + '): ' + JSON.parse(event.data).content);
       };
 
       this.socket.onopen = event => {
@@ -64,8 +64,7 @@ export default {
       const msg = this.input.value;
       this.input.value = '';
       console.log('Sending:', msg);
-      //this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, content: msg, timestamp: new Date().toISOString()}));
-      this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, content: msg }));
+      this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, content: msg, timestamp: new Date().toISOString()}));
       // addMsg(msg); // if locally rendered instead of reliably pushed from server
     },
   },

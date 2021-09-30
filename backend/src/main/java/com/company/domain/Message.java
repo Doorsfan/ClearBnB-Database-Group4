@@ -1,14 +1,20 @@
 package com.company.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Message")
 public class Message {
     @Id
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     @Column(name = "message_id")
     private Integer messageId;
     @ManyToOne
@@ -16,6 +22,7 @@ public class Message {
     private User writtenByUser;
     private String content;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime timestamp;
 
     public Integer getMessageId() {
