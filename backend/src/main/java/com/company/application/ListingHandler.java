@@ -111,6 +111,21 @@ public class ListingHandler {
             res.append("Access-Control-Allow-Credentials", "true");
             res.json(listOfRelevantReviews);
 
+
+            app.get("/getListingsByOwner", (req, res) -> {
+                res.append("Access-Control-Allow-Origin", "*");
+                List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(req.query("owner");
+                res.json(findAllForOwner);
+            });
+
+            app.post("/getListingsByOwner", (req, res) -> {
+                List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner();
+                res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+                res.append("Access-Control-Allow-Credentials", "true");
+                res.json(findAllForOwner);
+            });
+
+
         });
     }
 }

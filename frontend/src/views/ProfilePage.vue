@@ -8,22 +8,31 @@
     <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
     <p class="myLeasesP">My Leases</p>
     <div class="myProfileInfoBoxLinks centerBox subBox4">
-      <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
+      <p class="tempLeaseList">MY LEASE 1 IN LIST </p>
       <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
       <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
       <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
+
     </div>
   </div>
 </template>
 <script>
 
 export default {
+  
+  async beforeCreate(){
+       let res  = await fetch('http://localhost:4000/getListingsByOwner');
+ 
+ 
+ },  
+
   components: {
 
   },
   data() {
     return {
-      username: this.$route.params.username
+      username: this.$route.params.username,
+      listings: null
     };
   },
   async mounted() {
