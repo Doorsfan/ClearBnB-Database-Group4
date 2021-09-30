@@ -1,6 +1,8 @@
 package com.company.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDate;
 
 @Entity
@@ -8,6 +10,8 @@ import java.time.LocalDate;
 public class Booking {
     @Id
     @Column(name = "booking_id")
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     private Integer bookingId;
     @Column(name = "listing_booked")
     private Integer listingBooked;

@@ -96,7 +96,6 @@ export default {
     };
   },
   async mounted() {
-    console.log("test");
     let res = await fetch('http://localhost:4000/getAllListings', {
       method: 'POST',
       mode: 'cors',
@@ -116,6 +115,7 @@ export default {
       //
       // listingId5 {1: versionId: 1, 2: versionId: 2}
       // 
+      console.log(data);
       const groupBy = (objectArray, property) => {
           return objectArray.reduce(function (total, obj) {
             let key = obj[property];
@@ -129,12 +129,12 @@ export default {
 
         let groupedListings = groupBy(data, 'listingId');
 
-        console.log(groupedListings);
-
         for(var listing in groupedListings){
+          console.log(listing);
           let currentListing = groupedListings[listing];
           let relevantListing = currentListing[currentListing.length - 1];
           let latestVersionOfListing = new Listing(
+            relevantListing.listingId,
             relevantListing.owner.username, 
             relevantListing.title, 
             relevantListing.description, 
