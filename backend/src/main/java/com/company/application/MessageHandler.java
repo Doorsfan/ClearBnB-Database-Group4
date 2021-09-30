@@ -22,11 +22,15 @@ public class MessageHandler {
 
 
     private void initMessageHandler() {
-        app.get("/rest/hello", (req, res) -> {
-            res.json(Map.of("message", "Hello from express"));
-        });
-
         List<WsContext> clients = new ArrayList<>();
+
+        app.get("/rest/usersInChat", (req, res) -> {
+            List<String> usernames = new ArrayList<>();
+            for (WsContext ctx : clients) {
+                usernames.add(ctx.pathParam("username"));
+            }
+            res.json(usernames);
+        });
 
         app.ws("/websocket/:username", ws -> {
             ws.onConnect(ctx -> {
