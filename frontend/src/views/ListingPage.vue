@@ -35,7 +35,7 @@
         <input v-model="newNumberOfGuests" v-if="editMode" type="text" class="inline" :placeholder=myNumberOfGuests>
       </div>
       <div class="priceText">
-        <div class="inline">Price: </div>
+        <div class="inline">Price per night: </div>
         <div v-if="!editMode" class="inline">{{ myPrice }}</div>
         <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
@@ -68,11 +68,21 @@
       </div>
       <div v-if="!editMode" class="BookingDateDiv">
       Book from the:
-        <input v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
+        <input @change="updateDays" v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
         Book until the:
-        <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
+        <input @change="updateDays" v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
-      <button v-if="!editMode && currentUsername.length > 0" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <div v-if="priceToPay" class="bookingPriceDiv">
+        Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
+      </div>
+      <button v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay <= currentUserBalance" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <div v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay > currentUserBalance" class="notEnoughBalanceDiv">
+        Insufficient funds on Account to Book
+        <div class="neededDiv">
+          <p class="neededP">Needed: {{ priceToPay }}</p> 
+          <p class="haveP">Have in Balance: {{ currentUserBalance }}</p>
+        </div>
+      </div>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of relevantReviews"
@@ -110,10 +120,12 @@ export default {
     return {
       wantedStartDate: new Date(this.myStartDate),
       wantedEndDate: new Date(this.myEndDate),
+      amountOfDaysWanted: '',
       wantedVersion: 1.0,
       versions: [],
       versionsOfListing: [],
       currentUsername: (this.$store.getters.user) ? (this.$store.getters.user.username) : '',
+      currentUserBalance: (this.$store.getters.user) ? (this.$store.getters.user.balance) : 0,
       myListingId: this.$route.query.listingId,
       postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
@@ -146,12 +158,15 @@ export default {
       newFromDay: '',
       newEndYear: '',
       newEndMonth: '',
-      newEndDay: ''
+      newEndDay: '',
+      priceToPay: 0
     };
   },
   async mounted() {
     console.log(this.currentUsername);
     this.wantedVersion = this.versions[-1];
+    this.amountOfDaysWanted = (this.wantedEndDate.getTime() - this.wantedStartDate.getTime())/(100 * 3600 * 24);
+    console.log(this.amountOfDaysWanted);
     //Query the DB for Versions on this point, to get them
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
@@ -215,6 +230,12 @@ export default {
           });
   },
   methods: {
+    updateDays(){
+      let end = new Date(this.wantedEndDate).getTime();
+      let start = new Date(this.wantedStartDate).getTime();
+      this.amountOfDaysWanted = (end - start)/(1000 * 3600 * 24);
+      this.priceToPay = this.amountOfDaysWanted * this.myPrice;
+    },
     changeToEditMode(){
       if(!this.editMode){
         this.editMode = true;
@@ -351,7 +372,7 @@ export default {
         listing_start_date: this.$route.query.listing_start_date,
         listing_end_date: this.$route.query.listing_end_date,
       }
-      
+
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
           mode: 'cors',
@@ -478,6 +499,29 @@ export default {
 };
 </script>
 <style scoped>
+.neededP, .haveP{
+  margin: 0px;
+}
+.notEnoughBalanceDiv{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.BookingDateDiv{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.bookButton{
+  margin-bottom: 10px;
+}
+.bookingPriceDiv{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+}
 .startDateText, .endDateText{
   width:max-content;
   margin-left: auto;

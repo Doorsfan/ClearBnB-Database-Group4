@@ -22,6 +22,14 @@ public class UserHandler {
 
 
     private void initUserHandler() {
+
+        app.post("/api/updateUserBalance", (req, res) -> {
+           User user = req.body(User.class);
+
+           userRepository.update(user.getUserId(), null,
+                   null, null, Double.parseDouble(req.query("balance")));
+        });
+        
         app.post("/api/register", (req, res) -> {
             User user = req.body(User.class);
 
