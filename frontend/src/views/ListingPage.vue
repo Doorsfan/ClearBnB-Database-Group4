@@ -72,14 +72,14 @@
         Book until the:
         <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
-      <button v-if="!editMode" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <button v-if="!editMode && currentUsername.length > 0" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of reviewsFromDatabase"
           :key="index"
           :Content="listItem"
         />
-        <div class="newReviewDivBox">
+        <div v-if="currentUsername.length > 0" class="newReviewDivBox">
           <form @submit.prevent="tryToPostReview" class="reviewForm">
             <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
             <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
