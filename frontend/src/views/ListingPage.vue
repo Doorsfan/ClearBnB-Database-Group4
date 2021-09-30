@@ -72,10 +72,10 @@
         Book until the:
         <input @change="updateDays" v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
-      <div v-if="priceToPay" class="bookingPriceDiv">
+      <div v-if="priceToPay && priceToPay > 0" class="bookingPriceDiv">
         Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
       </div>
-      <button v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay <= currentUserBalance" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay && priceToPay <= currentUserBalance" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay > currentUserBalance" class="notEnoughBalanceDiv">
         Insufficient funds on Account to Book
         <div class="neededDiv">
@@ -118,6 +118,9 @@ export default {
   },
   data() {
     return {
+      isValidDate: (this.wantedStartDate != undefined && this.wantedEndDate.length != undefined) ? (this.purgedStartDate < this.purgedEndDate ? true : false) : false,
+      purgedStartDate: this.wantedStartDate ? this.wantedStartDate.replaceAll("-", "") : '',
+      purgedEndDate: this.wantedEndDate ? this.wantedEndDate.replaceAll("-", "") : '',
       wantedStartDate: new Date(this.myStartDate),
       wantedEndDate: new Date(this.myEndDate),
       amountOfDaysWanted: '',
@@ -414,7 +417,7 @@ export default {
           username: this.$store.getters.user.username,
           password: "",
           email: this.$store.getters.user.email,
-          balance: this.$store.getters.user.balance
+          balance: (this.$store.getters.user.balance - this.myPriceToPay)
       }
       let wantedBooking = {
         amountPaid: this.priceToPay,
@@ -435,24 +438,6 @@ export default {
         return response.json();
       }).then(async function(data){
         console.log(data);
-        if(data != "Failed to make a booking, dates were taken!"){
-            let myUser = {
-              userId: data.userId,
-              balance: (data.balance - myPriceToPay)
-            }
-            
-            let res = await fetch('http://localhost:4000/api/whoami' + 
-            new URLSearchParams(myUser), {
-              method: 'GET'
-            }).then((response) => {
-              return response.json();
-            }).then((data) => {
-              console.log(data);
-            });
-
-
-
-        }
       });
     },
     async tryToPostReview(){
