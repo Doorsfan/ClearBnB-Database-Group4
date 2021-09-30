@@ -23,11 +23,11 @@ public class UserHandler {
 
     private void initUserHandler() {
 
-        app.post("/api/updateUserBalance", (req, res) -> {
-           User user = req.body(User.class);
-
-           userRepository.update(user.getUserId(), null,
+        app.get("/rest/updateUserBalance", (req, res) -> {
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+           userRepository.update(Integer.parseInt(req.query("userId")), null,
                    null, null, Double.parseDouble(req.query("balance")));
+           res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
         });
         
         app.post("/api/register", (req, res) -> {

@@ -124,6 +124,7 @@ export default {
       wantedVersion: 1.0,
       versions: [],
       versionsOfListing: [],
+      currentUserId: (this.$store.getters.user) ? (this.$store.getters.user.userId) : '',
       currentUsername: (this.$store.getters.user) ? (this.$store.getters.user.username) : '',
       currentUserBalance: (this.$store.getters.user) ? (this.$store.getters.user.balance) : 0,
       myListingId: this.$route.query.listingId,
@@ -408,7 +409,6 @@ export default {
     },
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
-      console.log(this.$store.getters.user);
       let myUser = {
           userId: this.$store.getters.user.userId,
           username: this.$store.getters.user.username,
@@ -417,13 +417,15 @@ export default {
           balance: this.$store.getters.user.balance
       }
       let wantedBooking = {
-        amountPaid: 1000,
+        amountPaid: this.priceToPay,
         bookedByUser: myUser,
         listingBooked: this.myListingId,
         bookingStartDate: this.wantedStartDate,
         bookingEndDate: this.wantedEndDate,
         cancelled: 0
       }
+
+      let myPriceToPay = this.priceToPay;
       let res = await fetch('http://localhost:4000/booking', {
         method: 'POST',
         mode: 'cors',
@@ -431,8 +433,26 @@ export default {
         body: JSON.stringify(wantedBooking),
       }).then(function(response){
         return response.json();
-      }).then(function(data){
+      }).then(async function(data){
         console.log(data);
+        if(data != "Failed to make a booking, dates were taken!"){
+            let myUser = {
+              userId: data.userId,
+              balance: (data.balance - myPriceToPay)
+            }
+            
+            let res = await fetch('http://localhost:4000/api/whoami' + 
+            new URLSearchParams(myUser), {
+              method: 'GET'
+            }).then((response) => {
+              return response.json();
+            }).then((data) => {
+              console.log(data);
+            });
+
+
+
+        }
       });
     },
     async tryToPostReview(){

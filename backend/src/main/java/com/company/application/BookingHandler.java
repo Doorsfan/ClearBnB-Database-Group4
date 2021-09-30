@@ -50,7 +50,7 @@ public class BookingHandler {
             res.append("Access-Control-Allow-Credentials", "true");
             if(!taken){
                 this.theBookingRepository.save(newBooking);
-                res.json("Made a booking!");
+                res.json(newBooking.getBookedByUser());
             }
             else{
                 res.json("Failed to make a booking, dates were taken!");
