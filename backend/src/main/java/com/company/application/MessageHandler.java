@@ -28,7 +28,7 @@ public class MessageHandler {
 
         List<WsContext> clients = new ArrayList<>();
 
-        app.ws("/websocket", ws -> {
+        app.ws("/websocket/:username", ws -> {
             ws.onConnect(ctx -> {
                 System.out.println("Connected");
                 clients.add(ctx);
@@ -36,6 +36,7 @@ public class MessageHandler {
 
             ws.onMessage(ctx -> {
                 Message msg = ctx.message(Message.class); // convert from json
+                messageRepository.save(msg);
                 System.out.println(ctx);
                 clients.forEach(client -> client.send(msg)); // convert to json and send back to ALL connected clients
 //        ctx.send(msg); // convert to json and send back (ONLY to the sender)

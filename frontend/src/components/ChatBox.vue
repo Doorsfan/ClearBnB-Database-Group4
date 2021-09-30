@@ -52,7 +52,7 @@ export default {
 
       console.log('Connecting...');
       this.addMsg('Connecting...');
-      this.socket = new WebSocket("ws://localhost:4000/websocket");
+      this.socket = new WebSocket("ws://localhost:4000/websocket/" + this.$store.state.user.username);
       this.addSocketEventListeners();
     },
     disconnect() {
