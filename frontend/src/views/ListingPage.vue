@@ -75,7 +75,7 @@
       <button v-if="!editMode && currentUsername.length > 0" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
-          v-for="(listItem, index) of reviewsFromDatabase"
+          v-for="(listItem, index) of relevantReviews"
           :key="index"
           :Content="listItem"
         />
@@ -131,6 +131,7 @@ export default {
       myEndMonth: this.$route.query.listing_end_date.substring(5,7),
       myEndDay: this.$route.query.listing_end_date.substring(8,10),
       reviewsFromDatabase: [],
+      relevantReviews: [],
       wantedAmountOfStars: 3,
       myComment: '',
       editMode: false,
@@ -326,7 +327,7 @@ export default {
     setToFiveStars(){
       this.wantedAmountOfStars = 5;
     },
-    updateInfoBasedOnVersion() {
+    async updateInfoBasedOnVersion() {
       //Update the State variables in terms of dynamically reflecting the data
       //Based on this Version, query the DB in terms of finding the respective
       //version of it from the DB
@@ -338,7 +339,51 @@ export default {
       this.myPrice = this.versionsOfListing[this.wantedVersion - 1].price;
       this.myStartDate = this.versionsOfListing[this.wantedVersion - 1].listingStartDate;
       this.myEndDate = this.versionsOfListing[this.wantedVersion - 1].listingEndDate;
-      console.log(this.versionsOfListing[this.wantedVersion - 1]);
+      this.relevantReviews = [];
+
+      let queryParams = {
+        title: this.$route.query.title,
+        description: this.$route.query.description,
+        image_url: this.$route.query.image_url,
+        location: this.$route.query.location,
+        number_guests: this.$route.query.number_guests,
+        price: this.$route.query.price,
+        listing_start_date: this.$route.query.listing_start_date,
+        listing_end_date: this.$route.query.listing_end_date,
+      }
+      
+      let res = await fetch('http://localhost:4000/getReviewsForListing', {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: JSON.stringify(queryParams),
+        }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            let currentIndex = 0;
+            this.reviewsFromDatabase = []
+            while(currentIndex < Object.keys(data).length){
+              this.reviewsFromDatabase.push(
+                new Review(
+                  data[currentIndex].author.username, 
+                  data[currentIndex].timestamp.year, 
+                  data[currentIndex].timestamp.monthValue, 
+                  data[currentIndex].timestamp.dayOfMonth, 
+                  data[currentIndex].timestamp.hour,
+                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].comment, 
+                  data[currentIndex].rating, 
+                  data[currentIndex].version
+                ));
+              currentIndex += 1;
+            }
+            console.log(this.reviewsFromDatabase);
+            this.reviewsFromDatabase.forEach(element => {
+              if(element.version == this.wantedVersion){
+                this.relevantReviews.push(element);
+              }
+            });
+          });
     },
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
@@ -378,7 +423,7 @@ export default {
         balance: 0
       }
       //author_id, comment, rating, target_id, timestamp, version, reviewId
-      
+      console.log("The wanted version: " + this.wantedVersion);
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
@@ -395,7 +440,7 @@ export default {
         rating: this.wantedAmountOfStars,
         target: myUser,
         timestamp: new Date(),
-        version: 1,
+        version: this.wantedVersion,
         myQueryParameters: queryParams
       }
 

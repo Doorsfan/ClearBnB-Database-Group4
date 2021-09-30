@@ -1,6 +1,7 @@
 package com.company.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,6 +14,8 @@ import java.time.ZoneId;
 public class Review implements Cloneable, Serializable {
     @Id
     @Column(name = "reviewId")
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     private Integer reviewId;
     @Id
     private Integer version;
