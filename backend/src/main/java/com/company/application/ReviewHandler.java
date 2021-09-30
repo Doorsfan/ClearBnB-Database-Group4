@@ -134,15 +134,17 @@ public class ReviewHandler {
             for(String myString : myStringArray){
                 myString = myString.replaceAll("\\btitle=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\blocation=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bprice=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
                 splitArray = myString.split("SPLITHERE");
             }
-
+            for(String test : splitArray){
+                System.out.println("IN SPLITARRAY: " + test);
+            }
             String wantedTitle = splitArray[1].substring(0, (splitArray[1].length() - 2));
             String wantedDescription = splitArray[2].substring(0, (splitArray[2].length() - 2));;
             String wantedImageURL = splitArray[3].substring(0, (splitArray[3].length() - 2));
