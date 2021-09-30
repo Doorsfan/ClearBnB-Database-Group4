@@ -12,7 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,20 @@ public class ListingHandler {
         initListingHandler();
     }
     private void initListingHandler() {
+
+        app.post("/updateLease", (req, res) -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            res.append("Access-Control-Allow-Origin", "*");
+            res.append("Access-Control-Allow-Credentials", "true");
+            Listing myListing = req.body(Listing.class);
+            this.theListingRepository.update(myListing.getListingId(), myListing.getTitle(),
+                    myListing.getDescription(), myListing.getImageUrl(),
+                    myListing.getLocation(), myListing.getNumberGuests(),
+                    myListing.getPrice(), LocalDate.parse(myListing.getListingStartDate(), formatter),
+                    LocalDate.parse(myListing.getListingEndDate(), formatter));
+
+            res.json(this.theListingRepository.findAllForId(myListing.getListingId()));
+        });
 
         app.post("/makeANewLease", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "*");
@@ -69,18 +85,19 @@ public class ListingHandler {
             res.json(allListings);
         });
 
-        app.post("/getSpecificListing", (req, res) -> {
+        app.post("/getAllVersionsOfListing", (req, res) -> {
             Object mySetofQueryParams = req.body();
             String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
             String[] splitString = new String[20];
+            System.out.print(queryParamsString);
             queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blocation=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
 
             splitString = queryParamsString.split("SPLITHERE");
             //Title, Description, Image URL, Location, Guests, Price, start, end
@@ -106,10 +123,10 @@ public class ListingHandler {
                     Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
                     wantedStart, wantedEnd);
             System.out.println(listingId);
-            List<Review> listOfRelevantReviews = theReviewRepository.findAllReviewsForListingOfId(listingId);
+            List<Listing> myListing = theListingRepository.findAllForId(listingId);
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(listOfRelevantReviews);
+            res.json(myListing);
 
         });
     }

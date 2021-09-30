@@ -40,9 +40,9 @@ public class ReviewRepository {
                 .getResultList();
     }
 
-    public List<Review> findAllForTarget(User target) {
-        return entityManager.createQuery("SELECT r FROM Review r WHERE r.target = :target", Review.class)
-                .setParameter("target", target)
+    public List<Review> findAllForTarget(int reviewsUserIdOf) {
+        return entityManager.createQuery("SELECT r FROM Review r WHERE r.reviewsUserIdOf = :reviewsUserIdOf", Review.class)
+                .setParameter("reviewsUserIdOf", reviewsUserIdOf)
                 .getResultList();
     }
 
@@ -60,7 +60,6 @@ public class ReviewRepository {
                 var myResultList = result.getResultList();
                 if(myResultList.size() > 0){
                     for(int i = 0; i < myResultList.size() + 1 ; i++){
-                        System.out.println("i was: " + i);
                         if(i == myResultList.size()){
                             review.setReviewId((i+1));
                             break;
