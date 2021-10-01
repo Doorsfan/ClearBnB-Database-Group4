@@ -1,18 +1,31 @@
 package com.company.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Message")
 public class Message {
     @Id
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     @Column(name = "message_id")
     private Integer messageId;
     @ManyToOne
     @JoinColumn(name="written_by_id")
     private User writtenByUser;
+    @ManyToOne
+    @JoinColumn(name="recipient_id")
+    private User recipientUser;
     private String content;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime timestamp;
 
     public Integer getMessageId() {
@@ -29,6 +42,14 @@ public class Message {
 
     public void setWrittenByUser(User writtenByUser) {
         this.writtenByUser = writtenByUser;
+    }
+
+    public User getRecipientUser() {
+        return recipientUser;
+    }
+
+    public void setRecipientUser(User recipientUser) {
+        this.recipientUser = recipientUser;
     }
 
     public String getContent() {
@@ -52,6 +73,7 @@ public class Message {
         return "Message{" +
                 "messageId=" + messageId +
                 ", writtenByUser=" + writtenByUser.getUserId() +
+                ", recipientUser=" + recipientUser.getUserId() +
                 ", content='" + content + '\'' +
                 ", timestamp=" + timestamp +
                 '}';

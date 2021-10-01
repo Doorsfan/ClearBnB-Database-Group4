@@ -31,7 +31,11 @@ export default {
     async tryToLogIn() {
       await this.$store.dispatch("login", {username: this.username, password: this.password})
       if (this.$store.state.user) {
-        this.$router.push("/");
+        if (this.$store.state.user.username === "support") { // very crude way of determining support account
+          this.$router.push("/supportchat");
+        } else {
+          this.$router.push("/");
+        }
       } else {
         alert("Username and/or password do not exist")
       }

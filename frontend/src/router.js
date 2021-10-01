@@ -7,6 +7,8 @@ import ProfilePage from './views/ProfilePage.vue';
 import LeaseAHousePage from './views/LeaseAHousePage.vue';
 import RegisterPage from './views/RegisterPage.vue';
 import ListingPage from './views/ListingPage.vue';
+import SupportChat from './views/SupportChat.vue';
+import SupportChatUser from './views/SupportChatUser.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -35,6 +37,14 @@ export default createRouter({
     {
       path: '/ListingPage',
       component: ListingPage
-    }
+    },
+    {
+      path: '/supportchat',
+      component: SupportChat
+    },
+    {
+      path: '/supportchat/:username',
+      component: SupportChatUser
+    },
   ],
 });

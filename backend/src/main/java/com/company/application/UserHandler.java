@@ -14,9 +14,9 @@ public class UserHandler {
     private final Express app;
     private final UserRepository userRepository;
 
-    public UserHandler(Express app, UserRepository theUserRepository){
+    public UserHandler(Express app, UserRepository userRepository){
         this.app = app;
-        this.userRepository = theUserRepository;
+        this.userRepository = userRepository;
         initUserHandler();
     }
 
@@ -35,9 +35,12 @@ public class UserHandler {
             User user = req.body(User.class);
 
             // check if user exists
-            if (userRepository.findByUsername(user.getUsername()) != null) {
-                res.json(Map.of("error", "User already exists"));
-                return;
+            try {
+                if (userRepository.findByUsername(user.getUsername()).get(0) != null) {
+                    res.json(Map.of("error", "User already exists"));
+                    return;
+                }
+            } catch (Exception e) {
             }
 
             // hash password (encrypt password)
@@ -56,8 +59,12 @@ public class UserHandler {
         // login user
         app.post("/api/login", (req, res) -> {
             User user = req.body(User.class);
-
-            User userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
+            User userInDatabase;
+            try {
+                userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
+            } catch (Exception e) {
+                userInDatabase = null;
+            }
 
             if(userInDatabase == null) {
                 res.json(Map.of("error", "Bad credentials"));
@@ -85,6 +92,11 @@ public class UserHandler {
         app.get("/api/logout", (req, res) -> {
             // remove user from session
             req.session("current-user", null);
+        });
+
+        app.get("/rest/getUserByUsername/:username", (req, res) -> {
+            User user = userRepository.findByUsername(req.params("username")).get(0);
+            res.json(user);
         });
     }
 }
