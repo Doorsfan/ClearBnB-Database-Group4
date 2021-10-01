@@ -67,7 +67,7 @@ export default {
 
       console.log('Connecting...');
       this.addMsg('Connecting...');
-      this.socket = new WebSocket("ws://localhost:4000/websocket/" + this.$store.state.user.username);
+      this.socket = new WebSocket("ws://localhost:4000/websocket/" + this.$route.params.username);
       this.addSocketEventListeners();
     },
     disconnect() {

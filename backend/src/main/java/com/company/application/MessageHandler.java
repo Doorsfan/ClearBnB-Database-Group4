@@ -52,7 +52,12 @@ public class MessageHandler {
                 Message msg = ctx.message(Message.class); // convert from json
                 messageRepository.save(msg);
                 System.out.println(ctx);
-                clients.forEach(client -> client.send(msg)); // convert to json and send back to ALL connected clients
+                for (WsContext client : clients) {
+                    if (client.pathParam("username").equals(ctx.pathParam("username"))) {
+                        client.send(msg);
+                    }
+                }
+                //clients.forEach(client -> client.send(msg)); // convert to json and send back to ALL connected clients
 //        ctx.send(msg); // convert to json and send back (ONLY to the sender)
             });
 
