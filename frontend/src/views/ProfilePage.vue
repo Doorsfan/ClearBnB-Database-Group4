@@ -63,8 +63,7 @@ export default {
       myComment: '',
       wantedAmountOfStars: 3,
       loggedInUser: this.$store.state.user,
-      samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false,
-      theRoute: this.$route.path
+      samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false
     };
   },
   async mounted() {
@@ -94,11 +93,6 @@ export default {
           }
           console.log(this.reviewsFromDatabase);
         });
-  },
-  watch: {
-    theRoute: function () {
-      console.log("The route changed");
-    }
   },
   methods: {
     async tryToPostReview(){
