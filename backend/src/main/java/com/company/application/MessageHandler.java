@@ -1,7 +1,9 @@
 package com.company.application;
 
 import com.company.domain.Message;
+import com.company.domain.User;
 import com.company.infrastructure.MessageRepository;
+import com.company.infrastructure.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import express.Express;
@@ -13,10 +15,12 @@ import io.javalin.websocket.WsContext;
 public class MessageHandler {
     private final Express app;
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
-    public MessageHandler(Express app, MessageRepository messageRepository){
+    public MessageHandler(Express app, MessageRepository messageRepository, UserRepository userRepository){
         this.app = app;
         this.messageRepository = messageRepository;
+        this.userRepository = userRepository;
         initMessageHandler();
     }
 
@@ -30,6 +34,12 @@ public class MessageHandler {
                 usernames.add(ctx.pathParam("username"));
             }
             res.json(usernames);
+        });
+
+        app.get("/rest/getAllMessagesForUser/:id", (req, res) -> {
+            List<User> user = userRepository.findByUsername(req.params("id"));
+            //List<Message> messages = messageRepository.findAllForUser(user);
+            res.json(user.get(0).getMessages());
         });
 
         app.ws("/websocket/:username", ws -> {

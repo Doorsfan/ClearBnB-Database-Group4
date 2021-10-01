@@ -37,7 +37,7 @@ public class Application {
         UserHandler userHandler = new UserHandler(app,userRepository);
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);
-        MessageHandler messageHandler = new MessageHandler(app, messageRepository);
+        MessageHandler messageHandler = new MessageHandler(app, messageRepository, userRepository);
 
         /*
         try{
