@@ -51,7 +51,11 @@ export default {
       await this.$store.dispatch("register", wantedUser)
 
       if (this.$store.state.user) {
-        this.$router.push("/");
+        if (this.$store.state.user.username === "support") { // very crude way of determining support account
+          this.$router.push("/supportchat");
+        } else {
+          this.$router.push("/");
+        }
       } else {
         alert("Username or email has aleady been used")
       }
