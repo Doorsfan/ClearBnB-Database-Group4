@@ -61,7 +61,6 @@ export default {
       };
     },
     connect() {
-      //if (client) return;
       this.ul = document.querySelector("#chat-output")
       this.input = document.querySelector("#chat-input")
 
