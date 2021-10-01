@@ -22,6 +22,15 @@ public class UserHandler {
 
 
     private void initUserHandler() {
+
+        app.get("/api/updateUserBalance", (req, res) -> {
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000/ListingPage");
+            res.append("Access-Control-Allow-Credentials", "true");
+           userRepository.update(Integer.parseInt(req.query("userId")), null,
+                   null, null, Double.parseDouble(req.query("balance")));
+           res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
+        });
+        
         app.post("/api/register", (req, res) -> {
             User user = req.body(User.class);
 
