@@ -32,7 +32,9 @@ public class MessageHandler {
         app.get("/rest/usersInChat", (req, res) -> {
             List<String> usernames = new ArrayList<>();
             for (WsContext ctx : clients) {
-                usernames.add(ctx.pathParam("username"));
+                if (!usernames.contains(ctx.pathParam("username"))) {
+                    usernames.add(ctx.pathParam("username"));
+                }
             }
             res.json(usernames);
         });
