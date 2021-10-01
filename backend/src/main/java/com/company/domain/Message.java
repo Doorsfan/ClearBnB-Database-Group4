@@ -20,6 +20,9 @@ public class Message {
     @ManyToOne
     @JoinColumn(name="written_by_id")
     private User writtenByUser;
+    @ManyToOne
+    @JoinColumn(name="recipient_id")
+    private User recipientUser;
     private String content;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -39,6 +42,14 @@ public class Message {
 
     public void setWrittenByUser(User writtenByUser) {
         this.writtenByUser = writtenByUser;
+    }
+
+    public User getRecipientUser() {
+        return recipientUser;
+    }
+
+    public void setRecipientUser(User recipientUser) {
+        this.recipientUser = recipientUser;
     }
 
     public String getContent() {
@@ -62,6 +73,7 @@ public class Message {
         return "Message{" +
                 "messageId=" + messageId +
                 ", writtenByUser=" + writtenByUser.getUserId() +
+                ", recipientUser=" + recipientUser.getUserId() +
                 ", content='" + content + '\'' +
                 ", timestamp=" + timestamp +
                 '}';

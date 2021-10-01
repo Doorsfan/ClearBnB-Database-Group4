@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import express.Express;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import io.javalin.websocket.WsContext;
@@ -38,8 +39,14 @@ public class MessageHandler {
 
         app.get("/rest/getAllMessagesForUser/:id", (req, res) -> {
             List<User> user = userRepository.findByUsername(req.params("id"));
-            //List<Message> messages = messageRepository.findAllForUser(user);
-            res.json(user.get(0).getMessages());
+
+            // get both sent and received messages for a user
+            List<Message> messages = messageRepository.findAllForUser(user.get(0));
+
+            // order the messages for display
+            messages.sort(Comparator.comparing(Message::getMessageId));
+
+            res.json(messages);
         });
 
         app.ws("/websocket/:username", ws -> {

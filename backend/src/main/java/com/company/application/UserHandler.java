@@ -84,5 +84,10 @@ public class UserHandler {
             // remove user from session
             req.session("current-user", null);
         });
+
+        app.get("/rest/getUserByUsername/:username", (req, res) -> {
+            User user = userRepository.findByUsername(req.params("username")).get(0);
+            res.json(user);
+        });
     }
 }

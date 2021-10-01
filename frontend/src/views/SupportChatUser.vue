@@ -77,11 +77,15 @@ export default {
       this.addMsg('Disconnecting...');
       this.socket.close();
     },
-    send() {
+    async send() {
       const msg = this.input.value;
       this.input.value = '';
       console.log('Sending:', msg);
-      this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, content: msg, timestamp: new Date().toISOString()}));
+      let res = await fetch('/rest/getUserByUsername/' + this.$route.params.username) // not the most secure, but doing 
+                                                                                      // doing this to speed up dev
+      let recipientUser = await res.json()
+      this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, recipientUser: recipientUser, 
+        content: msg, timestamp: new Date().toISOString()}));
       // addMsg(msg); // if locally rendered instead of reliably pushed from server
     },
   },
