@@ -55,9 +55,7 @@ export default {
   async mounted() {},
   methods: {
     async tryToPostLease() {
-      let myUser = {
-        userId: 1
-      }
+      let myUser = this.$store.getters.user;
       let now = new Date();
       let year = now.getFullYear();
       let month = (now.getMonth() + 1) < 10 ? ('0' + (now.getMonth() + 1)) : (now.getMonth() + 1);
@@ -77,7 +75,6 @@ export default {
         listingEndDate: this.myEndDate,
         auditedDatetime: year + '-' + month + '-' + date + ' ' + hour + ':' + minute,
         version: 1,
-        listingId: 1,
         owner: myUser,
       }
       

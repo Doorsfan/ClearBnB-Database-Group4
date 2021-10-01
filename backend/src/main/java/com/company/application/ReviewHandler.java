@@ -9,9 +9,11 @@ import com.company.infrastructure.UserRepository;
 import express.Express;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class ReviewHandler {
@@ -35,16 +37,20 @@ public class ReviewHandler {
 
         app.post("/postReviewAboutOtherUser", (req, res) -> {
             Review myReview = req.body(Review.class);
-            myReview.setReviewsUserIdOf(this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
-            myReview.setAuthor(this.theUserRepository.findById(Integer.parseInt(req.query("author_id"))));
+            myReview.setAuthor(this.theUserRepository.findById(
+                    Integer.parseInt(req.query("author_id"))));
+            List<User> refersTo = this.theUserRepository.findByUsername(req.query("postedAbout"));
+            myReview.setReviewsUserIdOf(refersTo.get(0).getUserId());
             myReview.setTimestamp(LocalDateTime.now());
-            myReview.setVersion(1);
-            Review mySavedReview = theReviewRepository.save(myReview);
+            this.theReviewRepository.save(myReview);
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(this.theReviewRepository.findAllForTarget(
-                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId())
-            );
+
+            List<Review> myListOfReviews = this.theReviewRepository.findAllForTarget(
+                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
+
+            res.json(myListOfReviews);
+
         });
 
         app.get("/getReviewsForUser", (req, res) -> {
@@ -56,7 +62,7 @@ public class ReviewHandler {
                 res.json(myReviews);
             }
             catch(Exception e){
-                res.json("Did not find any reviews.");
+                res.json("");
             }
         });
 
@@ -166,7 +172,7 @@ public class ReviewHandler {
             wantedReview.setTimestamp(wantedTimeStamp);
             wantedReview.setRating(wantedRating);
             wantedReview.setVersion(wantedVersion);
-            wantedReview.setRefersToListingId(theIdOfTheListing);
+            wantedReview.setPostedToListingId(theIdOfTheListing);
             this.theReviewRepository.save(wantedReview);
 
             List<Review> updatedListOfReviews = this.theReviewRepository.findAllReviewsForListingOfId(theIdOfTheListing);

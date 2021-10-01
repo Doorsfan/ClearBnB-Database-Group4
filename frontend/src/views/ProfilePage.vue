@@ -64,9 +64,12 @@ export default {
       wantedAmountOfStars: 3,
       loggedInUser: this.$store.state.user,
       samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false,
+      theRoute: this.$route.path
     };
   },
   async mounted() {
+    console.log("i was mounted");
+    console.log(this.$route);
     if(this.username == "Not Logged In"){
       document.getElementsByClassName("hidden")[0].click();
     }
@@ -80,16 +83,22 @@ export default {
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data);
           let currentIndex = 0;
           if(data == "Did not find any reviews"){
+            this.reviewsFromDatabase = [];
             return;
           }
           while(currentIndex < Object.keys(data).length){
             this.reviewsFromDatabase.push(data[currentIndex])
             currentIndex += 1;
           }
+          console.log(this.reviewsFromDatabase);
         });
+  },
+  watch: {
+    theRoute: function () {
+      console.log("The route changed");
+    }
   },
   methods: {
     async tryToPostReview(){
@@ -101,9 +110,8 @@ export default {
         let comment = {
           comment: this.myComment,
           rating: this.wantedAmountOfStars,
+          version: 1
         }
-
-        console.log(this.$store.state.user);
 
         let res = await fetch('http://localhost:4000/postReviewAboutOtherUser?' + 
         new URLSearchParams(myQueryParams), {
@@ -115,10 +123,13 @@ export default {
         }).then((data) => {
           this.reviewsFromDatabase = [];
           let currentIndex = 0;
+          console.log("The DATA:");
+          console.log(data);
           while(currentIndex < Object.keys(data).length){
             this.reviewsFromDatabase.push(data[currentIndex])
             currentIndex += 1;
           }
+          console.log(this.reviewsFromDatabase);
         }); 
     },
     setToOneStar(){

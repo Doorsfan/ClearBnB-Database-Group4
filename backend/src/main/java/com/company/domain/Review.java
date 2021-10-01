@@ -1,5 +1,11 @@
 package com.company.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,6 +26,8 @@ public class Review implements Cloneable, Serializable {
     @Id
     private Integer version;
     @Column(name = "timestamp")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime timestamp;
     @OneToOne
     @JoinColumn(name="author_id")
@@ -42,14 +50,6 @@ public class Review implements Cloneable, Serializable {
 
     public Integer getReviewId() {
         return reviewId;
-    }
-
-    public Integer getRefersToListingId() {
-        return postedToListingId;
-    }
-
-    public void setRefersToListingId(Integer postedToListingId) {
-        this.postedToListingId = postedToListingId;
     }
 
     public void setReviewId(Integer reviewId) {
@@ -124,7 +124,7 @@ public class Review implements Cloneable, Serializable {
         review.setReviewsUserIdOf(this.getReviewsUserIdOf());
         review.setComment(this.getComment());
         review.setRating(this.getRating());
-        review.setRefersToListingId(this.getRefersToListingId());
+        review.setPostedToListingId(this.getPostedToListingId());
         return review;
     }
 }

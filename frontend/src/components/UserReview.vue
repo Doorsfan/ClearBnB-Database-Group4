@@ -7,8 +7,8 @@
       {{ hour }}:{{ minute }}
     </div>
     <div class="usernameBox">
-      <router-link id="postedByLink" :to="{ name: 'profile', params: { author: author
-        }}">{{ username }}</router-link> left the following review: 
+      <router-link id="postedByLink" :to="{ name: 'profile', params: { username: author.username
+        }}">{{ author.username }}</router-link> left the following review: 
     </div>
     <div class="ratingBox">
       <span>&#11088;</span>
@@ -27,19 +27,21 @@ export default {
   props: ['Content'],
   data() {
     return {
-      year: this.Content.timestamp.year,
-      month: (this.Content.timestamp.monthValue < 10 ? '0' + this.Content.timestamp.monthValue : this.Content.timestamp.monthValue),
-      day: this.Content.timestamp.dayOfMonth,
-      hour: this.Content.timestamp.hour,
-      minute: this.Content.timestamp.minute,
+      author: this.Content.author,
       username: this.Content.author.username,
+      comment: this.Content.comment,
       rating: this.Content.rating,
-      comment: this.Content.comment
+      year: this.Content.timestamp[0],
+      month: (this.Content.timestamp[1] < 10) ? '0' + this.Content.timestamp[1] : this.Content.timestamp[1],
+      day: (this.Content.timestamp[2] < 10) ? '0' + this.Content.timestamp[2] : this.Content.timestamp[2],
+      hour: (this.Content.timestamp[3] < 10) ? '0' + this.Content.timestamp[3] : this.Content.timestamp[3],
+      minute: (this.Content.timestamp[4] < 10) ? '0' + this.Content.timestamp[4] : this.Content.timestamp[4]
     };
   },
   methods: {
   },
   async mounted() {
+    console.log("THE CONENT:");
     console.log(this.Content);
   }
 };
