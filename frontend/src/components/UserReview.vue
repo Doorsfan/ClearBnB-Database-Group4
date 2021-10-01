@@ -42,7 +42,7 @@ export default {
       comment: (this.Content.comment.includes("(Edited)")) ? this.Content.comment.substring(0,this.Content.comment.length - 8) : this.Content.comment,
       rating: this.Content.rating,
       year: this.Content.timestamp[0],
-      currentUser: this.$store.getters.user,
+      currentUser: this.$store.getters.user ? (this.$store.getters.user.username == this.Content.author.username ? true : false) : false,
       editMode: false,
       wantedComment: '',
       month: (this.Content.timestamp[1] < 10) ? '0' + this.Content.timestamp[1] : this.Content.timestamp[1],
