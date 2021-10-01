@@ -87,22 +87,29 @@ public class ReviewRepository {
 
     public Review update(Integer id, String comment, Integer rating) {
         Review review = this.findMostRecentForId(id).clone();
-        review.setVersion(review.getVersion() + 1);
+        review.setVersion(review.getVersion());
         review.setTimestamp(LocalDateTime.now());
 
         if (comment != null) {
             review.setComment(comment);
         }
+        if (comment == null) {
+            review.setComment("This comment has been removed.");
+        }
         if (rating != null) {
             review.setRating(rating);
         }
-
-        return this.save(review);
+        entityManager.getTransaction().begin();
+        this.entityManager.merge(review);
+        entityManager.getTransaction().commit();
+        return review;
     }
 
     public Review remove(Review review) {
         Review nullReview = this.update(review.getReviewId(), null, null);
-        nullReview.setTimestamp("Removed");
-        return this.save(nullReview);
+        entityManager.getTransaction().begin();
+        this.entityManager.merge(nullReview);
+        entityManager.getTransaction().commit();
+        return nullReview;
     }
 }

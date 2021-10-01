@@ -187,8 +187,20 @@ public class ReviewHandler {
              */
         });
 
-        app.post("/updateReviewId", (req, res) -> {
-           Object myObj = req.body();
+        app.post("/updateReview", (req, res) -> {
+            Review updatedReview = this.theReviewRepository.update(Integer.parseInt(req.query("id")),
+                    req.query("comment"), Integer.parseInt(req.query("rating")));
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(updatedReview);
+        });
+
+        app.post("/removeReview", (req, res) -> {
+            Review removedReview = this.theReviewRepository
+                    .remove(this.theReviewRepository.findMostRecentForId(Integer.parseInt(req.query("id"))));
+            res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+            res.append("Access-Control-Allow-Credentials", "true");
+            res.json(removedReview);
         });
     }
 }

@@ -167,10 +167,7 @@ export default {
     };
   },
   async mounted() {
-    console.log(this.currentUsername);
-    this.wantedVersion = this.versions[-1];
     this.amountOfDaysWanted = (this.wantedEndDate.getTime() - this.wantedStartDate.getTime())/(100 * 3600 * 24);
-    console.log(this.amountOfDaysWanted);
     //Query the DB for Versions on this point, to get them
     document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
@@ -205,6 +202,7 @@ export default {
           this.versionsOfListing.push(data[currentIndex]);
           currentIndex += 1;
         }
+        this.wantedVersion = this.versions.length;
       })
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
@@ -219,6 +217,7 @@ export default {
             while(currentIndex < Object.keys(data).length){
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
                   data[currentIndex].timestamp.year, 
                   data[currentIndex].timestamp.monthValue, 
@@ -229,6 +228,12 @@ export default {
                   data[currentIndex].rating, 
                   data[currentIndex].version
                 ));
+              this.relevantReviews = [];
+              this.reviewsFromDatabase.forEach(element => {
+                if(element.version == this.versions.length){
+                  this.relevantReviews.push(element);
+                }
+              });
               currentIndex += 1;
             }
           });
@@ -390,6 +395,7 @@ export default {
             while(currentIndex < Object.keys(data).length){
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
                   data[currentIndex].timestamp.year, 
                   data[currentIndex].timestamp.monthValue, 
@@ -402,7 +408,7 @@ export default {
                 ));
               currentIndex += 1;
             }
-            console.log(this.reviewsFromDatabase);
+            this.relevantReviews = [];
             this.reviewsFromDatabase.forEach(element => {
               if(element.version == this.wantedVersion){
                 this.relevantReviews.push(element);
@@ -483,9 +489,9 @@ export default {
             this.reviewsFromDatabase = []
 
             while(currentIndex < Object.keys(data).length){
-              console.log(data[currentIndex].comment);
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
                   data[currentIndex].timestamp.year, 
                   data[currentIndex].timestamp.monthValue, 
@@ -498,6 +504,12 @@ export default {
                 ));
               currentIndex += 1;
             }
+            this.relevantReviews = [];
+            this.reviewsFromDatabase.forEach(element => {
+              if(element.version == this.wantedVersion){
+                this.relevantReviews.push(element);
+              }
+            });
           });
     }
   },
