@@ -109,11 +109,11 @@ export default {
         }).then((data) => {
           console.log(data.timestamp);
           this.comment = data.comment;
-          this.year = data.timestamp.year;
-          this.month = (data.timestamp.monthValue < 10) ? '0' + data.timestamp.monthValue : data.timestamp.monthValue;
-          this.day = (data.timestamp.dayOfMonth < 10) ? '0' + data.timestamp.dayOfMonth : data.timestamp.dayOfMonth;
-          this.hour = data.timestamp.hour;
-          this.minute = data.timestamp.minute;
+          this.year = data.timestamp[0];
+          this.month = (data.timestamp[1] < 10) ? '0' + data.timestamp[1] : data.timestamp[1];
+          this.day = (data.timestamp[2] < 10) ? '0' + data.timestamp[2] : data.timestamp[2];
+          this.hour = data.timestamp[3];
+          this.minute = data.timestamp[4];
           this.removedComment = false;
         });
     },
@@ -133,16 +133,17 @@ export default {
           return response.json();
         }).then((data) => {
           this.comment = data.comment;
-          this.year = data.timestamp.year;
-          this.month = (data.timestamp.monthValue < 10) ? '0' + data.timestamp.monthValue : data.timestamp.monthValue;
-          this.day = (data.timestamp.dayOfMonth < 10) ? '0' + data.timestamp.dayOfMonth : data.timestamp.dayOfMonth;
-          this.hour = data.timestamp.hour;
-          this.minute = data.timestamp.minute;
+          this.year = data.timestamp[0];
+          this.month = (data.timestamp[1] < 10) ? '0' + data.timestamp[1] : data.timestamp[1];
+          this.day = (data.timestamp[2] < 10) ? '0' + data.timestamp[2] : data.timestamp[2];
+          this.hour = data.timestamp[3];
+          this.minute = data.timestamp[4];
           this.removedComment = true;
         });
     }
   },
   async mounted() {
+    console.log(this.Content);
     if(this.Content.comment.includes("(Edited)")){
       this.editedComment = true;
     }

@@ -57,18 +57,22 @@ export default {
   data() {
     return {
       username: (this.$route.params.username) ? 
-      (this.$route.params.username) : ((this.$store.state.user) ? 
-        (this.$store.state.user.username) : "Not Logged In"),
+      (this.$route.params.username) : ((this.$store.getters.user) ? 
+        (this.$store.getters.user.username) : "Not Logged In"),
       reviewsFromDatabase: [],
       myComment: '',
       wantedAmountOfStars: 3,
-      loggedInUser: this.$store.state.user,
-      samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false
+      loggedInUser: this.$store.getters.user,
+      samePerson: false
     };
   },
   async mounted() {
-    console.log("i was mounted");
-    console.log(this.$route);
+    console.log(this.$store.getters.user);
+    if(this.$store.getters.user){
+      if(this.$store.getters.user.username == this.username){
+        this.samePerson = true;
+      }
+    }
     if(this.username == "Not Logged In"){
       document.getElementsByClassName("hidden")[0].click();
     }
