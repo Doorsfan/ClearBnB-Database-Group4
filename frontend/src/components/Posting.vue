@@ -1,15 +1,15 @@
 <template>
   <div class="leaseBox">
     <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, image_url: Listing.image_url, location: Listing.location, number_guests: Listing.number_guests, price: Listing.price, listing_start_date: Listing.listing_start_date, listing_end_date: Listing.listing_end_date } }">
-      <div class="cellBox firstCellBox">{{ Listing.title }}</div>
-      <div class="cellBox">{{ Listing.description }}</div>
-      <div class="cellBox">{{ Listing.image_url }}</div>
-      <div class="cellBox">{{ Listing.location }}</div>
-      <div class="cellBox">{{ Listing.number_guests }}</div>
-      <div class="cellBox">{{ Listing.price }}</div>
-      <div class="cellBox">{{ Listing.listing_start_date }}</div>
-      <div class="cellBox">{{ Listing.listing_end_date }}</div>
-      <div class="cellBox">{{ Listing.postedByUsername }}</div>
+      <div class="cellBox firstCellBox">{{ title }}</div>
+      <div class="cellBox">{{ description }}</div>
+      <div class="cellBox">{{ image_url }}</div>
+      <div class="cellBox">{{ location }}</div>
+      <div class="cellBox">{{ number_guests }}</div>
+      <div class="cellBox">{{ price }}</div>
+      <div class="cellBox">{{ startDate }}</div>
+      <div class="cellBox">{{ endDate }}</div>
+      <div class="cellBox">{{ host }}</div>
     </router-link>
   </div>
 </template>
@@ -17,7 +17,17 @@
 export default {
   props: ['Listing'],
   data() {
-    return {};
+    return {
+      title: this.Listing.title,
+      description: this.Listing.description,
+      image_url: this.Listing.image_url,
+      location: this.Listing.location,
+      number_guests: this.Listing.number_guests,
+      price: this.Listing.price,
+      startDate: this.Listing.listing_start_date,
+      endDate: this.Listing.listing_end_date,
+      host: this.Listing.postedByUsername
+    };
   },
   methods: {
   },

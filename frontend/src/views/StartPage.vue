@@ -15,12 +15,12 @@
       </div>
       <div class="startDateBox Box">
         Start Date
-        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" min="2021-09-17" type="date" /></div>
+        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="new Date()" type="date" /></div>
       </div>
       <div class="endDateBox Box">
         End Date
         <div class="endDateBar">
-          <input class="myMaxDateInput" @change="updateMyMaxDate" type="date" min="2021-09-17" max="2021-10-17" />
+          <input class="myMaxDateInput" @change="updateMyMaxDate" type="date" :min="myMinDate" />
         </div>
       </div>
       <div class="priceBox Box">

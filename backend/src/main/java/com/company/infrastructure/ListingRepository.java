@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListingRepository {
@@ -30,17 +31,33 @@ public class ListingRepository {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenYearsAhead = now.plusYears(10);
 
-        return entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
+        List<Listing> baseList = entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
                 "LIKE :location AND :numberGuests <= l.numberGuests" +
-                " AND :price >= l.price" +
-                " AND :listingStartDate = l.listingStartDate" +
-                " AND :listingEndDate = l.listingEndDate")
+                " AND :price >= l.price")
                 .setParameter("location", "%" + location + "%")
                 .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
                 .setParameter("price", (price == 0 ? 100000.0 : price))
-                .setParameter("listingStartDate", (listingStartDate.length() == 0 ? dtf.format(now): listingStartDate))
-                .setParameter("listingEndDate", (listingEndDate.length() == 0 ? dtf.format(tenYearsAhead) : listingEndDate))
                 .getResultList();
+        if(listingStartDate == "" || listingEndDate == ""){
+            return baseList;
+        }
+        List<Listing> listToReturn = new ArrayList();
+        for(Listing myListing : baseList){
+            if(Integer.parseInt(
+                    myListing.getListingStartDate()
+                            .replaceAll("-", ""))
+                    <= Integer.parseInt(listingStartDate.replaceAll("-", ""))
+                && Integer.parseInt(myListing.getListingEndDate()
+                    .replaceAll("-", "")) >= Integer.parseInt(listingEndDate.replaceAll("-", ""))){
+                listToReturn.add(myListing);
+            }
+        }
+        // START 2021-10-01
+        // END 2021-10-30
+        //
+        // WANTED 2021-10-10
+        // WANTED 2021-10-20
+        return listToReturn;
         //" AND l.numberGuests >= :numberGuests " +
         //                "AND l.price <= :price AND l.listingStartDate >= :listingStartDate " +
         //                "AND l.listingEndDate <= :listingEndDate"
