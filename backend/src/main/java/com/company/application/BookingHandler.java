@@ -40,7 +40,10 @@ public class BookingHandler {
             Booking newBooking = req.body(Booking.class);
             System.out.println(newBooking);
             User personWhoBooked = this.theUserRepository.findById(newBooking.getBookedByUser().getUserId());
-
+            boolean insufficientFunds = false;
+            if(personWhoBooked.getBalance() < newBooking.getAmountPaid()){
+                insufficientFunds = true;
+            }
             List<Booking> myBookings = this.theBookingRepository.findForListing(
                     this.theListingRepository.findMostRecentForId(newBooking.getListingBooked()));
             boolean taken = false;
@@ -58,18 +61,22 @@ public class BookingHandler {
 
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            if(!taken){
-                personWhoBooked.setBalance(personWhoBooked.getBalance() - newBooking.getAmountPaid());
-                this.theBookingRepository.save(newBooking);
-                theUserRepository.update(newBooking.getBookedByUser().getUserId(),
-                        null, null, null, personWhoBooked.getBalance());
+            if(!insufficientFunds){
+                if(!taken){
+                    personWhoBooked.setBalance(personWhoBooked.getBalance() - newBooking.getAmountPaid());
+                    this.theBookingRepository.save(newBooking);
+                    theUserRepository.update(newBooking.getBookedByUser().getUserId(),
+                            null, null, null, personWhoBooked.getBalance());
 
-                res.json(personWhoBooked);
+                    res.json(personWhoBooked);
+                }
+                else{
+                    res.json("Failed to make a booking, dates were taken!");
+                }
             }
             else{
-                res.json("Failed to make a booking, dates were taken!");
+                res.json("Due to insufficient funds, the booking failed.");
             }
-
         });
     }
 }

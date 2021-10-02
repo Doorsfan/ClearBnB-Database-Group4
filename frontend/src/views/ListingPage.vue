@@ -75,14 +75,7 @@
       <div v-if="priceToPay && priceToPay > 0" class="bookingPriceDiv">
         Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
       </div>
-      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay && priceToPay <= currentUserBalance" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
-      <div v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay > currentUserBalance" class="notEnoughBalanceDiv">
-        Insufficient funds on Account to Book
-        <div class="neededDiv">
-          <p class="neededP">Needed: {{ priceToPay }}</p> 
-          <p class="haveP">Have in Balance: {{ currentUserBalance }}</p>
-        </div>
-      </div>
+      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of relevantReviews"
@@ -320,7 +313,7 @@ export default {
         imageUrl: this.imageUrl,
         location: this.location,
         numberGuests: this.numberGuests,
-        price: this.price,
+        price: this.myPrice,
         listingStartDate: this.myStartDate,
         listingEndDate: this.myEndDate
       }
@@ -328,9 +321,9 @@ export default {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(queryParams)
-      }).then(function(response){
-        return response.json();
-      }).then(function(data){
+      }).then((response) => {
+            return response.json();
+      }).then((data) => {
         let currentIndex = 0;
         while(currentIndex < Object.keys(data).length){
           currentIndex += 1;
