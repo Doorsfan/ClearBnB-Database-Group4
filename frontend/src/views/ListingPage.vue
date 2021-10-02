@@ -36,7 +36,7 @@
       </div>
       <div class="priceText">
         <div class="inline">Price per night: </div>
-        <div v-if="!editMode" class="inline">{{ myPrice }}</div>
+        <div v-if="!editMode" class="inline">{{ displayPrice }}</div>
         <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
       <div class="startDateText">
@@ -156,7 +156,8 @@ export default {
       newEndYear: '',
       newEndMonth: '',
       newEndDay: '',
-      priceToPay: 0
+      priceToPay: 0,
+      displayPrice: 0,
     };
   },
   async mounted() {
@@ -196,6 +197,7 @@ export default {
           currentIndex += 1;
         }
         this.wantedVersion = this.versions.length;
+        this.displayPrice = Math.round(this.versionsOfListing[this.wantedVersion-1].price * 1.15);
       })
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
@@ -236,7 +238,7 @@ export default {
       let end = new Date(this.wantedEndDate).getTime();
       let start = new Date(this.wantedStartDate).getTime();
       this.amountOfDaysWanted = (end - start)/(1000 * 3600 * 24);
-      this.priceToPay = this.amountOfDaysWanted * this.myPrice;
+      this.priceToPay = this.amountOfDaysWanted * this.displayPrice;
     },
     changeToEditMode(){
       if(!this.editMode){

@@ -6,7 +6,7 @@
       <div class="cellBox">{{ image_url }}</div>
       <div class="cellBox">{{ location }}</div>
       <div class="cellBox">{{ number_guests }}</div>
-      <div class="cellBox">{{ price }}</div>
+      <div class="cellBox">{{ displayPrice }}</div>
       <div class="cellBox">{{ startDate }}</div>
       <div class="cellBox">{{ endDate }}</div>
       <div class="cellBox">{{ host }}</div>
@@ -24,6 +24,7 @@ export default {
       location: this.Listing.location,
       number_guests: this.Listing.number_guests,
       price: this.Listing.price,
+      displayPrice: Math.round(this.Listing.price * 1.15),
       startDate: this.Listing.listing_start_date,
       endDate: this.Listing.listing_end_date,
       host: this.Listing.postedByUsername
