@@ -82,7 +82,8 @@
           :key="index"
           :Content="listItem"
         />
-        <div v-if="currentUsername.length > 0" class="newReviewDivBox">
+        <div v-if="currentUsername.length > 0 && postedByUsername == currentUsername" class="errorBox">You cannot post reviews to your own listing.</div>
+        <div v-if="currentUsername.length > 0 && postedByUsername != currentUsername" class="newReviewDivBox">
           <form @submit.prevent="tryToPostReview" class="reviewForm">
             <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
             <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
@@ -444,10 +445,10 @@ export default {
     async tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
       let myUser = {
-        userId: 1,
-        username: "John McCain",
-        email: "John@cain.com",
-        balance: 0
+        userId: this.$store.getters.user.userId,
+        username: this.$store.getters.user.username,
+        email: this.$store.getters.user.email,
+        balance: this.$store.getters.user.balance
       }
  
       console.log("The wanted version: " + this.wantedVersion);
@@ -511,6 +512,14 @@ export default {
 };
 </script>
 <style scoped>
+.errorBox{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: bold;
+}
 .neededP, .haveP{
   margin: 0px;
 }
