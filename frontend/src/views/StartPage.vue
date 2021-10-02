@@ -220,6 +220,11 @@ export default {
   width: 10vw;
   outline: solid 1px black;
   text-align:center;
+  margin-right: 6px;
+  margin-bottom: 2px;
+  color:white;
+  background-color:black;
+  font-weight: bold;
 }
 .myMessageToSupport{
   position:absolute;

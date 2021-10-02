@@ -38,9 +38,17 @@ export default {
 };
 </script>
 <style scoped>
+a, a:visited {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
 .cellBox{
-  background-color: lightcoral;
-  width:10vw;
+  background-color: darkcyan;
+  width:max-content;
+  padding-bottom: 3px;
+  max-width:10vw;
+  min-width:10vw;
   display: inline-block;
   text-align:left;
   outline:solid 1px black;
@@ -48,6 +56,8 @@ export default {
   overflow-x:hidden;
   overflow-y:hidden;
   height: 20px;
+  margin: 3px;
+  text-align: center;
 }
 .firstCellBox{
   margin-left: 100px;
