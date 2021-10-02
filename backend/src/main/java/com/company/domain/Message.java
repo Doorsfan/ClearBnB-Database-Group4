@@ -15,13 +15,13 @@ public class Message {
     @Id
     @GenericGenerator(name="temp", strategy = "increment")
     @GeneratedValue(generator="temp")
-    @Column(name = "message_id")
+    @Column(name = "messageId")
     private Integer messageId;
     @ManyToOne
-    @JoinColumn(name="written_by_id")
+    @JoinColumn(name="writtenById")
     private User writtenByUser;
     @ManyToOne
-    @JoinColumn(name="recipient_id")
+    @JoinColumn(name="recipientId")
     private User recipientUser;
     private String content;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

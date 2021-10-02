@@ -127,18 +127,18 @@ export default {
       postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
       myDescription: this.$route.query.description,
-      myImageURL: this.$route.query.image_url,
+      myImageURL: this.$route.query.imageUrl,
       myLocation: this.$route.query.location,
-      myNumberOfGuests: this.$route.query.number_guests,
+      myNumberOfGuests: this.$route.query.numberGuests,
       myPrice: this.$route.query.price,
-      myStartDate: this.$route.query.listing_start_date,
-      myStartYear: this.$route.query.listing_start_date.substring(0,4),
-      myStartMonth: this.$route.query.listing_start_date.substring(5,7),
-      myStartDay: this.$route.query.listing_start_date.substring(8,10),
-      myEndDate: this.$route.query.listing_end_date,
-      myEndYear: this.$route.query.listing_end_date.substring(0,4),
-      myEndMonth: this.$route.query.listing_end_date.substring(5,7),
-      myEndDay: this.$route.query.listing_end_date.substring(8,10),
+      myStartDate: this.$route.query.listingStartDate,
+      myStartYear: this.$route.query.listingStartDate.substring(0,4),
+      myStartMonth: this.$route.query.listingStartDate.substring(5,7),
+      myStartDay: this.$route.query.listingStartDate.substring(8,10),
+      myEndDate: this.$route.query.listingEndDate,
+      myEndYear: this.$route.query.listingEndDate.substring(0,4),
+      myEndMonth: this.$route.query.listingEndDate.substring(5,7),
+      myEndDay: this.$route.query.listingEndDate.substring(8,10),
       reviewsFromDatabase: [],
       relevantReviews: [],
       wantedAmountOfStars: 3,
@@ -174,12 +174,12 @@ export default {
     let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
 
       let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing', {
@@ -369,12 +369,12 @@ export default {
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
 
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
@@ -449,17 +449,17 @@ export default {
         email: "John@cain.com",
         balance: 0
       }
-      //author_id, comment, rating, target_id, timestamp, version, reviewId
+ 
       console.log("The wanted version: " + this.wantedVersion);
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
       let myReview = {
         author: myUser,

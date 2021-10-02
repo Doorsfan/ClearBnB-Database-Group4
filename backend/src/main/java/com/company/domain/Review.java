@@ -30,7 +30,7 @@ public class Review implements Cloneable, Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime timestamp;
     @OneToOne
-    @JoinColumn(name="author_id")
+    @JoinColumn(name="authorId")
     private User author;
     @JoinColumn(name="reviewsUserIdOf")
     private Integer reviewsUserIdOf;

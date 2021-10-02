@@ -101,7 +101,7 @@ export default {
   methods: {
     async tryToPostReview(){
         let myQueryParams = {
-          author_id: this.$store.state.user.userId,
+          authorId: this.$store.state.user.userId,
           postedAbout: this.username
         }
         console.log(this.$store.state.user);

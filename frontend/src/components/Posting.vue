@@ -1,11 +1,11 @@
 <template>
   <div class="leaseBox">
-    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, image_url: Listing.image_url, location: Listing.location, number_guests: Listing.number_guests, price: Listing.price, listing_start_date: Listing.listing_start_date, listing_end_date: Listing.listing_end_date } }">
+    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, imageUrl: Listing.imageUrl, location: Listing.location, numberGuests: Listing.numberGuests, price: Listing.price, listingStartDate: Listing.listingStartDate, listingEndDate: Listing.listingEndDate } }">
       <div class="cellBox firstCellBox">{{ title }}</div>
       <div class="cellBox">{{ description }}</div>
-      <div class="cellBox">{{ image_url }}</div>
+      <div class="cellBox">{{ imageUrl }}</div>
       <div class="cellBox">{{ location }}</div>
-      <div class="cellBox">{{ number_guests }}</div>
+      <div class="cellBox">{{ numberGuests }}</div>
       <div class="cellBox">{{ displayPrice }}</div>
       <div class="cellBox">{{ startDate }}</div>
       <div class="cellBox">{{ endDate }}</div>
@@ -20,13 +20,13 @@ export default {
     return {
       title: this.Listing.title,
       description: this.Listing.description,
-      image_url: this.Listing.image_url,
+      imageUrl: this.Listing.imageUrl,
       location: this.Listing.location,
-      number_guests: this.Listing.number_guests,
+      numberGuests: this.Listing.numberGuests,
       price: this.Listing.price,
       displayPrice: Math.round(this.Listing.price * 1.15),
-      startDate: this.Listing.listing_start_date,
-      endDate: this.Listing.listing_end_date,
+      startDate: this.Listing.listingStartDate,
+      endDate: this.Listing.listingEndDate,
       host: this.Listing.postedByUsername
     };
   },
