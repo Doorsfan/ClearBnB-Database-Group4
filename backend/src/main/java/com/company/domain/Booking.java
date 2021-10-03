@@ -9,20 +9,20 @@ import java.time.LocalDate;
 @Table(name = "Booking")
 public class Booking {
     @Id
-    @Column(name = "booking_id")
+    @Column(name = "bookingId")
     @GenericGenerator(name="temp", strategy = "increment")
     @GeneratedValue(generator="temp")
     private Integer bookingId;
-    @Column(name = "listing_booked")
+    @Column(name = "listingBooked")
     private Integer listingBooked;
     @ManyToOne
-    @JoinColumn(name="booked_by_user")
+    @JoinColumn(name="bookedByUser")
     private User bookedByUser;
-    @Column(name = "amount_paid")
+    @Column(name = "amountPaid")
     private Double amountPaid;
-    @Column(name = "booking_start_date")
+    @Column(name = "bookingStartDate")
     private String bookingStartDate;
-    @Column(name = "booking_end_date")
+    @Column(name = "bookingEndDate")
     private String bookingEndDate;
     private Boolean cancelled;
 

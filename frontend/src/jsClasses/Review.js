@@ -1,5 +1,6 @@
 export default class Review {
   constructor(
+    reviewId,
     author,
     postedAtYear,
     postedAtMonth,
@@ -10,6 +11,7 @@ export default class Review {
     rating,
     version
   ) {
+    this.reviewId = reviewId,
     this.author = author,
     this.postedAtYear = postedAtYear,
     this.postedAtMonth = postedAtMonth,

@@ -19,7 +19,7 @@ public class MessageRepository {
     }
 
     public List<Message> findAllForUser(User user) {
-        return entityManager.createQuery("SELECT m FROM Message m WHERE m.writtenByUser = :user", Message.class)
+        return entityManager.createQuery("SELECT m FROM Message m WHERE m.writtenByUser = :user OR m.recipientUser = :user", Message.class)
                 .setParameter("user", user)
                 .getResultList();
     }

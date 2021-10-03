@@ -1,8 +1,10 @@
 package com.company.application;
 
 import com.company.domain.Booking;
+import com.company.domain.User;
 import com.company.infrastructure.BookingRepository;
 import com.company.infrastructure.ListingRepository;
+import com.company.infrastructure.UserRepository;
 import express.Express;
 
 import java.time.LocalDate;
@@ -16,11 +18,16 @@ public class BookingHandler {
     private final Express app;
     private final BookingRepository theBookingRepository;
     private final ListingRepository theListingRepository;
+    private final UserRepository theUserRepository;
 
-    public BookingHandler(Express app, BookingRepository theBookingRepository, ListingRepository theListingRepository){
+    public BookingHandler(Express app,
+                          BookingRepository theBookingRepository,
+                          ListingRepository theListingRepository,
+                          UserRepository theUserRepository){
         this.app = app;
         this.theBookingRepository = theBookingRepository;
         this.theListingRepository = theListingRepository;
+        this.theUserRepository = theUserRepository;
         initBookingHandler();
     }
 
@@ -31,6 +38,12 @@ public class BookingHandler {
     private void initBookingHandler() {
         app.post("/booking", (req, res) -> {
             Booking newBooking = req.body(Booking.class);
+            System.out.println(newBooking);
+            User personWhoBooked = this.theUserRepository.findById(newBooking.getBookedByUser().getUserId());
+            boolean insufficientFunds = false;
+            if(personWhoBooked.getBalance() < newBooking.getAmountPaid()){
+                insufficientFunds = true;
+            }
             List<Booking> myBookings = this.theBookingRepository.findForListing(
                     this.theListingRepository.findMostRecentForId(newBooking.getListingBooked()));
             boolean taken = false;
@@ -48,14 +61,22 @@ public class BookingHandler {
 
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            if(!taken){
-                this.theBookingRepository.save(newBooking);
-                res.json("Made a booking!");
+            if(!insufficientFunds){
+                if(!taken){
+                    personWhoBooked.setBalance(personWhoBooked.getBalance() - newBooking.getAmountPaid());
+                    this.theBookingRepository.save(newBooking);
+                    theUserRepository.update(newBooking.getBookedByUser().getUserId(),
+                            null, null, null, personWhoBooked.getBalance());
+
+                    res.json(personWhoBooked);
+                }
+                else{
+                    res.json("Failed to make a booking, dates were taken!");
+                }
             }
             else{
-                res.json("Failed to make a booking, dates were taken!");
+                res.json("Due to insufficient funds, the booking failed.");
             }
-
         });
     }
 }

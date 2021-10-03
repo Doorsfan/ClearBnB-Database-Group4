@@ -64,18 +64,23 @@ export default {
   data() {
     return {
       username: (this.$route.params.username) ? 
-      (this.$route.params.username) : ((this.$store.state.user) ? 
-        (this.$store.state.user.username) : "Not Logged In"),
+      (this.$route.params.username) : ((this.$store.getters.user) ? 
+        (this.$store.getters.user.username) : "Not Logged In"),
       reviewsFromDatabase: [],
       myComment: '',
       wantedAmountOfStars: 3,
-      loggedInUser: this.$store.state.user,
-      samePerson: (this.$store.state.user) ? (this.$route.params.username == this.$store.state.user.username) : false,
-        
-        listings: null
+      loggedInUser: this.$store.getters.user,
+      samePerson: false
+       listings: null
     };
   },
   async mounted() {
+    console.log(this.$store.getters.user);
+    if(this.$store.getters.user){
+      if(this.$store.getters.user.username == this.username){
+        this.samePerson = true;
+      }
+    }
     if(this.username == "Not Logged In"){
       document.getElementsByClassName("hidden")[0].click();
     }
@@ -89,30 +94,30 @@ export default {
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data);
           let currentIndex = 0;
           if(data == "Did not find any reviews"){
+            this.reviewsFromDatabase = [];
             return;
           }
           while(currentIndex < Object.keys(data).length){
             this.reviewsFromDatabase.push(data[currentIndex])
             currentIndex += 1;
           }
+          console.log(this.reviewsFromDatabase);
         });
   },
   methods: {
     async tryToPostReview(){
         let myQueryParams = {
-          author_id: this.$store.state.user.userId,
+          authorId: this.$store.state.user.userId,
           postedAbout: this.username
         }
         console.log(this.$store.state.user);
         let comment = {
           comment: this.myComment,
           rating: this.wantedAmountOfStars,
+          version: 1
         }
-
-        console.log(this.$store.state.user);
 
         let res = await fetch('http://localhost:4000/postReviewAboutOtherUser?' + 
         new URLSearchParams(myQueryParams), {
@@ -124,10 +129,13 @@ export default {
         }).then((data) => {
           this.reviewsFromDatabase = [];
           let currentIndex = 0;
+          console.log("The DATA:");
+          console.log(data);
           while(currentIndex < Object.keys(data).length){
             this.reviewsFromDatabase.push(data[currentIndex])
             currentIndex += 1;
           }
+          console.log(this.reviewsFromDatabase);
         }); 
     },
     setToOneStar(){

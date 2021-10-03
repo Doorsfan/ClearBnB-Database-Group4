@@ -1,15 +1,15 @@
 export default class Listing {
-  constructor(listingId, postedByUsername, title, description, image_url, location, number_guests, price, listing_start_date, listing_end_date) {
+  constructor(listingId, postedByUsername, title, description, imageUrl, location, numberGuests, price, listingStartDate, listingEndDate) {
     this.listingId = listingId;
     this.postedByUsername = postedByUsername;
     this.title = title;
     this.description = description;
-    this.image_url = image_url;
+    this.imageUrl = imageUrl;
     this.location = location;
-    this.number_guests = number_guests;
+    this.numberGuests = numberGuests;
     this.price = price;
-    this.listing_start_date = listing_start_date;
-    this.listing_end_date = listing_end_date;
+    this.listingStartDate = listingStartDate;
+    this.listingEndDate = listingEndDate;
   }
   
   setListingId(newId) {
@@ -37,11 +37,11 @@ export default class Listing {
   }
 
   retrieveTheLinkToThePicture() {
-    return this.image_url;
+    return this.imageUrl;
   }
 
   setTheLinkToThePicture(newImageURL) {
-    this.image_url = newImageURL;
+    this.imageUrl = newImageURL;
   }
 
   retrieveTheLocation() {
@@ -53,11 +53,11 @@ export default class Listing {
   }
 
   retrieveTheAmountOfGuests() {
-    return this.number_guests;
+    return this.numberGuests;
   }
 
   setTheAmountOfGuests(newAmountOfGuests) {
-    this.number_guests = newAmountOfGuests;
+    this.numberGuests = newAmountOfGuests;
   }
 
   setThePrice(newPrice) {
@@ -69,18 +69,18 @@ export default class Listing {
   }
 
   setTheStartDateOfThisListing(newStartDate) {
-    this.listing_start_date = newStartDate;
+    this.listingStartDate = newStartDate;
   }  
 
   getTheStartDateOfThisListing() {
-    return this.listing_start_date;
+    return this.listingStartDate;
   }
 
   setTheEndDateOfThisListing(newEndDate) {
-    this.listing_end_date;
+    this.listingEndDate;
   }
 
   getTheEndDateOfThisListing() {
-    return this.listing_end_date;
+    return this.listingEndDate;
   }
 }

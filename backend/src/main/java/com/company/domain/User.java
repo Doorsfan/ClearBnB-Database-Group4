@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "User")
 public class User {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "userId")
     @GenericGenerator(name="temp", strategy = "increment")
     @GeneratedValue(generator="temp")
     private Integer userId;
@@ -28,7 +28,9 @@ public class User {
     @OneToMany(mappedBy = "reviewsUserIdOf", cascade = CascadeType.ALL)
     List<Review> targetOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "writtenByUser", cascade = CascadeType.ALL)
-    List<Message> messages = new ArrayList<>();
+    List<Message> writtenMessages = new ArrayList<>();
+    @OneToMany(mappedBy = "recipientUser", cascade = CascadeType.ALL)
+    List<Message> receivedMessages = new ArrayList<>();
 
     public User() {}
 
@@ -109,12 +111,21 @@ public class User {
     }
 
     @JsonIgnore
-    public List<Message> getMessages() {
-        return messages;
+    public List<Message> getWrittenMessages() {
+        return writtenMessages;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setWrittenMessages(List<Message> writtenMessages) {
+        this.writtenMessages = writtenMessages;
+    }
+
+    @JsonIgnore
+    public List<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void setReceivedMessages(List<Message> receivedMessages) {
+        this.receivedMessages = receivedMessages;
     }
 
     @Override
@@ -129,7 +140,8 @@ public class User {
                 ", bookings=" + bookings +
                 ", authorOfReviews=" + authorOfReviews +
                 ", targetOfReviews=" + targetOfReviews +
-                ", messages=" + messages +
+                ", writtenMessages=" + writtenMessages +
+                ", receivedMessages=" + receivedMessages +
                 '}';
     }
 }

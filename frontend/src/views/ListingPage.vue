@@ -35,8 +35,8 @@
         <input v-model="newNumberOfGuests" v-if="editMode" type="text" class="inline" :placeholder=myNumberOfGuests>
       </div>
       <div class="priceText">
-        <div class="inline">Price: </div>
-        <div v-if="!editMode" class="inline">{{ myPrice }}</div>
+        <div class="inline">Price per night: </div>
+        <div v-if="!editMode" class="inline">{{ displayPrice }}</div>
         <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
       <div class="startDateText">
@@ -68,18 +68,22 @@
       </div>
       <div v-if="!editMode" class="BookingDateDiv">
       Book from the:
-        <input v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
+        <input @change="updateDays" v-model="wantedStartDate" type="date" class="bookingStartsDateElement">
         Book until the:
-        <input v-model="wantedEndDate" type="date" class="bookingEndDateElement">
+        <input @change="updateDays" v-model="wantedEndDate" type="date" class="bookingEndDateElement">
       </div>
-      <button v-if="!editMode && currentUsername.length > 0" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <div v-if="priceToPay && priceToPay > 0" class="bookingPriceDiv">
+        Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
+      </div>
+      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of relevantReviews"
           :key="index"
           :Content="listItem"
         />
-        <div v-if="currentUsername.length > 0" class="newReviewDivBox">
+        <div v-if="currentUsername.length > 0 && postedByUsername == currentUsername" class="errorBox">You cannot post reviews to your own listing.</div>
+        <div v-if="currentUsername.length > 0 && postedByUsername != currentUsername" class="newReviewDivBox">
           <form @submit.prevent="tryToPostReview" class="reviewForm">
             <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
             <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
@@ -108,28 +112,34 @@ export default {
   },
   data() {
     return {
+      isValidDate: (this.wantedStartDate != undefined && this.wantedEndDate.length != undefined) ? (this.purgedStartDate < this.purgedEndDate ? true : false) : false,
+      purgedStartDate: this.wantedStartDate ? this.wantedStartDate.replaceAll("-", "") : '',
+      purgedEndDate: this.wantedEndDate ? this.wantedEndDate.replaceAll("-", "") : '',
       wantedStartDate: new Date(this.myStartDate),
       wantedEndDate: new Date(this.myEndDate),
+      amountOfDaysWanted: '',
       wantedVersion: 1.0,
       versions: [],
       versionsOfListing: [],
+      currentUserId: (this.$store.getters.user) ? (this.$store.getters.user.userId) : '',
       currentUsername: (this.$store.getters.user) ? (this.$store.getters.user.username) : '',
+      currentUserBalance: (this.$store.getters.user) ? (this.$store.getters.user.balance) : 0,
       myListingId: this.$route.query.listingId,
       postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
       myDescription: this.$route.query.description,
-      myImageURL: this.$route.query.image_url,
+      myImageURL: this.$route.query.imageUrl,
       myLocation: this.$route.query.location,
-      myNumberOfGuests: this.$route.query.number_guests,
+      myNumberOfGuests: this.$route.query.numberGuests,
       myPrice: this.$route.query.price,
-      myStartDate: this.$route.query.listing_start_date,
-      myStartYear: this.$route.query.listing_start_date.substring(0,4),
-      myStartMonth: this.$route.query.listing_start_date.substring(5,7),
-      myStartDay: this.$route.query.listing_start_date.substring(8,10),
-      myEndDate: this.$route.query.listing_end_date,
-      myEndYear: this.$route.query.listing_end_date.substring(0,4),
-      myEndMonth: this.$route.query.listing_end_date.substring(5,7),
-      myEndDay: this.$route.query.listing_end_date.substring(8,10),
+      myStartDate: this.$route.query.listingStartDate,
+      myStartYear: this.$route.query.listingStartDate.substring(0,4),
+      myStartMonth: this.$route.query.listingStartDate.substring(5,7),
+      myStartDay: this.$route.query.listingStartDate.substring(8,10),
+      myEndDate: this.$route.query.listingEndDate,
+      myEndYear: this.$route.query.listingEndDate.substring(0,4),
+      myEndMonth: this.$route.query.listingEndDate.substring(5,7),
+      myEndDay: this.$route.query.listingEndDate.substring(8,10),
       reviewsFromDatabase: [],
       relevantReviews: [],
       wantedAmountOfStars: 3,
@@ -146,14 +156,15 @@ export default {
       newFromDay: '',
       newEndYear: '',
       newEndMonth: '',
-      newEndDay: ''
+      newEndDay: '',
+      priceToPay: 0,
+      displayPrice: 0,
     };
   },
   async mounted() {
-    console.log(this.currentUsername);
-    this.wantedVersion = this.versions[-1];
+    this.amountOfDaysWanted = (this.wantedEndDate.getTime() - this.wantedStartDate.getTime())/(100 * 3600 * 24);
     //Query the DB for Versions on this point, to get them
-    document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
+    document.getElementById('imageOfTheHouse').src = this.myImageURL;
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
     document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
 
@@ -164,12 +175,12 @@ export default {
     let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
 
       let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing', {
@@ -186,6 +197,8 @@ export default {
           this.versionsOfListing.push(data[currentIndex]);
           currentIndex += 1;
         }
+        this.wantedVersion = this.versions.length;
+        this.displayPrice = Math.round(this.versionsOfListing[this.wantedVersion-1].price * 1.15);
       })
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
@@ -200,21 +213,34 @@ export default {
             while(currentIndex < Object.keys(data).length){
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
                 ));
+              this.relevantReviews = [];
+              this.reviewsFromDatabase.forEach(element => {
+                if(element.version == this.versions.length){
+                  this.relevantReviews.push(element);
+                }
+              });
               currentIndex += 1;
             }
           });
   },
   methods: {
+    updateDays(){
+      let end = new Date(this.wantedEndDate).getTime();
+      let start = new Date(this.wantedStartDate).getTime();
+      this.amountOfDaysWanted = (end - start)/(1000 * 3600 * 24);
+      this.priceToPay = this.amountOfDaysWanted * this.displayPrice;
+    },
     changeToEditMode(){
       if(!this.editMode){
         this.editMode = true;
@@ -290,7 +316,7 @@ export default {
         imageUrl: this.imageUrl,
         location: this.location,
         numberGuests: this.numberGuests,
-        price: this.price,
+        price: this.myPrice,
         listingStartDate: this.myStartDate,
         listingEndDate: this.myEndDate
       }
@@ -298,9 +324,9 @@ export default {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(queryParams)
-      }).then(function(response){
-        return response.json();
-      }).then(function(data){
+      }).then((response) => {
+            return response.json();
+      }).then((data) => {
         let currentIndex = 0;
         while(currentIndex < Object.keys(data).length){
           currentIndex += 1;
@@ -344,14 +370,14 @@ export default {
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
-      
+
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
           mode: 'cors',
@@ -365,19 +391,20 @@ export default {
             while(currentIndex < Object.keys(data).length){
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
                 ));
               currentIndex += 1;
             }
-            console.log(this.reviewsFromDatabase);
+            this.relevantReviews = [];
             this.reviewsFromDatabase.forEach(element => {
               if(element.version == this.wantedVersion){
                 this.relevantReviews.push(element);
@@ -387,22 +414,23 @@ export default {
     },
     async tryToBook() {
       //Implement so queries can be made and actually perform the real booking
-      console.log(this.$store.getters.user);
       let myUser = {
           userId: this.$store.getters.user.userId,
           username: this.$store.getters.user.username,
           password: "",
           email: this.$store.getters.user.email,
-          balance: this.$store.getters.user.balance
+          balance: (this.$store.getters.user.balance - this.myPriceToPay)
       }
       let wantedBooking = {
-        amountPaid: 1000,
+        amountPaid: this.priceToPay,
         bookedByUser: myUser,
         listingBooked: this.myListingId,
         bookingStartDate: this.wantedStartDate,
         bookingEndDate: this.wantedEndDate,
         cancelled: 0
       }
+
+      let myPriceToPay = this.priceToPay;
       let res = await fetch('http://localhost:4000/booking', {
         method: 'POST',
         mode: 'cors',
@@ -410,29 +438,29 @@ export default {
         body: JSON.stringify(wantedBooking),
       }).then(function(response){
         return response.json();
-      }).then(function(data){
+      }).then(async function(data){
         console.log(data);
       });
     },
     async tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
       let myUser = {
-        userId: 1,
-        username: "John McCain",
-        email: "John@cain.com",
-        balance: 0
+        userId: this.$store.getters.user.userId,
+        username: this.$store.getters.user.username,
+        email: this.$store.getters.user.email,
+        balance: this.$store.getters.user.balance
       }
-      //author_id, comment, rating, target_id, timestamp, version, reviewId
+ 
       console.log("The wanted version: " + this.wantedVersion);
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
       let myReview = {
         author: myUser,
@@ -457,27 +485,64 @@ export default {
             this.reviewsFromDatabase = []
 
             while(currentIndex < Object.keys(data).length){
-              console.log(data[currentIndex].comment);
               this.reviewsFromDatabase.push(
                 new Review(
+                  data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
                 ));
               currentIndex += 1;
             }
+            this.relevantReviews = [];
+            this.reviewsFromDatabase.forEach(element => {
+              if(element.version == this.wantedVersion){
+                this.relevantReviews.push(element);
+              }
+            });
           });
     }
   },
 };
 </script>
 <style scoped>
+.errorBox{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: bold;
+}
+.neededP, .haveP{
+  margin: 0px;
+}
+.notEnoughBalanceDiv{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.BookingDateDiv{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.bookButton{
+  margin-bottom: 10px;
+}
+.bookingPriceDiv{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+}
 .startDateText, .endDateText{
   width:max-content;
   margin-left: auto;

@@ -1,6 +1,8 @@
 package com.company.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 public class Listing implements Cloneable {
     @Id
     @Column(name = "listingId")
+    @GenericGenerator(name="temp", strategy = "increment")
+    @GeneratedValue(generator="temp")
     private Integer listingId;
     @Id
     private Integer version;
