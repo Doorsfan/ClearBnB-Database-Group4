@@ -86,7 +86,7 @@ public class ListingRepository {
     public Listing save(Listing listing) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(listing);
+            entityManager.merge(listing);
             entityManager.getTransaction().commit();
             return listing;
         } catch (Exception e) {

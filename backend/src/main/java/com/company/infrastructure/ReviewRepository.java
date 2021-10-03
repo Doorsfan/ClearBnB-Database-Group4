@@ -76,7 +76,7 @@ public class ReviewRepository {
                 }
             }
             entityManager.getTransaction().begin();
-            entityManager.persist(review);
+            entityManager.merge(review);
             entityManager.getTransaction().commit();
             return review;
         } catch (Exception e) {
