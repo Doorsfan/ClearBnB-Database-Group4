@@ -9,9 +9,11 @@ import com.company.infrastructure.UserRepository;
 import express.Express;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class ReviewHandler {
@@ -35,16 +37,20 @@ public class ReviewHandler {
 
         app.post("/postReviewAboutOtherUser", (req, res) -> {
             Review myReview = req.body(Review.class);
-            myReview.setReviewsUserIdOf(this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
-            myReview.setAuthor(this.theUserRepository.findById(Integer.parseInt(req.query("author_id"))));
+            myReview.setAuthor(this.theUserRepository.findById(
+                    Integer.parseInt(req.query("authorId"))));
+            List<User> refersTo = this.theUserRepository.findByUsername(req.query("postedAbout"));
+            myReview.setReviewsUserIdOf(refersTo.get(0).getUserId());
             myReview.setTimestamp(LocalDateTime.now());
-            myReview.setVersion(1);
-            Review mySavedReview = theReviewRepository.save(myReview);
+            this.theReviewRepository.save(myReview);
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(this.theReviewRepository.findAllForTarget(
-                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId())
-            );
+
+            List<Review> myListOfReviews = this.theReviewRepository.findAllForTarget(
+                    this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
+
+            res.json(myListOfReviews);
+
         });
 
         app.get("/getReviewsForUser", (req, res) -> {
@@ -56,7 +62,7 @@ public class ReviewHandler {
                 res.json(myReviews);
             }
             catch(Exception e){
-                res.json("Did not find any reviews.");
+                res.json("");
             }
         });
 
@@ -67,12 +73,12 @@ public class ReviewHandler {
             System.out.print(queryParamsString);
             queryParamsString = queryParamsString.replaceAll("\\btitle=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\blocation=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
             queryParamsString = queryParamsString.replaceAll("\\bprice=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
-            queryParamsString = queryParamsString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
+            queryParamsString = queryParamsString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
 
             splitString = queryParamsString.split("SPLITHERE");
             //Title, Description, Image URL, Location, Guests, Price, start, end
@@ -134,12 +140,12 @@ public class ReviewHandler {
             for(String myString : myStringArray){
                 myString = myString.replaceAll("\\btitle=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bdescription=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bimage_url=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bimageUrl=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\blocation=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\bnumber_guests=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\bnumberGuests=\\b", "SPLITHERE");
                 myString = myString.replaceAll("\\bprice=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blisting_start_date=\\b", "SPLITHERE");
-                myString = myString.replaceAll("\\blisting_end_date=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blistingStartDate=\\b", "SPLITHERE");
+                myString = myString.replaceAll("\\blistingEndDate=\\b", "SPLITHERE");
                 splitArray = myString.split("SPLITHERE");
             }
             for(String test : splitArray){
@@ -166,7 +172,7 @@ public class ReviewHandler {
             wantedReview.setTimestamp(wantedTimeStamp);
             wantedReview.setRating(wantedRating);
             wantedReview.setVersion(wantedVersion);
-            wantedReview.setRefersToListingId(theIdOfTheListing);
+            wantedReview.setPostedToListingId(theIdOfTheListing);
             this.theReviewRepository.save(wantedReview);
 
             List<Review> updatedListOfReviews = this.theReviewRepository.findAllReviewsForListingOfId(theIdOfTheListing);
@@ -177,14 +183,7 @@ public class ReviewHandler {
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
             res.json(updatedListOfReviews);
-            /*
-            myReview.setVersion(1);
-            myReview.setRefers_to_listingId(1);
-            this.theReviewRepository.save(myReview);
-            res.json("Yes");
-            //this.theReviewRepository.findAll();
 
-             */
         });
 
         app.post("/updateReview", (req, res) -> {

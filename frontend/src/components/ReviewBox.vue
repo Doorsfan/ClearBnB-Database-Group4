@@ -40,10 +40,10 @@ export default {
       currentUser: this.$store.getters.user ? (this.$store.getters.user.username == this.Content.author ? true : false) : false,
       reviewId: this.Content.reviewId,
       year: this.Content.postedAtYear,
-      month: this.Content.postedAtMonth < 10 ? '0' + this.Content.postedAtMonth : this.Content.postedAtMonth,
-      day: this.Content.postedAtDay < 10 ? '0' + this.Content.postedAtDay : this.Content.postedAtDay,
-      hour: this.Content.postedAtHour < 10 ? '0' + this.Content.postedAtHour : this.Content.postedAtHour,
-      minute: this.Content.postedAtMinute < 10 ? '0' + this.Content.postedAtMinute : this.Content.postedAtMinute,
+      month: (this.Content.postedAtMonth) < 10 ? '0' + this.Content.postedAtMonth : this.Content.postedAtMonth,
+      day: (this.Content.postedAtDay) < 10 ? '0' + this.Content.postedAtDay : this.Content.postedAtDay,
+      hour: (this.Content.postedAtHour < 10) ? '0' + this.Content.postedAtHour : this.Content.postedAtHour,
+      minute: (this.Content.postedAtMinute) < 10 ? '0' + this.Content.postedAtMinute : this.Content.postedAtMinute,
       second: this.Content.postedAtSecond,
       author: this.Content.author,
       rating: this.Content.rating,
@@ -109,11 +109,11 @@ export default {
         }).then((data) => {
           console.log(data.timestamp);
           this.comment = data.comment;
-          this.year = data.timestamp.year;
-          this.month = (data.timestamp.monthValue < 10) ? '0' + data.timestamp.monthValue : data.timestamp.monthValue;
-          this.day = (data.timestamp.dayOfMonth < 10) ? '0' + data.timestamp.dayOfMonth : data.timestamp.dayOfMonth;
-          this.hour = data.timestamp.hour;
-          this.minute = data.timestamp.minute;
+          this.year = data.timestamp[0];
+          this.month = (data.timestamp[1] < 10) ? '0' + data.timestamp[1] : data.timestamp[1];
+          this.day = (data.timestamp[2] < 10) ? '0' + data.timestamp[2] : data.timestamp[2];
+          this.hour = (data.timestamp[3] < 10) ? '0' + data.timestamp[3] : data.timestamp[3];
+          this.minute = (data.timestamp[4] < 10) ? '0' + data.timestamp[4] : data.timestamp[4];
           this.removedComment = false;
         });
     },
@@ -133,16 +133,17 @@ export default {
           return response.json();
         }).then((data) => {
           this.comment = data.comment;
-          this.year = data.timestamp.year;
-          this.month = (data.timestamp.monthValue < 10) ? '0' + data.timestamp.monthValue : data.timestamp.monthValue;
-          this.day = (data.timestamp.dayOfMonth < 10) ? '0' + data.timestamp.dayOfMonth : data.timestamp.dayOfMonth;
-          this.hour = data.timestamp.hour;
-          this.minute = data.timestamp.minute;
+          this.year = data.timestamp[0];
+          this.month = (data.timestamp[1] < 10) ? '0' + data.timestamp[1] : data.timestamp[1];
+          this.day = (data.timestamp[2] < 10) ? '0' + data.timestamp[2] : data.timestamp[2];
+          this.hour = (data.timestamp[3] < 10) ? '0' + data.timestamp[3] : data.timestamp[3];
+          this.minute = (data.timestamp[4] < 10) ? '0' + data.timestamp[4] : data.timestamp[4];
           this.removedComment = true;
         });
     }
   },
   async mounted() {
+    console.log(this.Content);
     if(this.Content.comment.includes("(Edited)")){
       this.editedComment = true;
     }

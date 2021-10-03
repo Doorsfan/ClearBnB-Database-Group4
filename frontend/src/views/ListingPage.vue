@@ -36,7 +36,7 @@
       </div>
       <div class="priceText">
         <div class="inline">Price per night: </div>
-        <div v-if="!editMode" class="inline">{{ myPrice }}</div>
+        <div v-if="!editMode" class="inline">{{ displayPrice }}</div>
         <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
       <div class="startDateText">
@@ -75,21 +75,15 @@
       <div v-if="priceToPay && priceToPay > 0" class="bookingPriceDiv">
         Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
       </div>
-      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay && priceToPay <= currentUserBalance" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
-      <div v-if="!editMode && currentUsername.length > 0 && priceToPay && priceToPay > currentUserBalance" class="notEnoughBalanceDiv">
-        Insufficient funds on Account to Book
-        <div class="neededDiv">
-          <p class="neededP">Needed: {{ priceToPay }}</p> 
-          <p class="haveP">Have in Balance: {{ currentUserBalance }}</p>
-        </div>
-      </div>
+      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of relevantReviews"
           :key="index"
           :Content="listItem"
         />
-        <div v-if="currentUsername.length > 0" class="newReviewDivBox">
+        <div v-if="currentUsername.length > 0 && postedByUsername == currentUsername" class="errorBox">You cannot post reviews to your own listing.</div>
+        <div v-if="currentUsername.length > 0 && postedByUsername != currentUsername" class="newReviewDivBox">
           <form @submit.prevent="tryToPostReview" class="reviewForm">
             <span v-if="wantedAmountOfStars >= 1" @click="setToOneStar" class="starRating oneStar">&#11088;</span>
             <span v-if="wantedAmountOfStars >= 2" @click="setToTwoStars" class="starRating twoStars">&#11088;</span>
@@ -134,18 +128,18 @@ export default {
       postedByUsername: this.$route.query.postedByUsername,
       myTitle: this.$route.query.title,
       myDescription: this.$route.query.description,
-      myImageURL: this.$route.query.image_url,
+      myImageURL: this.$route.query.imageUrl,
       myLocation: this.$route.query.location,
-      myNumberOfGuests: this.$route.query.number_guests,
+      myNumberOfGuests: this.$route.query.numberGuests,
       myPrice: this.$route.query.price,
-      myStartDate: this.$route.query.listing_start_date,
-      myStartYear: this.$route.query.listing_start_date.substring(0,4),
-      myStartMonth: this.$route.query.listing_start_date.substring(5,7),
-      myStartDay: this.$route.query.listing_start_date.substring(8,10),
-      myEndDate: this.$route.query.listing_end_date,
-      myEndYear: this.$route.query.listing_end_date.substring(0,4),
-      myEndMonth: this.$route.query.listing_end_date.substring(5,7),
-      myEndDay: this.$route.query.listing_end_date.substring(8,10),
+      myStartDate: this.$route.query.listingStartDate,
+      myStartYear: this.$route.query.listingStartDate.substring(0,4),
+      myStartMonth: this.$route.query.listingStartDate.substring(5,7),
+      myStartDay: this.$route.query.listingStartDate.substring(8,10),
+      myEndDate: this.$route.query.listingEndDate,
+      myEndYear: this.$route.query.listingEndDate.substring(0,4),
+      myEndMonth: this.$route.query.listingEndDate.substring(5,7),
+      myEndDay: this.$route.query.listingEndDate.substring(8,10),
       reviewsFromDatabase: [],
       relevantReviews: [],
       wantedAmountOfStars: 3,
@@ -163,13 +157,14 @@ export default {
       newEndYear: '',
       newEndMonth: '',
       newEndDay: '',
-      priceToPay: 0
+      priceToPay: 0,
+      displayPrice: 0,
     };
   },
   async mounted() {
     this.amountOfDaysWanted = (this.wantedEndDate.getTime() - this.wantedStartDate.getTime())/(100 * 3600 * 24);
     //Query the DB for Versions on this point, to get them
-    document.getElementById('imageOfTheHouse').src = 'https://i2.wp.com/samhouseplans.com/wp-content/uploads/2021/01/Small-House-Plans-6.5x6-Meter-1.jpg?fit=1920%2C1080&ssl=1';
+    document.getElementById('imageOfTheHouse').src = this.myImageURL;
     document.getElementsByClassName('bookingStartsDateElement')[0].min = this.myStartDate;
     document.getElementsByClassName('bookingStartsDateElement')[0].max = this.myEndDate;
 
@@ -180,12 +175,12 @@ export default {
     let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
 
       let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing', {
@@ -203,6 +198,7 @@ export default {
           currentIndex += 1;
         }
         this.wantedVersion = this.versions.length;
+        this.displayPrice = Math.round(this.versionsOfListing[this.wantedVersion-1].price * 1.15);
       })
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
@@ -219,11 +215,11 @@ export default {
                 new Review(
                   data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
@@ -243,7 +239,7 @@ export default {
       let end = new Date(this.wantedEndDate).getTime();
       let start = new Date(this.wantedStartDate).getTime();
       this.amountOfDaysWanted = (end - start)/(1000 * 3600 * 24);
-      this.priceToPay = this.amountOfDaysWanted * this.myPrice;
+      this.priceToPay = this.amountOfDaysWanted * this.displayPrice;
     },
     changeToEditMode(){
       if(!this.editMode){
@@ -320,7 +316,7 @@ export default {
         imageUrl: this.imageUrl,
         location: this.location,
         numberGuests: this.numberGuests,
-        price: this.price,
+        price: this.myPrice,
         listingStartDate: this.myStartDate,
         listingEndDate: this.myEndDate
       }
@@ -328,9 +324,9 @@ export default {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(queryParams)
-      }).then(function(response){
-        return response.json();
-      }).then(function(data){
+      }).then((response) => {
+            return response.json();
+      }).then((data) => {
         let currentIndex = 0;
         while(currentIndex < Object.keys(data).length){
           currentIndex += 1;
@@ -374,12 +370,12 @@ export default {
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
 
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
@@ -397,11 +393,11 @@ export default {
                 new Review(
                   data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
@@ -449,22 +445,22 @@ export default {
     async tryToPostReview(){
       //Implement so queries can be made and actually perform the real review posting
       let myUser = {
-        userId: 1,
-        username: "John McCain",
-        email: "John@cain.com",
-        balance: 0
+        userId: this.$store.getters.user.userId,
+        username: this.$store.getters.user.username,
+        email: this.$store.getters.user.email,
+        balance: this.$store.getters.user.balance
       }
-      //author_id, comment, rating, target_id, timestamp, version, reviewId
+ 
       console.log("The wanted version: " + this.wantedVersion);
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
-        image_url: this.$route.query.image_url,
+        imageUrl: this.$route.query.imageUrl,
         location: this.$route.query.location,
-        number_guests: this.$route.query.number_guests,
+        numberGuests: this.$route.query.numberGuests,
         price: this.$route.query.price,
-        listing_start_date: this.$route.query.listing_start_date,
-        listing_end_date: this.$route.query.listing_end_date,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
       }
       let myReview = {
         author: myUser,
@@ -493,11 +489,11 @@ export default {
                 new Review(
                   data[currentIndex].reviewId,
                   data[currentIndex].author.username, 
-                  data[currentIndex].timestamp.year, 
-                  data[currentIndex].timestamp.monthValue, 
-                  data[currentIndex].timestamp.dayOfMonth, 
-                  data[currentIndex].timestamp.hour,
-                  data[currentIndex].timestamp.minute,
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
                   data[currentIndex].comment, 
                   data[currentIndex].rating, 
                   data[currentIndex].version
@@ -516,6 +512,14 @@ export default {
 };
 </script>
 <style scoped>
+.errorBox{
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: bold;
+}
 .neededP, .haveP{
   margin: 0px;
 }

@@ -15,12 +15,12 @@
       </div>
       <div class="startDateBox Box">
         Start Date
-        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" min="2021-09-17" type="date" /></div>
+        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="new Date()" type="date" /></div>
       </div>
       <div class="endDateBox Box">
         End Date
         <div class="endDateBar">
-          <input class="myMaxDateInput" @change="updateMyMaxDate" type="date" min="2021-09-17" max="2021-10-17" />
+          <input class="myMaxDateInput" @change="updateMyMaxDate" type="date" :min="myMinDate" />
         </div>
       </div>
       <div class="priceBox Box">
@@ -116,7 +116,6 @@ export default {
       //
       // listingId5 {1: versionId: 1, 2: versionId: 2}
       // 
-      console.log(data);
       const groupBy = (objectArray, property) => {
           return objectArray.reduce(function (total, obj) {
             let key = obj[property];
@@ -131,7 +130,6 @@ export default {
         let groupedListings = groupBy(data, 'listingId');
 
         for(var listing in groupedListings){
-          console.log(listing);
           let currentListing = groupedListings[listing];
           let relevantListing = currentListing[currentListing.length - 1];
           let latestVersionOfListing = new Listing(
@@ -174,7 +172,6 @@ export default {
         myMaxDate: this.myMaxDate,
         myPrice: this.myPrice
       }
-      console.log(myQueryParams);
       let res = await fetch('http://localhost:4000/getResultsFromFiltering?' + 
       new URLSearchParams(myQueryParams), {
         method: 'GET',
@@ -223,6 +220,11 @@ export default {
   width: 10vw;
   outline: solid 1px black;
   text-align:center;
+  margin-right: 6px;
+  margin-bottom: 2px;
+  color:white;
+  background-color:black;
+  font-weight: bold;
 }
 .myMessageToSupport{
   position:absolute;

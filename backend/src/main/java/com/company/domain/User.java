@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "User")
 public class User {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "userId")
     @GenericGenerator(name="temp", strategy = "increment")
     @GeneratedValue(generator="temp")
     private Integer userId;
