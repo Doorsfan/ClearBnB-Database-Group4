@@ -54,8 +54,7 @@ export default {
   
   async beforeCreate(){
        let res  = await fetch('http://localhost:4000/getListingsByOwner');
- 
- 
+  return response.json(findAllForOwner);
  },  
 
   components: {
@@ -70,7 +69,7 @@ export default {
       myComment: '',
       wantedAmountOfStars: 3,
       loggedInUser: this.$store.getters.user,
-      samePerson: false
+      samePerson: false,
        listings: null
     };
   },
