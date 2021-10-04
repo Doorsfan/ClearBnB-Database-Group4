@@ -40,7 +40,8 @@ public class UserHandler {
 
             // check if user exists
             try {
-                if (userRepository.findByUsername(user.getUsername()).get(0) != null) {
+                if (userCacheRepository.findUser("username-" + user.getUsername()) != null
+                    || userRepository.findByUsername(user.getUsername()).get(0) != null) {
                     res.json(Map.of("error", "User already exists"));
                     return;
                 }
@@ -53,6 +54,7 @@ public class UserHandler {
 
             // save new user
             userRepository.save(user);
+            userCacheRepository.addUser("username-" + user.getUsername(), user);
 
             // log user in
             req.session("current-user", user);
@@ -65,7 +67,13 @@ public class UserHandler {
             User user = req.body(User.class);
             User userInDatabase;
             try {
-                userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
+                userInDatabase = userCacheRepository.findUser("username-" + user.getUsername()); // check cache first
+                if (userInDatabase == null) {
+                    userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
+                    if (userInDatabase != null) {
+                        userCacheRepository.addUser("username-" + userInDatabase.getUsername(), userInDatabase);
+                    }
+                }
             } catch (Exception e) {
                 userInDatabase = null;
             }
@@ -99,7 +107,11 @@ public class UserHandler {
         });
 
         app.get("/rest/getUserByUsername/:username", (req, res) -> {
-            User user = userRepository.findByUsername(req.params("username")).get(0);
+            User user = userCacheRepository.findUser("username-" + req.params("username"));
+            if (user == null) {
+                user = userRepository.findByUsername(req.params("username")).get(0);
+                userCacheRepository.addUser("username-" + req.params("username"), user);
+            }
             res.json(user);
         });
     }

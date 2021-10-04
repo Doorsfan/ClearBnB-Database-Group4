@@ -1,6 +1,7 @@
 package com.company.infrastructure;
 
 import com.company.domain.User;
+import com.google.gson.GsonBuilder;
 import redis.clients.jedis.Jedis;
 import com.google.gson.Gson;
 
@@ -26,6 +27,7 @@ public class UserCacheRepository {
 
     public void addUser(String path, User user) {
         System.out.println("Adding user to cache");
-        jedis.set(path, new Gson().toJson(user));
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        jedis.set(path, gson.toJson(user));
     }
 }
