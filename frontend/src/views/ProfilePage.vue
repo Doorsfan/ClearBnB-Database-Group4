@@ -15,9 +15,12 @@
         <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
         <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
    
-      <!--v-for =" listing in  listings" :key="owner.id"  class="Listing" -->
-  
+       <!-- <div v-for =" listing in  listings" :key="owner.id"  class="Listing"> 
+      
+      </div>-->
+    
     </div>
+  </div>
     
     <div class="reviewsDiv">
       <UserReview
