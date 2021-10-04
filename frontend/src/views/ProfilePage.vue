@@ -1,24 +1,23 @@
 <template>
   <div class="mainDiv">
     <div class="upperDiv">
-      <div class="navbar">
-      </div>
+      <div class="navbar"></div>
       <div class="myProfileBox centerBox">My Profile</div>
       <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
-      <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
+      <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: {{ loggedInUser.balance }}</div>
       <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
-     
       <p class="myLeasesP">My Leases</p>
-      <div class="myProfileInfoBoxLinks centerBox subBox4">
-        <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
-        <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
-        <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
-        <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
-   
-       <!-- <div v-for ="(listing, index) of  myListings" :key="index" :myListing="listing"></div> -->
-    
+      <div class="divOfListings">
+        <div class="cellBox">Title</div>
+        <div class="cellBox">Description</div>
+        <div class="cellBox">Price</div>
+        <div class="cellBox">Nr Guests</div>
+        <div class="cellBox">City</div>
+        <div class="cellBox">Start Date</div>
+        <div class="cellBox">End Date</div>
+        <ProfilePageListing v-for ="(listing, index) of  myListings" :key="index" :myListing="listing" />
+      </div>
     </div>
-  </div>
     
     <div class="reviewsDiv">
       <UserReview
@@ -54,10 +53,12 @@
 <script>
 import UserReview from '../components/UserReview.vue';
 import store from '../store.js';
+import ProfilePageListing from '../components/ProfilePageListing.vue';
 
 export default {
   components: {
-    UserReview
+    UserReview,
+    ProfilePageListing
   },
   data() {
     return {
@@ -73,7 +74,6 @@ export default {
     };
   },
   async mounted() {
-    console.log(this.$store.getters.user);
     if(this.$store.getters.user){
       if(this.$store.getters.user.username == this.username){
         this.samePerson = true;
@@ -114,21 +114,16 @@ export default {
         }).then((response) => {
          return response.json();
         }).then((data) => {
-          console.log(data);
-          //Here, the response is resolved into actual data that we
-          //can process. This is a Callback context that acts as a anonymous
-          //seperate class.
-          //
-          /*  let currentIndex = 0;
+        
+          let currentIndex = 0;
           this.myListings = [];
-          if(data == "No user was found."){
-            
+          if(data == "No user was found."){  
             return;
           }
           while(currentIndex < Object.keys(data).length){
             this.myListings.push(data[currentIndex])
             currentIndex += 1;
-          } */
+          } 
         }); 
   },
   methods: {
@@ -182,6 +177,15 @@ export default {
 };
 </script>
 <style scoped>
+.divOfListings{
+  position: absolute;
+  top: 500px;
+  left: 15vw;
+  width:max-content;
+  margin-left:auto;
+  margin-right:auto;
+  max-width: 75vw;
+}
 .hidden{
   display:none;
 }
@@ -296,5 +300,12 @@ a {
   min-width: 280px;
   max-height: 160px;
   max-width: 280px;
+}
+.cellBox{
+  display:inline-block;
+  width:10vw;
+  margin-left: 3px;
+  text-align:center;
+  font-size:23px;
 }
 </style>

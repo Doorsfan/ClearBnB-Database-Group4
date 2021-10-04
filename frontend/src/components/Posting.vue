@@ -33,6 +33,7 @@ export default {
   methods: {
   },
   mounted() {
+    console.log(this.Listing);
   }
 };
 </script>
