@@ -15,9 +15,7 @@
         <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
         <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
    
-       <!-- <div v-for =" listing in  listings" :key="owner.id"  class="Listing"> 
-      
-      </div>-->
+       <!-- <div v-for ="(listing, index) of  myListings" :key="index" :myListing="listing"></div> -->
     
     </div>
   </div>
@@ -60,13 +58,31 @@ import store from '../store.js';
 export default {
   
   async beforeCreate(){
-       let res  = await fetch('http://localhost:4000/getListingsByOwner', {
+       let wantedUsername = {
+         username: this.username
+       }
+       let res  = await fetch('http://localhost:4000/getListingsByOwner?' +
+       new URLSearchParams(wantedUsername), {
           method: 'GET',
-          mode: 'cors',
-          body: JSON.stringify(findAllForOwner),
+          mode: 'cors'
         }).then((response) => {
          return response.json();
-        });
+        }).then((data) => {
+          //Here, the response is resolved into actual data that we
+          //can process. This is a Callback context that acts as a anonymous
+          //seperate class.
+          //
+          /*  let currentIndex = 0;
+          this.myListings = [];
+          if(data == "No user was found."){
+            
+            return;
+          }
+          while(currentIndex < Object.keys(data).length){
+            this.myListings.push(data[currentIndex])
+            currentIndex += 1;
+          } */
+        }); 
  },  
 
   components: {
@@ -82,7 +98,7 @@ export default {
       wantedAmountOfStars: 3,
       loggedInUser: this.$store.getters.user,
       samePerson: false,
-       listings: null
+      myListings: []
     };
   },
   async mounted() {
