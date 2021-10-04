@@ -15,7 +15,7 @@
       </div>
       <div class="startDateBox Box">
         Start Date
-        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="new Date()" type="date" /></div>
+        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="myMinDate" type="date" /></div>
       </div>
       <div class="endDateBox Box">
         End Date
@@ -97,6 +97,11 @@ export default {
     };
   },
   async mounted() {
+    let myDate = new Date();
+    let myYear = myDate.getFullYear();
+    let myMonth = ((myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : (myDate.getMonth() + 1));
+    let myDay = (myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
+    this.myMinDate = myYear + '-' + myMonth + '-' + myDay;
     let res = await fetch('http://localhost:4000/getAllListings', {
       method: 'POST',
       mode: 'cors',
