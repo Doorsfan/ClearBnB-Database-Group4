@@ -41,7 +41,8 @@ public class Application {
         UserCacheRepository userCacheRepository = new UserCacheRepository(jedis);
 
         //Handlers
-        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository, userRepository);
+        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository,
+                userRepository, userCacheRepository);
         UserHandler userHandler = new UserHandler(app, userRepository, userCacheRepository);
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);

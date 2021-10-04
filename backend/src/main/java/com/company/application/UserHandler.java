@@ -30,9 +30,13 @@ public class UserHandler {
         app.get("/api/updateUserBalance", (req, res) -> {
             res.append("Access-Control-Allow-Origin", "http://localhost:3000/ListingPage");
             res.append("Access-Control-Allow-Credentials", "true");
-           userRepository.update(Integer.parseInt(req.query("userId")), null,
+            userRepository.update(Integer.parseInt(req.query("userId")), null,
                    null, null, Double.parseDouble(req.query("balance")));
-           res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
+            // invalidate user in cache
+            System.out.println("test111");
+            userCacheRepository.remove("username-" + req.query("username"));
+
+            res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
         });
         
         app.post("/api/register", (req, res) -> {
@@ -40,7 +44,7 @@ public class UserHandler {
 
             // check if user exists
             try {
-                if (userCacheRepository.findUser("username-" + user.getUsername()) != null
+                if (userCacheRepository.find("username-" + user.getUsername()) != null
                     || userRepository.findByUsername(user.getUsername()).get(0) != null) {
                     res.json(Map.of("error", "User already exists"));
                     return;
@@ -54,7 +58,7 @@ public class UserHandler {
 
             // save new user
             userRepository.save(user);
-            userCacheRepository.addUser("username-" + user.getUsername(), user);
+            userCacheRepository.add("username-" + user.getUsername(), user);
 
             // log user in
             req.session("current-user", user);
@@ -67,11 +71,11 @@ public class UserHandler {
             User user = req.body(User.class);
             User userInDatabase;
             try {
-                userInDatabase = userCacheRepository.findUser("username-" + user.getUsername()); // check cache first
+                userInDatabase = userCacheRepository.find("username-" + user.getUsername()); // check cache first
                 if (userInDatabase == null) {
                     userInDatabase = userRepository.findByUsername(user.getUsername()).get(0);
                     if (userInDatabase != null) {
-                        userCacheRepository.addUser("username-" + userInDatabase.getUsername(), userInDatabase);
+                        userCacheRepository.add("username-" + userInDatabase.getUsername(), userInDatabase);
                     }
                 }
             } catch (Exception e) {
@@ -107,10 +111,10 @@ public class UserHandler {
         });
 
         app.get("/rest/getUserByUsername/:username", (req, res) -> {
-            User user = userCacheRepository.findUser("username-" + req.params("username"));
+            User user = userCacheRepository.find("username-" + req.params("username"));
             if (user == null) {
                 user = userRepository.findByUsername(req.params("username")).get(0);
-                userCacheRepository.addUser("username-" + req.params("username"), user);
+                userCacheRepository.add("username-" + req.params("username"), user);
             }
             res.json(user);
         });

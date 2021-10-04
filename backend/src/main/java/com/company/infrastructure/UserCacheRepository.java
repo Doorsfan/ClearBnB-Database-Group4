@@ -12,7 +12,7 @@ public class UserCacheRepository {
         this.jedis = jedis;
     }
 
-    public User findUser(String path) {
+    public User find(String path) {
         System.out.println("Searching cache for user");
         User user = new Gson().fromJson(jedis.get(path), User.class);
 
@@ -25,9 +25,14 @@ public class UserCacheRepository {
         return user;
     }
 
-    public void addUser(String path, User user) {
+    public void add(String path, User user) {
         System.out.println("Adding user to cache");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         jedis.set(path, gson.toJson(user));
+    }
+
+    public void remove(String path) {
+        System.out.println("Removing user from cache");
+        jedis.del(path);
     }
 }
