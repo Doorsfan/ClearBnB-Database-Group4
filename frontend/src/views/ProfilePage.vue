@@ -6,8 +6,8 @@
       <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
       <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: {{ loggedInUser.balance }}</div>
       <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
-      <p class="myLeasesP">My Leases</p>
-      <div class="divOfListings">
+      <p v-if="myListings.length > 0" class="myLeasesP">My Leases</p>
+      <div v-if="myListings.length > 0" class="divOfListings">
         <div class="cellBox">Title</div>
         <div class="cellBox">Description</div>
         <div class="cellBox">Price</div>

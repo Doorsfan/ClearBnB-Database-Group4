@@ -41,7 +41,7 @@ export default {
       this.$router.push("/login");
     },
     goToProfilePage() {
-      this.$router.push("/profile/" + this.$store.state.user.username);
+      this.$router.push("/profile/" + this.$store.getters.user.username);
     },
     logout() {
       this.$store.dispatch("logout");
