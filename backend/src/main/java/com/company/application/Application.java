@@ -33,7 +33,7 @@ public class Application {
 
         // Repositories
         UserRepository userRepository = new UserRepository(entityManager);
-        UserRepository secondUserRepository = new UserRepository((entityManager6));
+        UserRepository secondUserRepository = new UserRepository(entityManager6);
 
         BookingRepository bookingRepository = new BookingRepository(entityManager2);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager3);
