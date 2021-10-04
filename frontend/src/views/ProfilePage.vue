@@ -56,35 +56,6 @@ import UserReview from '../components/UserReview.vue';
 import store from '../store.js';
 
 export default {
-  
-  async beforeCreate(){
-       let wantedUsername = {
-         username: this.username
-       }
-       let res  = await fetch('http://localhost:4000/getListingsByOwner?' +
-       new URLSearchParams(wantedUsername), {
-          method: 'GET',
-          mode: 'cors'
-        }).then((response) => {
-         return response.json();
-        }).then((data) => {
-          //Here, the response is resolved into actual data that we
-          //can process. This is a Callback context that acts as a anonymous
-          //seperate class.
-          //
-          /*  let currentIndex = 0;
-          this.myListings = [];
-          if(data == "No user was found."){
-            
-            return;
-          }
-          while(currentIndex < Object.keys(data).length){
-            this.myListings.push(data[currentIndex])
-            currentIndex += 1;
-          } */
-        }); 
- },  
-
   components: {
     UserReview
   },
@@ -132,6 +103,33 @@ export default {
           }
           console.log(this.reviewsFromDatabase);
         });
+
+        let wantedUsername = {
+         username: this.username
+       }
+       let responseFromListings  = await fetch('http://localhost:4000/getListingsByOwner?' +
+       new URLSearchParams(wantedUsername), {
+          method: 'GET',
+          mode: 'cors'
+        }).then((response) => {
+         return response.json();
+        }).then((data) => {
+          console.log(data);
+          //Here, the response is resolved into actual data that we
+          //can process. This is a Callback context that acts as a anonymous
+          //seperate class.
+          //
+          /*  let currentIndex = 0;
+          this.myListings = [];
+          if(data == "No user was found."){
+            
+            return;
+          }
+          while(currentIndex < Object.keys(data).length){
+            this.myListings.push(data[currentIndex])
+            currentIndex += 1;
+          } */
+        }); 
   },
   methods: {
     async tryToPostReview(){

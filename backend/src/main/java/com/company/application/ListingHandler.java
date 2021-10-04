@@ -135,9 +135,11 @@ public class ListingHandler {
                 });
 
             app.get("/getListingsByOwner", (req, res) -> {
-                List<User> myWantedUser = this.theUserRepository.findByUsername(req.query("username"));
-                if (myWantedUser.size() > 0) {
-                    List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(myWantedUser.get(0));
+                System.out.println("THE QUERY WAS: ");
+                System.out.println(req.query());
+                List<User> myWantedUsers = this.theUserRepository.findByUsername(req.query("username"));
+                if (myWantedUsers.size() > 0) {
+                    List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(myWantedUsers.get(0));
                     res.append("Access-Control-Allow-Origin", "http://localhost:3000");
                     res.append("Access-Control-Allow-Credentials", "true");
                     res.json(findAllForOwner);
