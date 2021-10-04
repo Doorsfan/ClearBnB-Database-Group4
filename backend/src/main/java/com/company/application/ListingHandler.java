@@ -131,6 +131,8 @@ public class ListingHandler {
 
             app.get("/getListingsByOwner", (req, res) -> {
                 List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(req.query("owner"));
+                 res.append("Access-Control-Allow-Origin", "http://localhost:3000");
+                res.append("Access-Control-Allow-Credentials", "true");
                 res.json(findAllForOwner);
                 });
 

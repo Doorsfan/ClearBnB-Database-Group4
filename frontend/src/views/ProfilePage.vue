@@ -7,14 +7,18 @@
       <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
       <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: TEMP</div>
       <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
+     
       <p class="myLeasesP">My Leases</p>
       <div class="myProfileInfoBoxLinks centerBox subBox4">
         <p class="tempLeaseList">MY LEASE 1 IN LIST</p>
         <p class="tempLeaseList">MY LEASE 2 IN LIST</p>
         <p class="tempLeaseList">MY LEASE 3 IN LIST</p>
         <p class="tempLeaseList">MY LEASE 4 IN LIST</p>
-      </div>
+   
+      <!--v-for =" listing in  listings" :key="owner.id"  class="Listing" -->
+  
     </div>
+    
     <div class="reviewsDiv">
       <UserReview
           v-for="(listItem, index) of reviewsFromDatabase"
@@ -53,8 +57,13 @@ import store from '../store.js';
 export default {
   
   async beforeCreate(){
-       let res  = await fetch('http://localhost:4000/getListingsByOwner');
-  return response.json(findAllForOwner);
+       let res  = await fetch('http://localhost:4000/getListingsByOwner', {
+          method: 'GET',
+          mode: 'cors',
+          body: JSON.stringify(findAllForOwner),
+        }).then((response) => {
+         return response.json();
+        });
  },  
 
   components: {
