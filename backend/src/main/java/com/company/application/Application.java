@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 
+import redis.clients.jedis.Jedis;
+
 public class Application {
     Connection con;
 
@@ -17,6 +19,9 @@ public class Application {
         app.listen(4000);
 
         con = MySQL.INSTANCE.getConnection();
+
+        //Connecting to Redis server on localhost
+        Jedis jedis = new Jedis();
 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ClearBnB");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -35,9 +40,13 @@ public class Application {
         ListingRepository listingRepository = new ListingRepository(entityManager4);
         MessageRepository messageRepository = new MessageRepository(entityManager5);
 
+        // Cache Repositories
+        UserCacheRepository userCacheRepository = new UserCacheRepository(jedis);
+
         //Handlers
-        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository, userRepository);
-        UserHandler userHandler = new UserHandler(app,userRepository);
+        BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository,
+                userRepository, userCacheRepository);
+        UserHandler userHandler = new UserHandler(app, userRepository, userCacheRepository);
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository, secondUserRepository);
         MessageHandler messageHandler = new MessageHandler(app, messageRepository, userRepository);
