@@ -2,6 +2,8 @@ package com.company.infrastructure;
 
 import com.company.domain.User;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
@@ -17,6 +19,7 @@ public class UserRepository {
 
     public List<User> findByUsername(String username) {
         List<User> user;
+
         try {
             user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username")
                     .setParameter("username", username)

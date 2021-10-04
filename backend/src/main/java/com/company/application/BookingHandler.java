@@ -4,6 +4,7 @@ import com.company.domain.Booking;
 import com.company.domain.User;
 import com.company.infrastructure.BookingRepository;
 import com.company.infrastructure.ListingRepository;
+import com.company.infrastructure.UserCacheRepository;
 import com.company.infrastructure.UserRepository;
 import express.Express;
 
@@ -19,15 +20,18 @@ public class BookingHandler {
     private final BookingRepository theBookingRepository;
     private final ListingRepository theListingRepository;
     private final UserRepository theUserRepository;
+    private final UserCacheRepository theUserCacheRepository;
 
     public BookingHandler(Express app,
                           BookingRepository theBookingRepository,
                           ListingRepository theListingRepository,
-                          UserRepository theUserRepository){
+                          UserRepository theUserRepository,
+                          UserCacheRepository theUserCacheRepository){
         this.app = app;
         this.theBookingRepository = theBookingRepository;
         this.theListingRepository = theListingRepository;
         this.theUserRepository = theUserRepository;
+        this.theUserCacheRepository = theUserCacheRepository;
         initBookingHandler();
     }
 
@@ -67,6 +71,7 @@ public class BookingHandler {
                     this.theBookingRepository.save(newBooking);
                     theUserRepository.update(newBooking.getBookedByUser().getUserId(),
                             null, null, null, personWhoBooked.getBalance());
+                    theUserCacheRepository.remove("username-" + personWhoBooked.getUsername());
 
                     res.json(personWhoBooked);
                 }

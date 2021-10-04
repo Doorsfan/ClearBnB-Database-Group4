@@ -1,6 +1,7 @@
 package com.company.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -14,23 +15,28 @@ public class User {
     @Column(name = "userId")
     @GenericGenerator(name="temp", strategy = "increment")
     @GeneratedValue(generator="temp")
+    @Expose
     private Integer userId;
+    @Expose
     private String username;
+    @Expose
     private String password;
+    @Expose
     private String email;
+    @Expose
     private Double balance;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Listing> listings = new ArrayList<>();
     @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    List<Review> authorOfReviews = new ArrayList<>();
+    private List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "reviewsUserIdOf", cascade = CascadeType.ALL)
-    List<Review> targetOfReviews = new ArrayList<>();
+    private List<Review> targetOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "writtenByUser", cascade = CascadeType.ALL)
-    List<Message> writtenMessages = new ArrayList<>();
+    private List<Message> writtenMessages = new ArrayList<>();
     @OneToMany(mappedBy = "recipientUser", cascade = CascadeType.ALL)
-    List<Message> receivedMessages = new ArrayList<>();
+    private List<Message> receivedMessages = new ArrayList<>();
 
     public User() {}
 
