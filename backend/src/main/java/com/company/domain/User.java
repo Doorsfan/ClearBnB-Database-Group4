@@ -20,17 +20,17 @@ public class User {
     private String email;
     private Double balance;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Listing> listings = new ArrayList<>();
+    private transient List<Listing> listings = new ArrayList<>();
     @OneToMany(mappedBy = "bookedByUser", cascade = CascadeType.ALL)
-    private List<Booking> bookings = new ArrayList<>();
+    private transient List<Booking> bookings = new ArrayList<>();
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    List<Review> authorOfReviews = new ArrayList<>();
+    private transient List<Review> authorOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "reviewsUserIdOf", cascade = CascadeType.ALL)
-    List<Review> targetOfReviews = new ArrayList<>();
+    private transient List<Review> targetOfReviews = new ArrayList<>();
     @OneToMany(mappedBy = "writtenByUser", cascade = CascadeType.ALL)
-    List<Message> writtenMessages = new ArrayList<>();
+    private transient List<Message> writtenMessages = new ArrayList<>();
     @OneToMany(mappedBy = "recipientUser", cascade = CascadeType.ALL)
-    List<Message> receivedMessages = new ArrayList<>();
+    private transient List<Message> receivedMessages = new ArrayList<>();
 
     public User() {}
 

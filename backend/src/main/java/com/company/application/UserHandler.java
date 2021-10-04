@@ -1,9 +1,11 @@
 package com.company.application;
 
+import com.company.infrastructure.UserCacheRepository;
 import com.company.infrastructure.UserRepository;
 import com.company.utilities.HashPassword;
 import express.Express;
 import com.company.domain.User;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.Map;
 
@@ -13,10 +15,12 @@ public class UserHandler {
 
     private final Express app;
     private final UserRepository userRepository;
+    private final UserCacheRepository userCacheRepository;
 
-    public UserHandler(Express app, UserRepository userRepository){
+    public UserHandler(Express app, UserRepository userRepository, UserCacheRepository userCacheRepository){
         this.app = app;
         this.userRepository = userRepository;
+        this.userCacheRepository = userCacheRepository;
         initUserHandler();
     }
 
