@@ -27,11 +27,11 @@
       </div>
       <div class="centerBox">
         <div class="leaseStartDate centerBox">Available From</div>
-        <input v-model="myStartDate" min="2021-09-21" type="date" />
+        <input v-model="myStartDate" :min="myStartDate" type="date" />
       </div>
       <div class="leaseEndDate exceptionCenterBox">Stops Being Available From</div>
       <div class="centerBox noPaddingCenterBox">
-        <input v-model="myEndDate" min="2021-09-21" type="date" />
+        <input v-model="myEndDate" :min="myStartDate" type="date" />
       </div>
       <button class="centeredButton" type="submit" value="Submit">Submit</button>
     </form>
@@ -52,7 +52,14 @@ export default {
       myEndDate: ''
     };
   },
-  async mounted() {},
+  async mounted() {
+    let myDate = new Date();
+    let myYear = myDate.getFullYear();
+    let myMonth = ((myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : (myDate.getMonth() + 1));
+    let myDay = (myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
+    console.log(myDate.getDate());
+    this.myStartDate = myYear + '-' + myMonth + '-' + myDay;
+  },
   methods: {
     async tryToPostLease() {
       let myUser = this.$store.getters.user;
