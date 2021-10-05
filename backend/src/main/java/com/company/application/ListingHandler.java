@@ -48,7 +48,28 @@ public class ListingHandler {
                     myListing.getPrice(), LocalDate.parse(myListing.getListingStartDate(), formatter),
                     LocalDate.parse(myListing.getListingEndDate(), formatter));
 
-            res.json(this.theListingRepository.findAllForId(myListing.getListingId()));
+            List<Listing> foundListings = this.theListingRepository.findAllForId(myListing.getListingId());
+            List<ListingDTO> myListOfDTOs = new ArrayList<ListingDTO>();
+            for(Listing foundListing : foundListings){
+                ListingDTO myListingDTO = new ListingDTO();
+                myListingDTO.setOwner(foundListing.getOwner());
+                myListingDTO.setListingId(foundListing.getListingId());
+                myListingDTO.setVersion(foundListing.getVersion());
+                myListingDTO.setAuditedDateTime(foundListing.getAuditedDatetime());
+                myListingDTO.setOwnerId(foundListing.getOwner().getUserId());
+                myListingDTO.setTitle(foundListing.getTitle());
+                myListingDTO.setDescription(foundListing.getDescription());
+                myListingDTO.setImageUrl(foundListing.getImageUrl());
+                myListingDTO.setLocation(foundListing.getLocation());
+                myListingDTO.setNumberGuests(foundListing.getNumberGuests());
+                myListingDTO.setPrice(foundListing.getPrice());
+                myListingDTO.setListingStartDate(foundListing.getListingStartDate());
+                myListingDTO.setListingEndDate(foundListing.getListingEndDate());
+                myListOfDTOs.add(myListingDTO);
+            }
+
+
+            res.json(myListOfDTOs);
         });
 
         app.post("/makeANewLease", (req, res) -> {
@@ -71,7 +92,7 @@ public class ListingHandler {
                 myListing.setListingId(count);
             }
             this.theListingRepository.save(myListing);
-            res.json("hi");
+            res.json("Made a new listing!");
         });
 
         app.get("/getResultsFromFiltering", (req, res) -> {
@@ -79,14 +100,50 @@ public class ListingHandler {
             List<Listing> filteredListings = this.theListingRepository.findFilteredListings(req.query("location"),
                     Integer.parseInt(req.query("numberGuests")),
                     Double.parseDouble(req.query("myPrice")), req.query("myMinDate"), req.query("myMaxDate"));
+            List<ListingDTO> filteredListingDTOs = new ArrayList<ListingDTO>();
+            for(Listing foundListing : filteredListings){
+                ListingDTO myListingDTO = new ListingDTO();
+                myListingDTO.setOwner(foundListing.getOwner());
+                myListingDTO.setListingId(foundListing.getListingId());
+                myListingDTO.setVersion(foundListing.getVersion());
+                myListingDTO.setAuditedDateTime(foundListing.getAuditedDatetime());
+                myListingDTO.setOwnerId(foundListing.getOwner().getUserId());
+                myListingDTO.setTitle(foundListing.getTitle());
+                myListingDTO.setDescription(foundListing.getDescription());
+                myListingDTO.setImageUrl(foundListing.getImageUrl());
+                myListingDTO.setLocation(foundListing.getLocation());
+                myListingDTO.setNumberGuests(foundListing.getNumberGuests());
+                myListingDTO.setPrice(foundListing.getPrice());
+                myListingDTO.setListingStartDate(foundListing.getListingStartDate());
+                myListingDTO.setListingEndDate(foundListing.getListingEndDate());
+                filteredListingDTOs.add(myListingDTO);
+            }
             res.json(filteredListings);
         });
 
         app.post("/getAllListings", (req, res) -> {
             List<Listing> allListings = this.theListingRepository.findAll();
+            List<ListingDTO> allListingDTOs = new ArrayList<ListingDTO>();
+            for(Listing foundListing : allListings){
+                ListingDTO myListingDTO = new ListingDTO();
+                myListingDTO.setOwner(foundListing.getOwner());
+                myListingDTO.setListingId(foundListing.getListingId());
+                myListingDTO.setVersion(foundListing.getVersion());
+                myListingDTO.setAuditedDateTime(foundListing.getAuditedDatetime());
+                myListingDTO.setOwnerId(foundListing.getOwner().getUserId());
+                myListingDTO.setTitle(foundListing.getTitle());
+                myListingDTO.setDescription(foundListing.getDescription());
+                myListingDTO.setImageUrl(foundListing.getImageUrl());
+                myListingDTO.setLocation(foundListing.getLocation());
+                myListingDTO.setNumberGuests(foundListing.getNumberGuests());
+                myListingDTO.setPrice(foundListing.getPrice());
+                myListingDTO.setListingStartDate(foundListing.getListingStartDate());
+                myListingDTO.setListingEndDate(foundListing.getListingEndDate());
+                allListingDTOs.add(myListingDTO);
+            }
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(allListings);
+            res.json(allListingDTOs);
         });
 
         app.post("/getAllVersionsOfListing", (req, res) -> {
@@ -128,21 +185,58 @@ public class ListingHandler {
                             wantedStart, wantedEnd);
                     System.out.println(listingId);
 
-                    List<Listing> myListing = theListingRepository.findAllForId(listingId);
+                    List<Listing> myListings = theListingRepository.findAllForId(listingId);
+
+                    List<ListingDTO> allListingDTOs = new ArrayList<ListingDTO>();
+                    for(Listing foundListing : myListings){
+                        ListingDTO myListingDTO = new ListingDTO();
+                        myListingDTO.setOwner(foundListing.getOwner());
+                        myListingDTO.setListingId(foundListing.getListingId());
+                        myListingDTO.setVersion(foundListing.getVersion());
+                        myListingDTO.setAuditedDateTime(foundListing.getAuditedDatetime());
+                        myListingDTO.setOwnerId(foundListing.getOwner().getUserId());
+                        myListingDTO.setTitle(foundListing.getTitle());
+                        myListingDTO.setDescription(foundListing.getDescription());
+                        myListingDTO.setImageUrl(foundListing.getImageUrl());
+                        myListingDTO.setLocation(foundListing.getLocation());
+                        myListingDTO.setNumberGuests(foundListing.getNumberGuests());
+                        myListingDTO.setPrice(foundListing.getPrice());
+                        myListingDTO.setListingStartDate(foundListing.getListingStartDate());
+                        myListingDTO.setListingEndDate(foundListing.getListingEndDate());
+                        allListingDTOs.add(myListingDTO);
+                    }
+
                     res.append("Access-Control-Allow-Origin", "http://localhost:3000");
                     res.append("Access-Control-Allow-Credentials", "true");
-                    res.json(myListing);
+                    res.json(allListingDTOs);
                 });
 
             app.get("/getListingsByOwner", (req, res) -> {
-                System.out.println("THE QUERY WAS: ");
-                System.out.println(req.query());
                 List<User> myWantedUsers = this.theUserRepository.findByUsername(req.query("username"));
                 if (myWantedUsers.size() > 0) {
                     List<Listing> findAllForOwner = this.theListingRepository.findAllForOwner(myWantedUsers.get(0));
                     res.append("Access-Control-Allow-Origin", "http://localhost:3000");
                     res.append("Access-Control-Allow-Credentials", "true");
-                    res.json(findAllForOwner);
+                    List<ListingDTO> allListingDTOs = new ArrayList<ListingDTO>();
+                    for(Listing foundListing : findAllForOwner){
+                        ListingDTO myListingDTO = new ListingDTO();
+                        myListingDTO.setOwner(foundListing.getOwner());
+                        myListingDTO.setListingId(foundListing.getListingId());
+                        myListingDTO.setVersion(foundListing.getVersion());
+                        myListingDTO.setAuditedDateTime(foundListing.getAuditedDatetime());
+                        myListingDTO.setOwnerId(foundListing.getOwner().getUserId());
+                        myListingDTO.setTitle(foundListing.getTitle());
+                        myListingDTO.setDescription(foundListing.getDescription());
+                        myListingDTO.setImageUrl(foundListing.getImageUrl());
+                        myListingDTO.setLocation(foundListing.getLocation());
+                        myListingDTO.setNumberGuests(foundListing.getNumberGuests());
+                        myListingDTO.setPrice(foundListing.getPrice());
+                        myListingDTO.setListingStartDate(foundListing.getListingStartDate());
+                        myListingDTO.setListingEndDate(foundListing.getListingEndDate());
+                        allListingDTOs.add(myListingDTO);
+                    }
+
+                    res.json(allListingDTOs);
                 } else {
                     res.append("Access-Control-Allow-Origin", "http://localhost:3000");
                     res.append("Access-Control-Allow-Credentials", "true");

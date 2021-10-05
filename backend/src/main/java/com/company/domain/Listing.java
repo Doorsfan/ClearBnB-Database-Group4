@@ -1,5 +1,6 @@
 package com.company.domain;
 
+import com.company.application.UserDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 

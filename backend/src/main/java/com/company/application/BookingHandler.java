@@ -72,8 +72,12 @@ public class BookingHandler {
                     theUserRepository.update(newBooking.getBookedByUser().getUserId(),
                             null, null, null, personWhoBooked.getBalance());
                     theUserCacheRepository.remove("username-" + personWhoBooked.getUsername());
-
-                    res.json(personWhoBooked);
+                    UserDTO myUserDTO = new UserDTO();
+                    myUserDTO.setUserId(personWhoBooked.getUserId());
+                    myUserDTO.setUsername(personWhoBooked.getUsername());
+                    myUserDTO.setBalance(personWhoBooked.getBalance());
+                    myUserDTO.setEmail(personWhoBooked.getEmail());
+                    res.json(myUserDTO);
                 }
                 else{
                     res.json("Failed to make a booking, dates were taken!");

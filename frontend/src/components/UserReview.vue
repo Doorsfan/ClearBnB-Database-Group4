@@ -38,7 +38,7 @@ export default {
     return {
       reviewId: this.Content.reviewId,
       author: this.Content.author,
-      username: this.Content.author.username,
+      username: (Object.keys(this.Content.author).length == 1) ? this.Content.username : this.Content.author.username,
       comment: (this.Content.comment.includes("(Edited)")) ? this.Content.comment.substring(0,this.Content.comment.length - 8) : this.Content.comment,
       rating: this.Content.rating,
       year: this.Content.timestamp[0],
@@ -144,6 +144,7 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.Content);
     if(this.Content.comment.includes("(Edited)")){
       this.editedComment = true;
     }

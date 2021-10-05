@@ -20,6 +20,7 @@ public class User {
     @Expose
     private String username;
     @Expose
+    @JsonIgnore
     private String password;
     @Expose
     private String email;

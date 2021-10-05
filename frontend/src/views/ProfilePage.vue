@@ -4,7 +4,7 @@
       <div class="navbar"></div>
       <div class="myProfileBox centerBox">My Profile</div>
       <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
-      <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: {{ loggedInUser.balance }}</div>
+      <div v-if="samePerson" class="myProfileInfoBoxBalance centerBox subBox2">Balance: {{ loggedInUser.balance }}</div>
       <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
       <p v-if="myListings.length > 0" class="myLeasesP">My Leases</p>
       <div v-if="myListings.length > 0" class="divOfListings">

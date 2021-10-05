@@ -23,9 +23,12 @@ export default createStore({
   actions: {
     async whoAmI(store) {
       let res = await fetch('/api/whoami')
+      console.log(res);
       let user = await res.json()
-
-      store.commit('setUser', user)
+      console.log(user);
+      if (user != "You are not logged in.") {
+        store.commit('setUser', user);  
+      }
     },
 
     async register(store, credentials) {
@@ -45,7 +48,8 @@ export default createStore({
     },
 
     async login(store, credentials) {
-      let res = await fetch('/api/login', {
+      let res = await fetch('/api/login?'
+        +new URLSearchParams(credentials), {
         method: 'POST',
         body: JSON.stringify(credentials)
       })
