@@ -90,8 +90,13 @@ export default {
       let res = await fetch('/rest/getUserByUsername/' + this.$route.params.username) // not the most secure, but doing 
                                                                                       // doing this to speed up dev
       let recipientUser = await res.json()
-      this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, recipientUser: recipientUser, 
+      if (this.$store.state.user.username === "support") {
+        this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, recipientUser: recipientUser, 
         content: msg, timestamp: new Date().toISOString()}));
+      } else if (this.$store.state.user.username === this.$route.params.username) {
+        this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, recipientUser: null, 
+        content: msg, timestamp: new Date().toISOString()}));
+      }
       // addMsg(msg); // if locally rendered instead of reliably pushed from server
     },
   },

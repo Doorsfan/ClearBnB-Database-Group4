@@ -31,7 +31,7 @@ public class MessageRepository {
     public Message save(Message message) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(message);
+            entityManager.persist(message);
             entityManager.getTransaction().commit();
             return message;
         } catch (Exception e) {
