@@ -134,7 +134,6 @@ public class ReviewHandler {
             String wantedTimeStamp = splitArrayLeft[13];
             Integer wantedVersion = Integer.parseInt(splitArrayLeft[15].substring(0,splitArrayLeft[15].length() - 2));
 
-
             String[] splitArray = new String[20];
 
             for(String myString : myStringArray){

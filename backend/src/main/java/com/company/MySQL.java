@@ -8,7 +8,7 @@ public enum MySQL {
 
     MySQL() {
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ClearBnB","root","root");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clearBnB","root","root");
         } catch (SQLException e) {
             e.printStackTrace();
         }

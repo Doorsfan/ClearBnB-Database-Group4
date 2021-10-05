@@ -29,9 +29,12 @@ public class Application {
         EntityManager entityManager3 = entityManagerFactory.createEntityManager();
         EntityManager entityManager4 = entityManagerFactory.createEntityManager();
         EntityManager entityManager5 = entityManagerFactory.createEntityManager();
+        EntityManager entityManager6 = entityManagerFactory.createEntityManager();
 
         // Repositories
         UserRepository userRepository = new UserRepository(entityManager);
+        UserRepository secondUserRepository = new UserRepository(entityManager6);
+
         BookingRepository bookingRepository = new BookingRepository(entityManager2);
         ReviewRepository reviewRepository = new ReviewRepository(entityManager3);
         ListingRepository listingRepository = new ListingRepository(entityManager4);
@@ -45,7 +48,7 @@ public class Application {
                 userRepository, userCacheRepository);
         UserHandler userHandler = new UserHandler(app, userRepository, userCacheRepository);
         ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
-        ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository);
+        ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository, secondUserRepository);
         MessageHandler messageHandler = new MessageHandler(app, messageRepository, userRepository);
 
         /*
