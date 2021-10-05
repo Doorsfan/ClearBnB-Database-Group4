@@ -58,7 +58,7 @@ export default {
       this.socket.onmessage = event => {
         console.log('Message from server:', event.data);
         let msg = JSON.parse(event.data);
-        let date = new Date(msg.timestamp[0], msg.timestamp[1] - 1, msg.timestamp[2], msg.timestamp[3], msg.timestamp[4], msg.timestamp[5]);
+        let date = new Date(msg.timestamp[0], msg.timestamp[1] - 1, msg.timestamp[2], msg.timestamp[3] + 2, msg.timestamp[4], msg.timestamp[5]);
         this.addMsg(msg.writtenByUser.username + ' (' + date.toLocaleString() + '): ' + msg.content);
       };
 
