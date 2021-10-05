@@ -80,7 +80,7 @@ export default {
       const msg = this.input.value;
       this.input.value = '';
       console.log('Sending:', msg);
-      let res = await fetch('/rest/getUserByUsername/' + this.$route.params.username) // not the most secure, but doing 
+      let res = await fetch('/api/getUserByUsername/' + this.$route.params.username) // not the most secure, but doing 
                                                                                       // doing this to speed up dev
       let recipientUser = await res.json()
       this.socket.send(JSON.stringify({ writtenByUser: this.$store.state.user, recipientUser: recipientUser, 
