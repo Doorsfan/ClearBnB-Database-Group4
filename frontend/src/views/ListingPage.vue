@@ -200,6 +200,7 @@ export default {
         this.wantedVersion = this.versions.length;
         this.displayPrice = Math.round(this.versionsOfListing[this.wantedVersion-1].price * 1.15);
       })
+      
       let res = await fetch('http://localhost:4000/getReviewsForListing', {
           method: 'POST',
           mode: 'cors',
