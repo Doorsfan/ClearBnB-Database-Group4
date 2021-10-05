@@ -31,6 +31,9 @@
       </div>
       <button class="searchButton" @click="search" type="button">Search</button>
     </div>
+    <div class="chat">
+      <a @click="navigateToSupport">Chat with support</a>
+    </div>
     <div class="searchDiv">
       <div class="categoryBox firstCategoryBox">
         Title
@@ -65,14 +68,6 @@
         :Listing="listItem"
       />
     </div>
-    <div class="chatWindow" v-if="chatOpened">
-        <ChatBox></ChatBox>
-    </div>
-    <footer class="bottomFooter">
-      <div @click="openSupportChat" class="chatTab">
-        Chat With Support
-      </div>
-    </footer>
   </div>
 </template>
 <script>
@@ -204,12 +199,11 @@ export default {
           
         });
     },
-    openSupportChat() {
-      if(this.chatOpened){
-        this.chatOpened = false;
-      }
-      else if(!this.chatOpened){
-        this.chatOpened = true;
+    navigateToSupport() {
+      if(!this.$store.state.user) {
+        alert("You need to be logged in to chat")
+      } else {
+        this.$router.push("/supportchat/" + this.$store.state.user.username)
       }
     }
   },
@@ -230,40 +224,6 @@ export default {
   color:white;
   background-color:black;
   font-weight: bold;
-}
-.myMessageToSupport{
-  position:absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 275px;
-}
-.innerWindow{
-  height: 190px;
-  width: 290px;
-  background-color:white;
-  margin: 5px;
-}
-.chatWindow{
-  height: 200px;
-  width: 300px;
-  background-color:red;
-  border:lightcoral solid 1px;
-  z-index: 3;
-  position:absolute;
-  right: 20px;
-  top:87vh;
-}
-.chatTab{
-  position:absolute;
-  right: 20px;
-  padding-top: 15px;
-  padding-right: 15px;
-  font-weight:bolder;
-  font-size: 20px;
-  cursor: pointer;
-}
-.bottomFooter {
-  height: 50px;
 }
 .Box {
   max-width: max-content;
@@ -290,5 +250,14 @@ a:visited {
 .searchDiv {
   background-color: lightcyan;
   height: 98vh;
+}
+.chat {
+  margin: auto;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.chat a {
+  font-size: 20pt;
+  cursor: pointer;
 }
 </style>

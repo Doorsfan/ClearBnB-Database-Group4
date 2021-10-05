@@ -15,6 +15,13 @@
 <script>
 export default {
   async beforeCreate() {
+    if (!this.$store.state.user) {
+      await this.$store.dispatch("whoAmI")
+    }
+    if (!this.$store.state.user || !(this.$store.state.user.username === "support" || 
+        this.$store.state.user.username === this.$route.params.username)) {
+      this.$router.push("/")
+    }
     let res = await fetch('/rest/getAllMessagesForUser/' + this.$route.params.username)
     this.previousMessages = await res.json()
     console.log(this.previousMessages)

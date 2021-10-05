@@ -12,6 +12,12 @@
 <script>
 export default {
   async beforeCreate() {
+    if (!this.$store.state.user) {
+      await this.$store.dispatch("whoAmI")
+    }
+    if (!this.$store.state.user || this.$store.state.user.username !== "support") {
+      this.$router.push("/")
+    }
     let res = await fetch('/rest/usersInChat')
     this.usernames = await res.json()
   },
