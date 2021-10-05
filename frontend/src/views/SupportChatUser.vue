@@ -24,7 +24,8 @@ export default {
     }
     let res = await fetch('/rest/getAllMessagesForUser/' + this.$route.params.username)
     this.previousMessages = await res.json()
-    console.log(this.previousMessages)
+    this.ul = document.querySelector("#chat-output")
+    this.input = document.querySelector("#chat-input")
   },
 
   data() {
@@ -47,7 +48,7 @@ export default {
     addSocketEventListeners() {
       this.socket.onclose = event => {
         console.warn('Disconnected:', event);
-        this.addMsg('Disconnected: ' + JSON.stringify(event));
+        this.addMsg('Disconnected');
       };
 
       this.socket.onerror = event => {
@@ -64,12 +65,14 @@ export default {
 
       this.socket.onopen = event => {
         console.warn('Connected:', event);
-        this.addMsg('Connected: ' + JSON.stringify(event));
+        this.addMsg('Connected');
       };
     },
     connect() {
-      this.ul = document.querySelector("#chat-output")
-      this.input = document.querySelector("#chat-input")
+      if (this.socket && this.socket.readyState === 1) {
+        this.addMsg("You are already connected")
+        return
+      }
 
       console.log('Connecting...');
       this.addMsg('Connecting...');
@@ -77,13 +80,23 @@ export default {
       this.addSocketEventListeners();
     },
     disconnect() {
-      //if (!client) return;
+      if (!this.socket || this.socket.readyState === 3) {
+        this.addMsg("You are already disconnected")
+        return
+      }
 
       console.log('Disconnecting...');
       this.addMsg('Disconnecting...');
       this.socket.close();
     },
     async send() {
+      if (!this.input.value || this.input.value === '') {
+        return
+      }
+      if (!this.socket || this.socket.readyState === 3) {
+        this.addMsg("Connect to chat before sending a message")
+        return
+      }
       const msg = this.input.value;
       this.input.value = '';
       console.log('Sending:', msg);
