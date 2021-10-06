@@ -7,6 +7,8 @@ import com.company.infrastructure.ListingRepository;
 import com.company.infrastructure.ReviewRepository;
 import com.company.infrastructure.UserRepository;
 import express.Express;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -22,14 +24,16 @@ public class ReviewHandler {
     private final ReviewRepository theReviewRepository;
     private final ListingRepository theListingRepository;
     private final UserRepository theUserRepository;
+    private final EntityManagerFactory myFactory;
 
     public ReviewHandler(Express app, ReviewRepository theReviewRepository,
                          ListingRepository theListingRepository
-                        ,UserRepository theUserRepository){
+                        , UserRepository theUserRepository, EntityManagerFactory myFactory){
         this.app = app;
         this.theReviewRepository = theReviewRepository;
         this.theListingRepository = theListingRepository;
         this.theUserRepository = theUserRepository;
+        this.myFactory = myFactory;
         initReviewHandler();
     }
 
@@ -48,8 +52,26 @@ public class ReviewHandler {
 
             List<Review> myListOfReviews = this.theReviewRepository.findAllForTarget(
                     this.theUserRepository.findByUsername(req.query("postedAbout")).get(0).getUserId());
-
-            res.json(myListOfReviews);
+            List<ReviewDTO> myListOfReviewDTOs = new ArrayList<ReviewDTO>();
+            for(Review myReviewInList : myListOfReviews){
+                ReviewDTO myReviewDTO = new ReviewDTO();
+                myReviewDTO.setReviewId(myReviewInList.getReviewId());
+                myReviewDTO.setVersion(myReviewInList.getVersion());
+                myReviewDTO.setTimestamp(myReviewInList.getTimestamp());
+                myReviewDTO.setAuthorId(myReviewInList.getAuthor().getUserId());
+                myReviewDTO.setComment(myReviewInList.getComment());
+                myReviewDTO.setRating(myReviewInList.getRating());
+                if(myReviewInList.getPostedToListingId() != null)
+                {
+                    myReviewDTO.setPostedToListingId(myReviewInList.getPostedToListingId());
+                }
+                else if(myReviewInList.getReviewsUserIdOf() != null){
+                    myReviewDTO.setReviewsUserIdOf(myReviewInList.getReviewsUserIdOf());
+                }
+                myReviewDTO.setAuthor(myReviewInList.getAuthor());
+                myListOfReviewDTOs.add(myReviewDTO);
+            }
+            res.json(myListOfReviewDTOs);
 
         });
 
@@ -59,7 +81,26 @@ public class ReviewHandler {
             try{
                 List<Review> myReviews = this.theReviewRepository.findAllForTarget(this.theUserRepository.findByUsername(
                         req.query("wantedUsername")).get(0).getUserId());
-                res.json(myReviews);
+                List<ReviewDTO> myListOfReviewDTOs = new ArrayList<ReviewDTO>();
+                for(Review myReviewInList : myReviews){
+                    ReviewDTO myReviewDTO = new ReviewDTO();
+                    myReviewDTO.setReviewId(myReviewInList.getReviewId());
+                    myReviewDTO.setVersion(myReviewInList.getVersion());
+                    myReviewDTO.setTimestamp(myReviewInList.getTimestamp());
+                    myReviewDTO.setAuthorId(myReviewInList.getAuthor().getUserId());
+                    myReviewDTO.setComment(myReviewInList.getComment());
+                    myReviewDTO.setRating(myReviewInList.getRating());
+                    if(myReviewInList.getPostedToListingId() != null)
+                    {
+                        myReviewDTO.setPostedToListingId(myReviewInList.getPostedToListingId());
+                    }
+                    else if(myReviewInList.getReviewsUserIdOf() != null){
+                        myReviewDTO.setReviewsUserIdOf(myReviewInList.getReviewsUserIdOf());
+                    }
+                    myReviewDTO.setAuthor(myReviewInList.getAuthor());
+                    myListOfReviewDTOs.add(myReviewDTO);
+                }
+                res.json(myListOfReviewDTOs);
             }
             catch(Exception e){
                 res.json("");
@@ -67,6 +108,10 @@ public class ReviewHandler {
         });
 
         app.post("/getReviewsForListing", (req, res) -> {
+            EntityManager myNewEntityManager = this.myFactory.createEntityManager();
+            EntityManager reviewEntitymanager = this.myFactory.createEntityManager();
+            ListingRepository myListingRepository = new ListingRepository(myNewEntityManager);
+            ReviewRepository myReviewRepository = new ReviewRepository(reviewEntitymanager);
             Object mySetofQueryParams = req.body();
             String queryParamsString = mySetofQueryParams.toString().substring(1, mySetofQueryParams.toString().length() - 1);
             String[] splitString = new String[20];
@@ -99,15 +144,29 @@ public class ReviewHandler {
             String wantedStart = splitString[7].substring(0,splitString[7].length()-2);
             String wantedEnd = splitString[8].substring(0,splitString[8].length());
 
-            int listingId = theListingRepository.findSpecifiedListing(wantedTitle,
-                    wantedDescription, wantedImageURL, wantedLocation,
-                    Integer.parseInt(wantedGuests), Double.parseDouble(wantedPrice),
-                    wantedStart, wantedEnd);
-            System.out.println(listingId);
-            List<Review> listOfRelevantReviews = theReviewRepository.findAllReviewsForListingOfId(listingId);
+            List<Listing> myListings =
+                    myListingRepository.
+                            findAllForId(Integer.parseInt(req.query("listingId")));
+            List<Listing> allRelatedListings = myListingRepository.findAllBasedOnId(
+                    myListings.get(0).getOriginalListingId()
+            );
+            ArrayList<Review> myReviews = new ArrayList<Review>();
+            for(int i = 0; i < allRelatedListings.size(); i++){
+                List<Review> reviewsOnEachVersion =
+                        myReviewRepository.
+                                findAllReviewsForListingOfId(allRelatedListings.get(i).getListingId());
+                for(int e = 0; e < reviewsOnEachVersion.size(); e++){
+                    if(!myReviews.contains(reviewsOnEachVersion.get(e))){
+                        myReviews.add(reviewsOnEachVersion.get(e));
+                    }
+                }
+
+            }
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(listOfRelevantReviews);
+
+
+            res.json(myReviews);
 
         });
 
@@ -128,11 +187,21 @@ public class ReviewHandler {
             baseForLeft = baseForLeft.replaceAll("\\b, \\b", "SPLITHERE");
             splitArrayLeft = baseForLeft.split("SPLITHERE");
 
-            Integer wantedUserId = Integer.parseInt(splitArrayLeft[1]);
-            String wantedComment = splitArrayLeft[5];
-            Integer wantedRating = Integer.parseInt(splitArrayLeft[7]);
-            String wantedTimeStamp = splitArrayLeft[13];
-            Integer wantedVersion = Integer.parseInt(splitArrayLeft[15].substring(0,splitArrayLeft[15].length() - 2));
+            //Integer wantedUserId = Integer.parseInt(splitArrayLeft[1]);
+            System.out.println("THE QUERY PARAMS WERE: " + req.query());
+            List<User> wantedUser = this.theUserRepository.findByUsername(req.query("username"));
+            User myUser = wantedUser.get(0);
+            Integer wantedUserId = myUser.getUserId();
+
+            String wantedComment = req.query("comment");
+
+            //String wantedComment = splitArrayLeft[5];
+            //Integer wantedRating = Integer.parseInt(splitArrayLeft[7]);
+
+            Integer wantedRating = Integer.parseInt(req.query("rating"));
+
+            String wantedTimeStamp = LocalDateTime.now().toString();
+            Integer wantedVersion = Integer.parseInt(req.query("wantedVersion"));
 
             String[] splitArray = new String[20];
 
@@ -164,11 +233,11 @@ public class ReviewHandler {
 
             Review wantedReview = new Review();
 
-            User wantedUser = this.theUserRepository.findById(wantedUserId);
+            //User wantedUser = this.theUserRepository.findById(wantedUserId);
 
-            wantedReview.setAuthor(wantedUser);
+            wantedReview.setAuthor(myUser);
             wantedReview.setComment(wantedComment);
-            wantedReview.setTimestamp(wantedTimeStamp);
+            wantedReview.setTimestamp(LocalDateTime.now());
             wantedReview.setRating(wantedRating);
             wantedReview.setVersion(wantedVersion);
             wantedReview.setPostedToListingId(theIdOfTheListing);
@@ -181,6 +250,26 @@ public class ReviewHandler {
              */
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
+
+            List<ReviewDTO> myListOfReviewDTOs = new ArrayList<ReviewDTO>();
+            for(Review myReviewInList : updatedListOfReviews){
+                ReviewDTO myReviewDTO = new ReviewDTO();
+                myReviewDTO.setReviewId(myReviewInList.getReviewId());
+                myReviewDTO.setVersion(myReviewInList.getVersion());
+                myReviewDTO.setTimestamp(myReviewInList.getTimestamp());
+                myReviewDTO.setAuthorId(myReviewInList.getAuthor().getUserId());
+                myReviewDTO.setComment(myReviewInList.getComment());
+                myReviewDTO.setRating(myReviewInList.getRating());
+                if(myReviewInList.getPostedToListingId() != null)
+                {
+                    myReviewDTO.setPostedToListingId(myReviewInList.getPostedToListingId());
+                }
+                else if(myReviewInList.getReviewsUserIdOf() != null){
+                    myReviewDTO.setReviewsUserIdOf(myReviewInList.getReviewsUserIdOf());
+                }
+                myReviewDTO.setAuthor(myReviewInList.getAuthor());
+                myListOfReviewDTOs.add(myReviewDTO);
+            }
             res.json(updatedListOfReviews);
 
         });
@@ -190,7 +279,25 @@ public class ReviewHandler {
                     req.query("comment"), Integer.parseInt(req.query("rating")));
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(updatedReview);
+
+
+            ReviewDTO myReviewDTO = new ReviewDTO();
+            myReviewDTO.setReviewId(updatedReview.getReviewId());
+            myReviewDTO.setVersion(updatedReview.getVersion());
+            myReviewDTO.setTimestamp(updatedReview.getTimestamp());
+            myReviewDTO.setAuthorId(updatedReview.getAuthor().getUserId());
+            myReviewDTO.setComment(updatedReview.getComment());
+            myReviewDTO.setRating(updatedReview.getRating());
+            if(updatedReview.getPostedToListingId() != null)
+            {
+                myReviewDTO.setPostedToListingId(updatedReview.getPostedToListingId());
+            }
+            else if(updatedReview.getReviewsUserIdOf() != null){
+                myReviewDTO.setReviewsUserIdOf(updatedReview.getReviewsUserIdOf());
+            }
+            myReviewDTO.setAuthor(updatedReview.getAuthor());
+
+            res.json(myReviewDTO);
         });
 
         app.post("/removeReview", (req, res) -> {
@@ -198,7 +305,22 @@ public class ReviewHandler {
                     .remove(this.theReviewRepository.findMostRecentForId(Integer.parseInt(req.query("id"))));
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(removedReview);
+            ReviewDTO myReviewDTO = new ReviewDTO();
+            myReviewDTO.setReviewId(removedReview.getReviewId());
+            myReviewDTO.setVersion(removedReview.getVersion());
+            myReviewDTO.setTimestamp(removedReview.getTimestamp());
+            myReviewDTO.setAuthorId(removedReview.getAuthor().getUserId());
+            myReviewDTO.setComment(removedReview.getComment());
+            myReviewDTO.setRating(removedReview.getRating());
+            if(removedReview.getPostedToListingId() != null)
+            {
+                myReviewDTO.setPostedToListingId(removedReview.getPostedToListingId());
+            }
+            else if(removedReview.getReviewsUserIdOf() != null){
+                myReviewDTO.setReviewsUserIdOf(removedReview.getReviewsUserIdOf());
+            }
+            myReviewDTO.setAuthor(removedReview.getAuthor());
+            res.json(myReviewDTO);
         });
     }
 }

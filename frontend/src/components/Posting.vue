@@ -1,6 +1,7 @@
 <template>
   <div class="leaseBox">
-    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, imageUrl: Listing.imageUrl, location: Listing.location, numberGuests: Listing.numberGuests, price: Listing.price, listingStartDate: Listing.listingStartDate, listingEndDate: Listing.listingEndDate } }">
+    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, imageUrl: Listing.imageUrl, location: Listing.location, numberGuests: Listing.numberGuests, price: Listing.price, listingStartDate: Listing.listingStartDate, listingEndDate: Listing.listingEndDate } 
+    }">
       <div class="cellBox firstCellBox">{{ title }}</div>
       <div class="cellBox">{{ description }}</div>
       <div class="cellBox">{{ imageUrl }}</div>
@@ -33,7 +34,16 @@ export default {
   methods: {
   },
   mounted() {
-    console.log(this.Listing);
+    this.title = this.Listing.title;
+    this.description = this.Listing.description;
+    this.imageUrl = this.Listing.imageUrl;
+    this.location = this.Listing.location;
+    this.numberGuests = this.Listing.numberGuests;
+    this.price = this.Listing.price;
+    this.displayPrice = Math.round(this.Listing.price * 1.15);
+    this.startDate = this.Listing.listingStartDate;
+    this.endDate = this.Listing.listingEndDate;
+    this.host = this.Listing.postedByUsername;
   }
 };
 </script>

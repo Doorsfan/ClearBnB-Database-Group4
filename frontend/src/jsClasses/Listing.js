@@ -1,5 +1,5 @@
 export default class Listing {
-  constructor(listingId, postedByUsername, title, description, imageUrl, location, numberGuests, price, listingStartDate, listingEndDate) {
+  constructor(listingId, postedByUsername, title, description, imageUrl, location, numberGuests, price, listingStartDate, listingEndDate, originalListingId) {
     this.listingId = listingId;
     this.postedByUsername = postedByUsername;
     this.title = title;
@@ -10,6 +10,7 @@ export default class Listing {
     this.price = price;
     this.listingStartDate = listingStartDate;
     this.listingEndDate = listingEndDate;
+    this.originalListingId = this.originalListingId;
   }
   
   setListingId(newId) {

@@ -34,8 +34,12 @@ public class UserHandler {
                    null, null, Double.parseDouble(req.query("balance")));
             // invalidate user in cache
             userCacheRepository.remove("username-" + req.query("username"));
-
-            res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
+            User myUser = userRepository.findById(Integer.parseInt(req.query("userId")));
+            UserDTO myUserDTO = new UserDTO();
+            myUserDTO.setUsername(myUser.getUsername());
+            myUserDTO.setEmail(myUser.getEmail());
+            myUserDTO.setBalance(myUser.getBalance());
+            res.json(myUserDTO);
         });
         
         app.post("/api/register", (req, res) -> {
@@ -62,7 +66,12 @@ public class UserHandler {
             // log user in
             req.session("current-user", user);
 
-            res.json(user);
+            UserDTO myUserDTO = new UserDTO();
+            myUserDTO.setUserId(user.getUserId());
+            myUserDTO.setUsername(user.getUsername());
+            myUserDTO.setBalance(user.getBalance());
+            myUserDTO.setEmail(user.getEmail());
+            res.json(myUserDTO);
         });
 
         // login user
@@ -87,11 +96,15 @@ public class UserHandler {
             }
 
             // validate password
-            if(HashPassword.match(user.getPassword(), userInDatabase.getPassword())) {
+            if(HashPassword.match(req.query("password"), userInDatabase.getPassword())) {
                 // save user in session, to remember logged in state
                 req.session("current-user", userInDatabase);
-
-                res.json(userInDatabase);
+                UserDTO myUserDTO = new UserDTO();
+                myUserDTO.setUserId(userInDatabase.getUserId());
+                myUserDTO.setUsername(userInDatabase.getUsername());
+                myUserDTO.setBalance(userInDatabase.getBalance());
+                myUserDTO.setEmail(userInDatabase.getEmail());
+                res.json(myUserDTO);
             } else {
                 res.json(Map.of("error", "Bad credentials"));
             }
@@ -101,7 +114,18 @@ public class UserHandler {
             // return user saved in session
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(req.session("current-user"));
+            UserDTO myUserDTO = new UserDTO();
+            if(req.session("current-user") != null){
+                User myUser = req.session("current-user");
+                myUserDTO.setUserId(myUser.getUserId());
+                myUserDTO.setUsername(myUser.getUsername());
+                myUserDTO.setBalance(myUser.getBalance());
+                myUserDTO.setEmail(myUser.getEmail());
+                res.json(myUserDTO);
+            }
+            else{
+                res.json("You are not logged in.");
+            }
         });
 
         app.get("/api/logout", (req, res) -> {
@@ -115,7 +139,12 @@ public class UserHandler {
                 user = userRepository.findByUsername(req.params("username")).get(0);
                 userCacheRepository.add("username-" + req.params("username"), user);
             }
-            res.json(user);
+            UserDTO myUserDTO = new UserDTO();
+            myUserDTO.setUserId(user.getUserId());
+            myUserDTO.setUsername(user.getUsername());
+            myUserDTO.setBalance(user.getBalance());
+            myUserDTO.setEmail(user.getEmail());
+            res.json(myUserDTO);
         });
     }
 }

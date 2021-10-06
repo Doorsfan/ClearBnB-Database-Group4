@@ -47,7 +47,7 @@ public class Application {
         BookingHandler bookingHandler = new BookingHandler(app,bookingRepository, listingRepository,
                 userRepository, userCacheRepository);
         UserHandler userHandler = new UserHandler(app, userRepository, userCacheRepository);
-        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository);
+        ReviewHandler reviewHandler = new ReviewHandler(app,reviewRepository, listingRepository, userRepository, entityManagerFactory);
         ListingHandler listingHandler = new ListingHandler(app,listingRepository, reviewRepository, secondUserRepository);
         MessageHandler messageHandler = new MessageHandler(app, messageRepository, userRepository);
 

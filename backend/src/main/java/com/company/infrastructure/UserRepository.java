@@ -38,7 +38,7 @@ public class UserRepository {
     public User save(User user) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(user);
+            entityManager.persist(user);
             entityManager.getTransaction().commit();
             return user;
         } catch (Exception e) {

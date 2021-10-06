@@ -31,10 +31,17 @@ CREATE TABLE IF NOT EXISTS `booking` (
   KEY `booked_by_user` (`bookedByUser`) USING BTREE,
   CONSTRAINT `booking_ibfk_3` FOREIGN KEY (`listingBooked`) REFERENCES `listing` (`listingId`),
   CONSTRAINT `booking_ibfk_4` FOREIGN KEY (`bookedByUser`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.booking: ~0 rows (approximately)
+-- Dumping data for table clearbnb.booking: ~1 rows (approximately)
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
+INSERT IGNORE INTO `booking` (`bookingId`, `listingBooked`, `bookedByUser`, `amountPaid`, `bookingStartDate`, `bookingEndDate`, `cancelled`) VALUES
+	(1, 25, 9, 345, '2021-10-09', '2021-10-12', 0),
+	(2, 25, 9, 345, '2021-10-05', '2021-10-08', 0),
+	(3, 25, 9, 230, '2021-10-13', '2021-10-15', 0),
+	(4, 25, 9, 115, '2021-10-12', '2021-10-13', 0),
+	(5, 25, 9, 115, '2021-10-15', '2021-10-16', 0),
+	(6, 1, 6, 460, '2021-10-13', '2021-10-15', 0);
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.listing
@@ -51,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `listing` (
   `price` double NOT NULL DEFAULT '0',
   `listingStartDate` date NOT NULL DEFAULT '0000-00-00',
   `listingEndDate` date DEFAULT NULL,
+  `originalListingId` int DEFAULT NULL,
   PRIMARY KEY (`listingId`,`version`) USING BTREE,
   KEY `owner_id` (`ownerId`) USING BTREE,
   CONSTRAINT `listing_ibfk_1` FOREIGN KEY (`ownerId`) REFERENCES `user` (`userId`)
@@ -58,25 +66,38 @@ CREATE TABLE IF NOT EXISTS `listing` (
 
 -- Dumping data for table clearbnb.listing: ~17 rows (approximately)
 /*!40000 ALTER TABLE `listing` DISABLE KEYS */;
-INSERT IGNORE INTO `listing` (`listingId`, `version`, `auditedDatetime`, `ownerId`, `title`, `description`, `imageUrl`, `location`, `numberGuests`, `price`, `listingStartDate`, `listingEndDate`) VALUES
-	(1, 1, '2021-10-04 16:01:00', 4, 'Small Suburban Housing', 'A small fine suburban housing ', 'https://i.ytimg.com/vi/35wYjQRnOZA/maxresdefault.jpg', 'Detroit', 3, 200, '2021-10-05', '2021-10-30'),
-	(2, 1, '2021-10-04 16:02:00', 4, 'Small House with Garden', 'A small house with a garden outside', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/tiny-houses-1579284305.png?crop=1.00xw:0.788xh;0,0.189xh&resize=640:*', 'Kansas', 4, 300, '2021-11-14', '2021-11-26'),
-	(3, 1, '2021-10-04 16:04:00', 5, 'House in Kalmar', 'State of the art house in Kalmar', 'https://a0.muscache.com/pictures/miso/Hosting-45109815/original/30e7bd0b-fa69-4f07-b6dc-541cc2509ebe.jpeg', 'Kalmar', 2, 500, '2021-11-24', '2021-12-15'),
-	(4, 1, '2021-10-04 16:18:00', 5, 'House near the ocean', 'A house near the ocean', 'https://www.theplancollection.com/Upload/Designers/123/1042/Plan1231042MainImage_21_8_2017_8.jpg', 'Göteborg', 3, 300, '2021-10-04', '2021-10-28'),
-	(5, 1, '2021-10-04 16:21:00', 6, 'Small White House', 'Small house in the Fields', 'https://cdn.houseplansservices.com/content/iipv49rhgtuoiqmn4dvmphqpcl/w991x660.jpg?v=9', 'Istanbul, Turkey', 2, 560, '2021-11-24', '2021-11-30'),
-	(6, 1, '2021-10-04 16:24:00', 6, 'Luxury Mansion', 'A luxury mansion', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAznDIRkbkjl9u35p7MXAgCZ-ZjYpNuD9pFzLzx2IbE9RodzgKXediGzFjNv1NjgnW7r0&usqp=CAU', 'France, Paris', 6, 5000, '2021-11-16', '2021-12-10'),
-	(7, 1, '2021-10-04 16:28:00', 7, 'Mansion in Birmingham', 'A lovely mansion in Birmingham', 'https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_24/1448814/how-size-doesnt-make-you-happier-today-main-190614.jpg', 'UK, Birmingham', 4, 1500, '2021-11-24', '2021-12-28'),
-	(8, 1, '2021-10-04 16:31:00', 8, 'Luxury Resort', 'A luxury resort located in central Tokyo, Japan', 'https://i.pinimg.com/originals/bb/91/72/bb9172d16db39835f06f7493aa02a741.jpg', 'Tokyo, Japan', 7, 3000, '2021-10-04', '2021-12-24'),
-	(9, 1, '2021-10-04 16:35:00', 8, 'Gated Community House', 'A small gated community housing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMUIxJXtxxHeX-LGu40M-fRDGadxGE6-sf0tAjfC-Py9642WdH_7Z9Js1IbtxpXH-6mMc&usqp=CAU', 'Berlin, Germany', 3, 300, '2021-10-04', '2021-10-29'),
-	(10, 1, '2021-10-04 16:37:00', 9, 'A small lakeside house', 'A small lakeside housing', 'https://rdcnewscdn.realtor.com/wp-content/uploads/2018/08/Indianapolis-IN-home.jpg', 'Stockholm, Sweden', 5, 500, '2021-10-04', '2021-12-01'),
-	(11, 1, '2021-10-04 16:39:00', 10, 'A countryside House', 'A small countryside housing', 'https://static01.nyt.com/images/2019/06/25/realestate/25domestic-zeff/a1c1a1a36c9e4ff8adcb958c4276f28d-jumbo.jpg', 'Alabama, USA', 5, 700, '2021-10-07', '2021-10-29'),
-	(12, 1, '2021-10-04 16:42:00', 11, 'Small house in Sweden', 'A small housing in Sweden', 'https://s3.amazonaws.com/homelink/media/images/listingsrescale_stage/610_385/606c93985a5fd_958_508.JPG', 'Helsingborg, Sweden', 2, 200, '2021-10-16', '2021-10-28'),
-	(13, 1, '2021-10-04 16:45:00', 12, 'Suburban Getaway', 'A small housing in a Suburban getaway', 'https://www.retirementliving.com/wp-content/uploads/2018/04/how-much-house.jpg', 'Utah, USA', 2, 500, '2021-11-09', '2021-12-02'),
-	(14, 1, '2021-10-04 16:48:00', 13, 'A small luxury housing', 'A small luxury housing', 'https://st.depositphotos.com/1029202/1601/i/950/depositphotos_16014789-stock-photo-modern-luxury-house.jpg', 'Amsterdam, Netherlands', 6, 4000, '2021-10-12', '2021-10-28'),
-	(15, 1, '2021-10-04 16:50:00', 14, 'Winter getaway', 'A small winter housing', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/319187435.jpg?k=9b8b0f9b3accfec60fa4b3a4d18dc468ad179efd08076c344640edb977ac3d2f&o=&hp=1', 'Luleå, Sweden', 3, 500, '2021-10-19', '2021-10-30'),
-	(16, 1, '2021-10-04 16:52:00', 15, 'House with a Pool', 'A housing with a Pool', 'https://media.gettyimages.com/photos/large-house-with-swimming-pool-picture-id94474127?s=612x612', 'Bangkok, Thailand', 2, 600, '2021-10-11', '2021-10-30'),
-	(17, 1, '2021-10-04 16:54:00', 16, 'Enormous Mansion', 'A huge luxury Mansion', 'https://i.pinimg.com/originals/d0/c0/4b/d0c04be7f982a0753cb6dc0c565ea661.jpg', 'Paris, France', 10, 5000, '2021-10-04', '2021-11-30'),
-	(18, 1, '2021-10-04 17:05:00', 17, 'Mountainside House', 'A house on the mountainside', 'https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2021/08/When-Buying-a-Bigger-House-Could-Be-a-Bad-Idea_1.jpg', 'England, Yorkshire', 2, 1000, '2021-10-06', '2021-10-28');
+INSERT IGNORE INTO `listing` (`listingId`, `version`, `auditedDatetime`, `ownerId`, `title`, `description`, `imageUrl`, `location`, `numberGuests`, `price`, `listingStartDate`, `listingEndDate`, `originalListingId`) VALUES
+	(1, 1, '2021-10-04 16:01:00', 4, 'Small Suburban Housing', 'A small fine suburban housing ', 'https://i.ytimg.com/vi/35wYjQRnOZA/maxresdefault.jpg', 'Detroit', 3, 200, '2021-10-05', '2021-10-30', 1),
+	(2, 1, '2021-10-04 16:02:00', 4, 'Small House with Garden', 'A small house with a garden outside', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/tiny-houses-1579284305.png?crop=1.00xw:0.788xh;0,0.189xh&resize=640:*', 'Kansas', 4, 300, '2021-11-14', '2021-11-26', 2),
+	(3, 1, '2021-10-04 16:04:00', 5, 'House in Kalmar', 'State of the art house in Kalmar', 'https://a0.muscache.com/pictures/miso/Hosting-45109815/original/30e7bd0b-fa69-4f07-b6dc-541cc2509ebe.jpeg', 'Kalmar', 2, 500, '2021-11-24', '2021-12-15', 3),
+	(4, 1, '2021-10-04 16:18:00', 5, 'House near the ocean', 'A house near the ocean', 'https://www.theplancollection.com/Upload/Designers/123/1042/Plan1231042MainImage_21_8_2017_8.jpg', 'Göteborg', 3, 300, '2021-10-04', '2021-10-28', 4),
+	(5, 1, '2021-10-04 16:21:00', 6, 'Small White House', 'Small house in the Fields', 'https://cdn.houseplansservices.com/content/iipv49rhgtuoiqmn4dvmphqpcl/w991x660.jpg?v=9', 'Istanbul, Turkey', 2, 560, '2021-11-24', '2021-11-30', 5),
+	(6, 1, '2021-10-04 16:24:00', 6, 'Luxury Mansion', 'A luxury mansion', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAznDIRkbkjl9u35p7MXAgCZ-ZjYpNuD9pFzLzx2IbE9RodzgKXediGzFjNv1NjgnW7r0&usqp=CAU', 'France, Paris', 6, 5000, '2021-11-16', '2021-12-10', 6),
+	(7, 1, '2021-10-04 16:28:00', 7, 'Mansion in Birmingham', 'A lovely mansion in Birmingham', 'https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_24/1448814/how-size-doesnt-make-you-happier-today-main-190614.jpg', 'UK, Birmingham', 4, 1500, '2021-11-24', '2021-12-28', 7),
+	(8, 1, '2021-10-04 16:31:00', 8, 'Luxury Resort', 'A luxury resort located in central Tokyo, Japan', 'https://i.pinimg.com/originals/bb/91/72/bb9172d16db39835f06f7493aa02a741.jpg', 'Tokyo, Japan', 7, 3000, '2021-10-04', '2021-12-24', 8),
+	(9, 1, '2021-10-04 16:35:00', 8, 'Gated Community House', 'A small gated community housing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMUIxJXtxxHeX-LGu40M-fRDGadxGE6-sf0tAjfC-Py9642WdH_7Z9Js1IbtxpXH-6mMc&usqp=CAU', 'Berlin, Germany', 3, 300, '2021-10-04', '2021-10-29', 9),
+	(10, 1, '2021-10-04 16:37:00', 9, 'A small lakeside house', 'A small lakeside housing', 'https://rdcnewscdn.realtor.com/wp-content/uploads/2018/08/Indianapolis-IN-home.jpg', 'Stockholm, Sweden', 5, 500, '2021-10-04', '2021-12-01', 10),
+	(11, 1, '2021-10-04 16:39:00', 10, 'A countryside House', 'A small countryside housing', 'https://static01.nyt.com/images/2019/06/25/realestate/25domestic-zeff/a1c1a1a36c9e4ff8adcb958c4276f28d-jumbo.jpg', 'Alabama, USA', 5, 700, '2021-10-07', '2021-10-29', 11),
+	(12, 1, '2021-10-04 16:42:00', 11, 'Small house in Sweden', 'A small housing in Sweden', 'https://s3.amazonaws.com/homelink/media/images/listingsrescale_stage/610_385/606c93985a5fd_958_508.JPG', 'Helsingborg, Sweden', 2, 200, '2021-10-16', '2021-10-28', 12),
+	(13, 1, '2021-10-04 16:45:00', 12, 'Suburban Getaway', 'A small housing in a Suburban getaway', 'https://www.retirementliving.com/wp-content/uploads/2018/04/how-much-house.jpg', 'Utah, USA', 2, 500, '2021-11-09', '2021-12-02', 13),
+	(14, 1, '2021-10-04 16:48:00', 13, 'A small luxury housing', 'A small luxury housing', 'https://st.depositphotos.com/1029202/1601/i/950/depositphotos_16014789-stock-photo-modern-luxury-house.jpg', 'Amsterdam, Netherlands', 6, 4000, '2021-10-12', '2021-10-28', 14),
+	(15, 1, '2021-10-04 16:50:00', 14, 'Winter getaway', 'A small winter housing', 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/319187435.jpg?k=9b8b0f9b3accfec60fa4b3a4d18dc468ad179efd08076c344640edb977ac3d2f&o=&hp=1', 'Luleå, Sweden', 3, 500, '2021-10-19', '2021-10-30', 15),
+	(16, 1, '2021-10-04 16:52:00', 15, 'House with a Pool', 'A housing with a Pool', 'https://media.gettyimages.com/photos/large-house-with-swimming-pool-picture-id94474127?s=612x612', 'Bangkok, Thailand', 2, 600, '2021-10-11', '2021-10-30', 16),
+	(17, 1, '2021-10-04 16:54:00', 16, 'Enormous Mansion', 'A huge luxury Mansion', 'https://i.pinimg.com/originals/d0/c0/4b/d0c04be7f982a0753cb6dc0c565ea661.jpg', 'Paris, France', 10, 5000, '2021-10-04', '2021-11-30', 17),
+	(18, 1, '2021-10-04 17:05:00', 17, 'Mountainside House', 'A house on the mountainside', 'https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2021/08/When-Buying-a-Bigger-House-Could-Be-a-Bad-Idea_1.jpg', 'England, Yorkshire', 2, 1000, '2021-10-06', '2021-10-28', 18),
+	(22, 1, '2021-10-05 21:05:00', 5, 'hehe', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
+	(23, 2, '2021-10-05 23:18:08', 5, 'REH', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
+	(24, 2, '2021-10-06 00:17:24', 17, 'NEW TITLE', 'A house on the mountainside', 'https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2021/08/When-Buying-a-Bigger-House-Could-Be-a-Bad-Idea_1.jpg', 'England, Yorkshire', 2, 1000, '2021-10-06', '2021-10-28', 18),
+	(25, 3, '2021-10-06 00:20:34', 5, 'MODIFIED', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
+	(26, 2, '2021-10-06 00:26:41', 4, 'Trying something new', 'A small fine suburban housing ', 'https://i.ytimg.com/vi/35wYjQRnOZA/maxresdefault.jpg', 'Detroit', 3, 200, '2021-10-05', '2021-10-30', 1),
+	(27, 1, '2021-10-06 03:34:00', 24, 'MY LEASE', 'HEH', 'HEH', 'HEH', 1, 500, '2021-10-06', '2021-10-30', 19),
+	(28, 1, '2021-10-06 05:59:00', 1, 'a New Listing', 'hehe', 'hehe', 'hehe', 5, 500, '2021-10-06', '2021-10-16', 19),
+	(29, 4, '2021-10-06 08:54:44', 5, 'MODIFIED', 'NEW DESCRIPTION', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', NULL),
+	(30, 5, '2021-10-06 08:55:30', 5, 'SEEEE', 'NEW DESCRIPTION', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', NULL),
+	(31, 2, '2021-10-06 09:15:33', 8, 'Gated Community House', 'A small gated community housing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMUIxJXtxxHeX-LGu40M-fRDGadxGE6-sf0tAjfC-Py9642WdH_7Z9Js1IbtxpXH-6mMc&usqp=CAU', 'Berlin, Germany', 4, 300, '2021-10-04', '2021-10-29', 9),
+	(32, 1, '2021-10-06 09:16:00', 8, 'LATEST LISTING', 'hehe', '', 'hehe', 5, 555, '2021-10-06', '2021-10-30', 19),
+	(33, 2, '2021-10-06 10:00:43', 6, 'My New Title', 'Small house in the Fields', 'https://cdn.houseplansservices.com/content/iipv49rhgtuoiqmn4dvmphqpcl/w991x660.jpg?v=9', 'Istanbul, Turkey', 3, 600, '2021-11-24', '2021-11-30', 5),
+	(34, 1, '2021-10-06 15:42:00', 1, 'a new place', 'hehe', 'hehe', 'wwww', 5, 55555, '2021-10-07', '2021-10-15', 19);
 /*!40000 ALTER TABLE `listing` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.message
@@ -95,12 +116,20 @@ CREATE TABLE IF NOT EXISTS `message` (
 
 -- Dumping data for table clearbnb.message: ~0 rows (approximately)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
+INSERT IGNORE INTO `message` (`messageId`, `writtenById`, `recipientId`, `content`, `timestamp`) VALUES
+	(1, 1, NULL, 'haha', '2021-10-06 03:26:34'),
+	(2, 1, NULL, 'hahaha', '2021-10-06 03:26:41'),
+	(3, 3, 1, 'YOOOOOOOOOOOOOOO', '2021-10-06 03:26:46'),
+	(4, 1, NULL, 'HELLO?', '2021-10-06 03:27:46'),
+	(5, 3, 1, 'HELLO!', '2021-10-06 03:27:52'),
+	(6, 1, NULL, 'HELLO', '2021-10-06 03:28:02'),
+	(7, 1, NULL, 'ERRRRR', '2021-10-06 12:13:12');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.review
 CREATE TABLE IF NOT EXISTS `review` (
   `reviewId` int NOT NULL AUTO_INCREMENT,
-  `version` int DEFAULT '1',
+  `version` int NOT NULL DEFAULT '1',
   `timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
   `authorId` int NOT NULL,
   `comment` varchar(500) DEFAULT NULL,
@@ -116,8 +145,16 @@ CREATE TABLE IF NOT EXISTS `review` (
   CONSTRAINT `review_ibfk_3` FOREIGN KEY (`postedToListingId`) REFERENCES `listing` (`listingId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.review: ~0 rows (approximately)
+-- Dumping data for table clearbnb.review: ~12 rows (approximately)
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
+INSERT IGNORE INTO `review` (`reviewId`, `version`, `timestamp`, `authorId`, `comment`, `rating`, `postedToListingId`, `reviewsUserIdOf`) VALUES
+	(1, 2, '2021-10-06 00:48:47', 4, 'VERSION 2', 3, 26, NULL),
+	(2, 1, '2021-10-06 00:49:11', 4, 'VERSION 1', 3, 26, NULL),
+	(3, 2, '2021-10-06 00:57:39', 4, 'VERSION 3?', 3, 26, NULL),
+	(4, 1, '2021-10-06 00:58:54', 4, 'IN VERSION 1', 3, 26, NULL),
+	(5, 1, '2021-10-06 08:55:17', 5, 'This comment has been removed.', 3, 28, NULL),
+	(6, 2, '2021-10-06 10:06:20', 4, 'This comment has been removed.', 3, 1, NULL),
+	(7, 1, '2021-10-06 15:39:37', 1, 'Great stuff', 5, NULL, 8);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.user
@@ -129,21 +166,21 @@ CREATE TABLE IF NOT EXISTS `user` (
   `balance` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`userId`) USING BTREE,
   UNIQUE KEY `username` (`username`,`email`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table clearbnb.user: ~22 rows (approximately)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT IGNORE INTO `user` (`userId`, `username`, `password`, `email`, `balance`) VALUES
 	(1, 'mikael', '60ebf6e22afe105f975ddc810e6cac4599034f40cc25c16da279c36c2b4bcbbe', 'haha', 0),
 	(3, 'support', '60ebf6e22afe105f975ddc810e6cac4599034f40cc25c16da279c36c2b4bcbbe', 'haha', 5),
-	(4, 'kstobart0', '1b8d638bda34c12ac55072387cbf018e4562b303574ca3efe3dfa37b65503c48', 'cortler0@etsy.com', 70115),
-	(5, 'tpaget1', '30df4ed4506dd6aee153dd5c95d000df78d8c77e17c758d4fed7c2a3670e0485', 'fmcgrey1@si.edu', 30208),
-	(6, 'mheardman2', 'ac79b5773df94209ec15590ba4dd62b84f830966bd4f8821fb7bd2f2cfb11557', 'sdehm2@discovery.com', 72115),
-	(7, 'elivoir3', '4d2c8bf350457aca96cf5bfd2a89e7f950af6e311eed495dd5dbe3b06e545a7a', 'pbarke3@phpbb.com', 89961),
+	(4, 'kstobart0', '1b8d638bda34c12ac55072387cbf018e4562b303574ca3efe3dfa37b65503c48', 'cortler0@etsy.com', 24115),
+	(5, 'tpaget1', '30df4ed4506dd6aee153dd5c95d000df78d8c77e17c758d4fed7c2a3670e0485', 'fmcgrey1@si.edu', 7208),
+	(6, 'mheardman2', 'ac79b5773df94209ec15590ba4dd62b84f830966bd4f8821fb7bd2f2cfb11557', 'sdehm2@discovery.com', 71655),
+	(7, 'elivoir3', '4d2c8bf350457aca96cf5bfd2a89e7f950af6e311eed495dd5dbe3b06e545a7a', 'pbarke3@phpbb.com', 88121),
 	(8, 'tweighell4', 'a6c7cf72c78ec52ffb9f59988172ac20081ff40bcc93bc174b920eeabeed9681', 'alangstrath4@chicagotribune.com', 38328),
-	(9, 'bflade5', '1c26f6036288ca71803b0d9cd5e92d9e66fb5d6cc30d207610237eeed9da3ef6', 'kderell5@samsung.com', 59014),
+	(9, 'bflade5', '1c26f6036288ca71803b0d9cd5e92d9e66fb5d6cc30d207610237eeed9da3ef6', 'kderell5@samsung.com', 15130800),
 	(10, 'gblencoe6', 'de9a0d0a16d695a2b21a353edf4afa1e8981a77793627429a3debea35ab32258', 'egomme6@oakley.com', 51200),
-	(11, 'onetherwood7', 'b084c2c2ee44e3230af5d3ee047b31d910b2999004135d2671028997b2c98c63', 'koxburgh7@facebook.com', 68529),
+	(11, 'onetherwood7', 'b084c2c2ee44e3230af5d3ee047b31d910b2999004135d2671028997b2c98c63', 'koxburgh7@facebook.com', 65309),
 	(12, 'scawcutt8', '1a35a2fad4449f36986bf1ba4d538d797cb1faa62b4c286b7a9fbc1aef23a112', 'astonestreet8@usa.gov', 21716),
 	(13, 'pnossent9', '2778f90150bda58bc3c82139bcde00da21e0c1bd744cc25f4bb41b4f6ad81f3d', 'ushave9@irs.gov', 27657),
 	(14, 'rscurrya', '5bdbe0cd1175c149f288bc802cef2fed5c548c58baa5ca23eb13449cd6ecccde', 'kvanzona@weibo.com', 12418),
@@ -155,7 +192,8 @@ INSERT IGNORE INTO `user` (`userId`, `username`, `password`, `email`, `balance`)
 	(20, 'bklempkeg', '1a7c054e6f801ee83875f8404e27a7996072ab47dd373d3cc666b664c494051a', 'lpriseg@creativecommons.org', 9701),
 	(21, 'spossah', '94aff63533a7261484181f5e0af918f4207c9ef7f9632c48696f6e4e1c4dbc18', 'kkynderh@soundcloud.com', 31936),
 	(22, 'aaleksandrovi', 'a6f1988cb187b406b50187f2fd32fb3785cedc4cc3dbb51e2bee998fdd1fc617', 'rdumbarei@cargocollective.com', 10168),
-	(23, 'lfaberj', '6421ffdd964525202bb0a258f2b42ae58a2a4be4acc0c5199f046f12b02719ca', 'hheildsj@vimeo.com', 42937);
+	(23, 'lfaberj', '6421ffdd964525202bb0a258f2b42ae58a2a4be4acc0c5199f046f12b02719ca', 'hheildsj@vimeo.com', 42937),
+	(24, 'newGuy', '60ebf6e22afe105f975ddc810e6cac4599034f40cc25c16da279c36c2b4bcbbe', 'haha', 555);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -8,14 +8,14 @@
         </div>
       </div>
       <div class="guestBox Box">
-        Guests
+        Can Host At Least Guests
         <div class="guestsBar">
           <input @change="updateMyGuests" type="number" min="1" placeholder="Guests" class="myGuestsInput guestsBar" />
         </div>
       </div>
       <div class="startDateBox Box">
         Start Date
-        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="myMinDate" type="date" /></div>
+        <div class="startDateBar"><input @change="updateMyMinDate" class="myMinDateInput" :min="filterStartLimit" type="date" /></div>
       </div>
       <div class="endDateBox Box">
         End Date
@@ -48,7 +48,7 @@
         Location
       </div>
       <div class="categoryBox">
-        Nr Of Guests
+        Max Guests
       </div>
       <div class="categoryBox">
         Price
@@ -64,8 +64,8 @@
       </div>
       <Posting
         v-for="(listItem, index) of relevantListings"
-        :key="index"
         :Listing="listItem"
+        :key="index"
       />
     </div>
   </div>
@@ -87,8 +87,12 @@ export default {
       myLocation: '',
       numberGuests: 1,
       myMinDate: '',
+      filterStartLimit: '',
       myMaxDate: '',
-      myPrice: 0
+      myPrice: 0,
+      passedDownVersions: [],
+      ignoreFirst: true,
+      changedSomething: false
     };
   },
   async mounted() {
@@ -96,6 +100,7 @@ export default {
     let myYear = myDate.getFullYear();
     let myMonth = ((myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : (myDate.getMonth() + 1));
     let myDay = (myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
+    this.filterStartLimit = myYear + '-' + myMonth + '-' + myDay;
     this.myMinDate = myYear + '-' + myMonth + '-' + myDay;
     let res = await fetch('http://localhost:4000/getAllListings', {
       method: 'POST',
@@ -104,49 +109,65 @@ export default {
       body: ''
     }).then((response) => {
         return response.json();
-    }).then((data) => {
+    }).then(async (data) => {
       let currentIndex = 0;
       this.relevantListings = []
       let currentVersion = 0;
       let currentId = 0;
-
-      // listingId 4, versionId 1
-      // listingId 4, versionId 2
-      // listingId 5, versionId 1
-      //
-      // listingId5 {1: versionId: 1, 2: versionId: 2}
-      // 
-      const groupBy = (objectArray, property) => {
-          return objectArray.reduce(function (total, obj) {
-            let key = obj[property];
-            if (!total[key]) {
-              total[key] = [];
-            }
-            total[key].push(obj);
-            return total;
-          }, {});
+      this.processedIds = []
+      while(currentIndex < data.length){
+        console.log(data);
+        for (let i = data.length-1; i > -1; i--) {
+            if(!this.processedIds.includes(data[i].originalListingId)){
+              this.processedIds.push(data[i].originalListingId);
+              this.relevantListings.push(
+              new Listing(
+                data[i].listingId,
+                data[i].owner.username,
+                data[i].title,
+                data[i].description,
+                data[i].imageUrl,
+                data[i].location,
+                data[i].numberGuests,
+                data[i].price,
+                data[i].listingStartDate,
+                data[i].listingEndDate,
+                data[i].originalListingId)
+                );
+             }
         }
+        
+        currentIndex += 1;
+      }
 
-        let groupedListings = groupBy(data, 'listingId');
-
-        for(var listing in groupedListings){
-          let currentListing = groupedListings[listing];
-          let relevantListing = currentListing[currentListing.length - 1];
-          let latestVersionOfListing = new Listing(
-            relevantListing.listingId,
-            relevantListing.owner.username, 
-            relevantListing.title, 
-            relevantListing.description, 
-            relevantListing.imageUrl, 
-            relevantListing.location, 
-            relevantListing.numberGuests, 
-            relevantListing.price, 
-            relevantListing.listingStartDate,
-            relevantListing.listingEndDate
-          );
-          this.relevantListings.push(latestVersionOfListing);
-        }     
     });
+  },
+  watch: {
+    myLocation(){
+      console.log("LOCATION CHANGED");
+      this.changedSomething = true;
+    },
+    numberGuests(){
+      console.log("NUMBE GUESTS CHANGED");
+      this.changedSomething = true;
+    },
+    myMinDate(){
+      if(!this.ignoreFirst){
+        console.log("MY STARTDATE CHANGED");
+        this.changedSomething = true;
+      }
+      if(this.ignoreFirst){
+        this.ignoreFirst = false;
+      }
+    },
+    myMaxDate(){
+      console.log("MY MAX DATE CHANGED");
+      this.changedSomething = true;
+    },
+    myPrice(){
+      console.log("MY PRICE CHANGED");
+      this.changedSomething = true;
+    }
   },
   methods: {
     updateMyPrice() {
@@ -165,6 +186,8 @@ export default {
       this.myMaxDate = document.getElementsByClassName('myMaxDateInput')[0].value;
     },
     async search() {
+      this.relevantListings = [];
+      
       let myQueryParams = {
         location: this.myLocation,
         numberGuests: this.numberGuests,
@@ -172,7 +195,54 @@ export default {
         myMaxDate: this.myMaxDate,
         myPrice: this.myPrice
       }
-      let res = await fetch('http://localhost:4000/getResultsFromFiltering?' + 
+      console.log("THE LOCATION WAS: " + this.myLocation);
+      console.log("THE NUMBER OF GUESTS WAS: " + this.numberGuests);
+      console.log("THE MINDATE WAS: " + this.myMinDate);
+      console.log("THE ENDDATE WAS: " + this.myEndDate);
+      console.log("THE PRICE WAS: " + this.myPrice);
+      if(!this.changedSomething){
+        let res = await fetch('http://localhost:4000/getAllListings?' +
+        new URLSearchParams(myQueryParams), {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: ''
+        }).then((response) => {
+            return response.json();
+        }).then(async (data) => {
+          let currentIndex = 0;
+          this.relevantListings = []
+          this.processedIds = []
+          let currentVersion = 0;
+          let currentId = 0;
+          console.log(data.length);
+          while(currentIndex < data.length){
+            console.log(data);
+            if(!this.processedIds.includes(data[currentIndex].originalListingId)){
+              this.relevantListings.push(
+              new Listing(
+                data[currentIndex].listingId,
+                data[currentIndex].owner.username,
+                data[currentIndex].title,
+                data[currentIndex].description,
+                data[currentIndex].imageUrl,
+                data[currentIndex].location,
+                data[currentIndex].numberGuests,
+                data[currentIndex].price,
+                data[currentIndex].listingStartDate,
+                data[currentIndex].listingEndDate,
+                data[currentIndex].originalListingId)
+                );
+              this.processedIds.push(data[currentIndex].originalListingId);
+            }
+            
+            currentIndex += 1;
+          }
+
+        });
+      }
+      else{
+        let res = await fetch('http://localhost:4000/getResultsFromFiltering?' + 
       new URLSearchParams(myQueryParams), {
         method: 'GET',
         mode: 'cors'
@@ -181,8 +251,12 @@ export default {
         }).then((data) => {
           this.relevantListings = [];
           let currentIndex = 0;
+          console.log("THE LISTING IN FRONTEND WAS: ");
+          console.log(data[0]);
           while(currentIndex < Object.keys(data).length){
+            console.log(currentIndex);
             let latestVersionOfListing = new Listing(
+              data[currentIndex].listingId,
               data[currentIndex].owner.username, 
               data[currentIndex].title, 
               data[currentIndex].description, 
@@ -191,13 +265,17 @@ export default {
               data[currentIndex].numberGuests, 
               data[currentIndex].price, 
               data[currentIndex].listingStartDate,
-              data[currentIndex].listingEndDate
+              data[currentIndex].listingEndDate,
+              data[currentIndex].originalListingId
             );
             this.relevantListings.push(latestVersionOfListing);
+            console.log(this.relevantListings);
             currentIndex += 1;
           }
+          console.log(this.relevantListings);
           
         });
+      }
     },
     navigateToSupport() {
       if(!this.$store.state.user) {

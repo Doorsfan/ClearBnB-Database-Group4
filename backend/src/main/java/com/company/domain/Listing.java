@@ -1,5 +1,6 @@
 package com.company.domain;
 
+import com.company.application.UserDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -34,6 +35,16 @@ public class Listing implements Cloneable {
     private String listingStartDate;
     @Column(name = "listingEndDate")
     private String listingEndDate;
+    @Column(name = "originalListingId")
+    private Integer originalListingId;
+
+    public Integer getOriginalListingId() {
+        return originalListingId;
+    }
+
+    public void setOriginalListingId(Integer originalListingId) {
+        this.originalListingId = originalListingId;
+    }
 
     public Listing() { }
 
@@ -138,16 +149,17 @@ public class Listing implements Cloneable {
         return "Listing{" +
                 "listingId=" + listingId +
                 ", version=" + version +
-                ", auditedDatetime=" + auditedDatetime +
-                ", owner=" + owner.getUserId() +
+                ", auditedDatetime='" + auditedDatetime + '\'' +
+                ", owner=" + owner +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", location='" + location + '\'' +
                 ", numberGuests=" + numberGuests +
                 ", price=" + price +
-                ", listingStartDate=" + listingStartDate +
-                ", listingEndDate=" + listingEndDate +
+                ", listingStartDate='" + listingStartDate + '\'' +
+                ", listingEndDate='" + listingEndDate + '\'' +
+                ", originalListingId=" + originalListingId +
                 '}';
     }
 
@@ -166,6 +178,7 @@ public class Listing implements Cloneable {
         listing.setPrice(this.getPrice());
         listing.setListingStartDate(this.getListingStartDate());
         listing.setListingEndDate(this.getListingEndDate());
+        listing.setOriginalListingId(this.getOriginalListingId());
         return listing;
     }
 }
