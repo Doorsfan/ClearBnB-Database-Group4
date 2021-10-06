@@ -36,7 +36,7 @@
       </div>
       <div class="priceText">
         <div class="inline">Price per night: </div>
-        <div v-if="!editMode" class="inline">{{ displayPrice }}</div>
+        <div v-if="!editMode" class="inline">{{ myPrice * 1.15 }}</div>
         <input v-model="newPrice" v-if="editMode" type="text" class="inline" :placeholder=myPrice>
       </div>
       <div class="startDateText">
@@ -75,7 +75,7 @@
       <div v-if="priceToPay && priceToPay > 0" class="bookingPriceDiv">
         Total sum to pay for {{ amountOfDaysWanted }} days: {{ priceToPay }}
       </div>
-      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
+      <button v-if="wantedStartDate < wantedEndDate && !editMode && currentUsername.length > 0 && priceToPay && latestVersion" @click="tryToBook" class="bookButton" type="button" value="Book">Book</button>
       <div class="reviewsDiv">
         <ReviewBox
           v-for="(listItem, index) of relevantReviews"
@@ -118,7 +118,7 @@ export default {
       wantedStartDate: new Date(this.myStartDate),
       wantedEndDate: new Date(this.myEndDate),
       amountOfDaysWanted: '',
-      wantedVersion: 1.0,
+      wantedVersion: '',
       versions: [],
       versionsOfListing: [],
       currentUserId: (this.$store.getters.user) ? (this.$store.getters.user.userId) : '',
@@ -159,6 +159,7 @@ export default {
       newEndDay: '',
       priceToPay: 0,
       displayPrice: 0,
+      latestVersion: false
     };
   },
   async mounted() {
@@ -172,7 +173,9 @@ export default {
     document.getElementsByClassName('bookingEndDateElement')[0].max = this.myEndDate;
 
     document.getElementById("postedByLink").to = this.postedByUsername;
+    
     let queryParams = {
+        listingId: this.myListingId,
         title: this.$route.query.title,
         description: this.$route.query.description,
         imageUrl: this.$route.query.imageUrl,
@@ -182,8 +185,8 @@ export default {
         listingStartDate: this.$route.query.listingStartDate,
         listingEndDate: this.$route.query.listingEndDate,
       }
-
-      let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing', {
+      let resForAllListings = await fetch('http://localhost:4000/getAllVersionsOfListing?'
+      + new URLSearchParams(queryParams), {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
@@ -198,10 +201,18 @@ export default {
           currentIndex += 1;
         }
         this.wantedVersion = this.versions.length;
-        this.displayPrice = Math.round(this.versionsOfListing[this.wantedVersion-1].price * 1.15);
+        console.log("THE WANTED VERSION WAS: " + this.wantedVersion);
       })
       
-      let res = await fetch('http://localhost:4000/getReviewsForListing', {
+      if(this.wantedVersion == this.versions.length){
+        this.latestVersion = true;
+      }
+      let myIdObject = {
+        listingId: this.myListingId
+      }
+      console.log("THE LISTING ID: " + this.myListingId);
+      let res = await fetch('http://localhost:4000/getReviewsForListing?' +
+      new URLSearchParams(myIdObject), {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
@@ -235,12 +246,72 @@ export default {
             }
           });
   },
+  watch: {
+    async wantedVersion(){
+      if(this.versions.length == this.wantedVersion){
+        this.latestVersion = true;
+      }
+      else{
+        this.latestVersion = false;
+      }
+      let queryParams = {
+        listingId: this.myListingId,
+        title: this.$route.query.title,
+        description: this.$route.query.description,
+        imageUrl: this.$route.query.imageUrl,
+        location: this.$route.query.location,
+        numberGuests: this.$route.query.numberGuests,
+        price: this.$route.query.price,
+        listingStartDate: this.$route.query.listingStartDate,
+        listingEndDate: this.$route.query.listingEndDate,
+      }
+      let myWantedQueryParams = {
+        listingId: this.myListingId
+      }
+      console.log("IN THE GETREVIEWSFORLISTING - ROW 268 - IT WAS : " + this.myListingId);
+      let res = await fetch('http://localhost:4000/getReviewsForListing?' +
+      new URLSearchParams(myWantedQueryParams), {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: JSON.stringify(queryParams),
+        }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            let currentIndex = 0;
+            this.reviewsFromDatabase = []
+            console.log(data);
+            while(currentIndex < Object.keys(data).length){
+              this.reviewsFromDatabase.push(
+                new Review(
+                  data[currentIndex].reviewId,
+                  data[currentIndex].author.username, 
+                  data[currentIndex].timestamp[0], 
+                  data[currentIndex].timestamp[1], 
+                  data[currentIndex].timestamp[2], 
+                  data[currentIndex].timestamp[3],
+                  data[currentIndex].timestamp[4],
+                  data[currentIndex].comment, 
+                  data[currentIndex].rating, 
+                  data[currentIndex].version
+                ));
+              this.relevantReviews = [];
+              this.reviewsFromDatabase.forEach(element => {
+                if(element.version == this.wantedVersion){
+                  this.relevantReviews.push(element);
+                }
+              });
+              currentIndex += 1;
+            }
+          });
+    }
+  },
   methods: {
     updateDays(){
       let end = new Date(this.wantedEndDate).getTime();
       let start = new Date(this.wantedStartDate).getTime();
       this.amountOfDaysWanted = (end - start)/(1000 * 3600 * 24);
-      this.priceToPay = this.amountOfDaysWanted * this.displayPrice;
+      this.priceToPay = Math.round((this.amountOfDaysWanted * this.myPrice) * 1.15);
     },
     changeToEditMode(){
       if(!this.editMode){
@@ -314,30 +385,61 @@ export default {
         listingId: this.myListingId,
         title: this.myTitle,
         description: this.myDescription,
-        imageUrl: this.imageUrl,
-        location: this.location,
+        imageUrl: this.myImageUrl,
+        location: this.myLocation,
+        numberGuests: this.myNumberOfGuests,
+        price: this.myPrice,
+        listingStartDate: this.myStartDate,
+        listingEndDate: this.myEndDate,
+        username: this.$store.getters.user.username
+      }
+      let myListing = {
+        listingId: this.myListingId,
+        version: this.version,
+        owner: {
+          username: '',
+          password: '',
+          email: '',
+          balance: 0
+        },
+        title: this.myTitle,
+        description: this.myDescription,
+        imageUrl: this.myImageURL,
+        location: this.myLocation,
         numberGuests: this.numberGuests,
         price: this.myPrice,
         listingStartDate: this.myStartDate,
-        listingEndDate: this.myEndDate
+        listingEndDate: this.myEndDate,
+        originalListingId: 1
       }
-      let res = await fetch('http://localhost:4000/updateLease', {
+      let res = await fetch('http://localhost:4000/updateLease?'
+      + new URLSearchParams(queryParams), {
         method: 'POST',
         mode: 'cors',
-        body: JSON.stringify(queryParams)
+        body: JSON.stringify(myListing)
       }).then((response) => {
             return response.json();
       }).then((data) => {
         let currentIndex = 0;
+        this.versions = [];
+        this.versionsOfListing = [];
+
         while(currentIndex < Object.keys(data).length){
+          this.versionsOfListing.push(data[currentIndex])
           currentIndex += 1;
           this.versions.push(currentIndex);
-        } 
+          
+        }
+
+        this.wantedVersion = currentIndex;
       });
       if(this.editMode){
         this.editMode = false;
       }
-      console.log(this.myStartDate);
+
+      if(this.wantedVersion == this.versions.length){
+        this.latestVersion = true;
+      }
     },
     setToOneStar(){
       this.wantedAmountOfStars = 1;
@@ -358,6 +460,7 @@ export default {
       //Update the State variables in terms of dynamically reflecting the data
       //Based on this Version, query the DB in terms of finding the respective
       //version of it from the DB
+
       this.myTitle = this.versionsOfListing[this.wantedVersion - 1].title;
       this.myDescription = this.versionsOfListing[this.wantedVersion - 1].description;
       this.myImageURL = this.versionsOfListing[this.wantedVersion - 1].imageUrl;
@@ -368,6 +471,10 @@ export default {
       this.myEndDate = this.versionsOfListing[this.wantedVersion - 1].listingEndDate;
       this.relevantReviews = [];
 
+      if(this.wantedVersion == this.versions.length){
+        this.latestVersion = true;
+      }
+
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
@@ -377,9 +484,11 @@ export default {
         price: this.$route.query.price,
         listingStartDate: this.$route.query.listingStartDate,
         listingEndDate: this.$route.query.listingEndDate,
+        listingId: this.myListingId
       }
 
-      let res = await fetch('http://localhost:4000/getReviewsForListing', {
+      let res = await fetch('http://localhost:4000/getReviewsForListing?'
+      + new URLSearchParams(queryParams), {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
@@ -430,7 +539,6 @@ export default {
         bookingEndDate: this.wantedEndDate,
         cancelled: 0
       }
-
       let myPriceToPay = this.priceToPay;
       let res = await fetch('http://localhost:4000/booking', {
         method: 'POST',
@@ -440,7 +548,15 @@ export default {
       }).then(function(response){
         return response.json();
       }).then(async function(data){
-        console.log(data);
+        if(data == "Due to insufficient funds, the booking failed."){
+          alert("Due to insufficient funds, your booking failed!");
+        }
+        else if(data == "Failed to make a booking, dates were taken!"){
+          alert("Those dates are already taken!");
+        }
+        else{
+          console.log(data);
+        }
       });
     },
     async tryToPostReview(){
@@ -452,7 +568,7 @@ export default {
         balance: this.$store.getters.user.balance
       }
  
-      console.log("The wanted version: " + this.wantedVersion);
+
       let queryParams = {
         title: this.$route.query.title,
         description: this.$route.query.description,
@@ -462,6 +578,11 @@ export default {
         price: this.$route.query.price,
         listingStartDate: this.$route.query.listingStartDate,
         listingEndDate: this.$route.query.listingEndDate,
+        username: this.postedByUsername,
+        comment: this.myComment,
+        rating: this.wantedAmountOfStars,
+        timestamp: new Date(),
+        wantedVersion: this.wantedVersion
       }
       let myReview = {
         author: myUser,
@@ -474,7 +595,8 @@ export default {
       }
 
         
-        let res = await fetch('http://localhost:4000/review', {
+        let res = await fetch('http://localhost:4000/review?'
+        + new URLSearchParams(queryParams), {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',

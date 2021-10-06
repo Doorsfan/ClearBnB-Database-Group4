@@ -1,6 +1,7 @@
 <template>
   <div class="leaseBox">
-    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, imageUrl: Listing.imageUrl, location: Listing.location, numberGuests: Listing.numberGuests, price: Listing.price, listingStartDate: Listing.listingStartDate, listingEndDate: Listing.listingEndDate } }">
+    <router-link :to="{ path: '/ListingPage', query: { listingId: Listing.listingId, postedByUsername: Listing.postedByUsername, title: Listing.title, description: Listing.description, imageUrl: Listing.imageUrl, location: Listing.location, numberGuests: Listing.numberGuests, price: Listing.price, listingStartDate: Listing.listingStartDate, listingEndDate: Listing.listingEndDate } 
+    }">
       <div class="cellBox firstCellBox">{{ title }}</div>
       <div class="cellBox">{{ description }}</div>
       <div class="cellBox">{{ imageUrl }}</div>

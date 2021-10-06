@@ -3,6 +3,7 @@ package com.company.infrastructure;
 import com.company.domain.Listing;
 import com.company.domain.User;
 import jakarta.persistence.*;
+import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,40 +32,70 @@ public class ListingRepository {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenYearsAhead = now.plusYears(10);
 
+
         List<Listing> baseList = entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
                 "LIKE :location AND :numberGuests <= l.numberGuests" +
-                " AND :price >= l.price")
+                " AND l.price <= :price")
                 .setParameter("location", "%" + location + "%")
                 .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
                 .setParameter("price", (price == 0 ? 100000.0 : price))
                 .getResultList();
-        if(listingStartDate == "" || listingEndDate == ""){
-            return baseList;
+        ArrayList<Listing> emptyList = new ArrayList<Listing>();
+        if(listingStartDate == ""){
+            listingStartDate = String.valueOf(LocalDateTime.now().getYear()) + '-' +
+                    (LocalDateTime.now().getMonthValue() < 10 ? "0" + LocalDateTime.now().getMonthValue()
+                            : LocalDateTime.now().getMonthValue()) + '-' +
+                    (LocalDateTime.now().getDayOfMonth() < 10 ? "0" + LocalDateTime.now().getDayOfMonth()
+                            : LocalDateTime.now().getDayOfMonth());
         }
-        List<Listing> listToReturn = new ArrayList();
-        for(Listing myListing : baseList){
-            if(Integer.parseInt(
-                    myListing.getListingStartDate()
+        if(listingEndDate == ""){
+            listingEndDate = String.valueOf(LocalDateTime.now().getYear()) + '-' +
+                    (LocalDateTime.now().plusYears(10).getMonthValue()
+                            < 10 ? "0" + LocalDateTime.now().plusYears(10).getMonthValue()
+                            : LocalDateTime.now().plusYears(10).getMonthValue()) + '-' +
+                    (LocalDateTime.now().plusYears(10).getDayOfMonth() < 10 ?
+                            "0" + LocalDateTime.now().getDayOfMonth()
+                            : LocalDateTime.now().getDayOfMonth());
+        }
+        System.out.println(listingStartDate);
+        System.out.println(listingEndDate);
+        ArrayList<Integer> alreadyCheckedIds = new ArrayList<Integer>();
+        for(int i = baseList.size()-1; i > 0; i--){
+
+            System.out.println(alreadyCheckedIds.toString());
+            if(price >= (baseList.get(i).getPrice() * 1.15) &&
+            (Integer.parseInt(
+                    baseList.get(i).getListingStartDate()
                             .replaceAll("-", ""))
-                    <= Integer.parseInt(listingStartDate.replaceAll("-", ""))
-                && Integer.parseInt(myListing.getListingEndDate()
-                    .replaceAll("-", "")) >= Integer.parseInt(listingEndDate.replaceAll("-", ""))){
-                listToReturn.add(myListing);
+                    <= Integer.parseInt(listingStartDate.replaceAll("-", "")))
+                    && (Integer.parseInt(baseList.get(i).getListingEndDate()
+                    .replaceAll("-", "")) >=
+                    Integer.parseInt(listingEndDate.replaceAll("-", "")))
+            && !(alreadyCheckedIds.contains(baseList.get(i).getListingId()))
+            && !(alreadyCheckedIds.contains(baseList.get(i).getOriginalListingId())))
+            {
+                emptyList.add(baseList.get(i));
+                for(int e = 0; e < emptyList.size(); e++){
+                    if(emptyList.get(e).getOriginalListingId() == baseList.get(i).getOriginalListingId()
+                            && emptyList.get(e).getVersion() < baseList.get(i).getVersion()){
+                        emptyList.set(e, baseList.get(i));
+                    }
+                }
             }
+            alreadyCheckedIds.add(baseList.get(i).getListingId());
+            alreadyCheckedIds.add(baseList.get(i).getOriginalListingId());
+
         }
-        // START 2021-10-01
-        // END 2021-10-30
-        //
-        // WANTED 2021-10-10
-        // WANTED 2021-10-20
-        return listToReturn;
-        //" AND l.numberGuests >= :numberGuests " +
-        //                "AND l.price <= :price AND l.listingStartDate >= :listingStartDate " +
-        //                "AND l.listingEndDate <= :listingEndDate"
-        //.setParameter("numberGuests", numberGuests)
-        //                .setParameter("price", price)
-        //                .setParameter("listingStartDate", ((listingStartDate.length() == 0) ? LocalDate.now().toString() : listingStartDate))
-        //                .setParameter("listingEndDate", ((listingEndDate.length() == 0) ? LocalDate.now().toString() : listingEndDate))
+        int lastIdChecked = 0;
+        for(int e = emptyList.size()-1; e > 0; e--){
+            if(lastIdChecked != 0){
+                if(emptyList.get(e).getListingId() == lastIdChecked){
+                    emptyList.remove(e);
+                }
+            }
+            lastIdChecked = emptyList.get(e).getListingId();
+        }
+        return emptyList;
     }
 
     public List<Listing> findAllForId(Integer listingId) {
@@ -86,7 +117,7 @@ public class ListingRepository {
     public Listing save(Listing listing) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(listing);
+            entityManager.persist(listing);
             entityManager.getTransaction().commit();
             return listing;
         } catch (Exception e) {
@@ -117,13 +148,20 @@ public class ListingRepository {
         return -1;
     }
 
-
+    public List<Listing> findAllBasedOnId(Integer id){
+        List<Listing> result = entityManager
+                .createQuery("SELECT l FROM Listing l WHERE l.originalListingId = :wantedListingId")
+                .setParameter("wantedListingId", id)
+                .getResultList();
+        return result;
+    }
     public Listing update(Integer id, String title, String description, String imageUrl, String location,
                           Integer numberGuests, Double price, LocalDate listingStartDate,
                           LocalDate listingEndDate) {
         Listing listing = this.findMostRecentForId(id).clone();
         listing.setVersion(listing.getVersion() + 1);
         listing.setAuditedDatetime(LocalDateTime.now().toString());
+        listing.setOriginalListingId(id);
 
         if (title != null) {
             listing.setTitle(title);

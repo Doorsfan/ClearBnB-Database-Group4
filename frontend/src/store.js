@@ -3,16 +3,23 @@ import { createStore } from 'vuex';
 export default createStore({
   state: {
     user: null,
+    listingVersions: null
   },
   // this.$store.commit('mutationName')
   mutations: {
     setUser(state, user) {
       state.user = user
     },
+    setListingVersions(state, listingVersions) {
+      state.listingVersions = listingVersions
+    }
   },
   getters: {
     user: state => {
       return state.user
+    },
+    listingVersions: state => {
+      return state.listingVersions
     }
   },
   computed: {
@@ -46,7 +53,9 @@ export default createStore({
 
       store.commit('setUser', loggedInUser)
     },
-
+    saveListings(store, listingVersions) {
+      store.commit('setListingVersions', listingVersions)
+    },
     async login(store, credentials) {
       let res = await fetch('/api/login?'
         +new URLSearchParams(credentials), {
