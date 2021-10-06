@@ -35,7 +35,7 @@ public class ListingRepository {
 
         List<Listing> baseList = entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
                 "LIKE :location AND :numberGuests <= l.numberGuests" +
-                " AND l.price <= :price ORDER BY l.version DESC LIMIT 1", Listing.class)
+                " AND l.price <= :price ORDER BY l.version DESC", Listing.class)
                 .setParameter("location", "%" + location + "%")
                 .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
                 .setParameter("price", (price == 0 ? 100000.0 : price))
@@ -43,17 +43,22 @@ public class ListingRepository {
         if(listingStartDate == "" || listingEndDate == ""){
             return baseList;
         }
+        ArrayList<Listing> invalidDates = new ArrayList<Listing>();
         for(int i = baseList.size()-1; i > -1; i--){
-            if (Integer.parseInt(baseList.get(i).getListingStartDate().replaceAll("-", "")) <
+            if (Integer.parseInt(baseList.get(i).getListingStartDate().replaceAll("-", "")) <=
                     Integer.parseInt(listingStartDate.replaceAll("-", ""))
                     &&
-                    Integer.parseInt(baseList.get(i).getListingEndDate().replaceAll("-", "")) <
+                    Integer.parseInt(baseList.get(i).getListingEndDate().replaceAll("-", "")) >=
                             Integer.parseInt(listingEndDate.replaceAll("-", ""))
             ) {
-                baseList.remove(baseList.get(i));
+                invalidDates.add(baseList.get(i));
+                //Invalid, so do nothing here
+            }
+            else{
+
             }
         }
-        return baseList;
+        return invalidDates;
         /*
         ArrayList<Listing> emptyList = new ArrayList<Listing>();
         if(listingStartDate == ""){
