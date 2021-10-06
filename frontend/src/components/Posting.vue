@@ -34,8 +34,6 @@ export default {
   methods: {
   },
   mounted() {
-    console.log("THE MOUNTED LISTING IN POSTING WAS: ");
-    console.log(this.Listing);
     this.title = this.Listing.title;
     this.description = this.Listing.description;
     this.imageUrl = this.Listing.imageUrl;

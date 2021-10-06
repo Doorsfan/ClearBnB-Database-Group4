@@ -40,6 +40,21 @@ public class ListingRepository {
                 .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
                 .setParameter("price", (price == 0 ? 100000.0 : price))
                 .getResultList();
+        if(listingStartDate == "" || listingEndDate == ""){
+            return baseList;
+        }
+        for(int i = baseList.size()-1; i > -1; i--){
+            if (Integer.parseInt(baseList.get(i).getListingStartDate().replaceAll("-", "")) <
+                    Integer.parseInt(listingStartDate.replaceAll("-", ""))
+                    &&
+                    Integer.parseInt(baseList.get(i).getListingEndDate().replaceAll("-", "")) <
+                            Integer.parseInt(listingEndDate.replaceAll("-", ""))
+            ) {
+                baseList.remove(baseList.get(i));
+            }
+        }
+        return baseList;
+        /*
         ArrayList<Listing> emptyList = new ArrayList<Listing>();
         if(listingStartDate == ""){
             listingStartDate = String.valueOf(LocalDateTime.now().getYear()) + '-' +
@@ -96,8 +111,8 @@ public class ListingRepository {
                 }
             }
             lastIdChecked = emptyList.get(e).getListingId();
-        } */
-        return emptyList;
+        }
+        return emptyList; */
     }
 
     public List<Listing> findAllForId(Integer listingId) {

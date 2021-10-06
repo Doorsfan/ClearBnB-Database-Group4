@@ -114,9 +114,15 @@ export default {
       this.relevantListings = []
       let currentVersion = 0;
       let currentId = 0;
+      this.processedIds = []
       console.log(data.length);
       while(currentIndex < data.length){
-        this.relevantListings.push(
+        console.log(data);
+        
+        console.log(data[currentIndex].originalListingId)
+        if(!this.processedIds.includes(data[currentIndex].originalListingId)){
+          this.processedIds.push(data[currentIndex].originalListingId);
+          this.relevantListings.push(
           new Listing(
             data[currentIndex].listingId,
             data[currentIndex].owner.username,
@@ -127,8 +133,11 @@ export default {
             data[currentIndex].numberGuests,
             data[currentIndex].price,
             data[currentIndex].listingStartDate,
-            data[currentIndex].listingEndDate)
+            data[currentIndex].listingEndDate,
+            data[currentIndex].originalListingId)
             );
+        }
+        
         currentIndex += 1;
       }
 
@@ -203,11 +212,14 @@ export default {
         }).then(async (data) => {
           let currentIndex = 0;
           this.relevantListings = []
+          this.processedIds = []
           let currentVersion = 0;
           let currentId = 0;
           console.log(data.length);
           while(currentIndex < data.length){
-            this.relevantListings.push(
+            console.log(data);
+            if(!this.processedIds.includes(data[currentIndex].originalListingId)){
+              this.relevantListings.push(
               new Listing(
                 data[currentIndex].listingId,
                 data[currentIndex].owner.username,
@@ -218,8 +230,12 @@ export default {
                 data[currentIndex].numberGuests,
                 data[currentIndex].price,
                 data[currentIndex].listingStartDate,
-                data[currentIndex].listingEndDate)
+                data[currentIndex].listingEndDate,
+                data[currentIndex].originalListingId)
                 );
+              this.processedIds.push(data[currentIndex].originalListingId);
+            }
+            
             currentIndex += 1;
           }
 
@@ -249,7 +265,8 @@ export default {
               data[currentIndex].numberGuests, 
               data[currentIndex].price, 
               data[currentIndex].listingStartDate,
-              data[currentIndex].listingEndDate
+              data[currentIndex].listingEndDate,
+              data[currentIndex].originalListingId
             );
             this.relevantListings.push(latestVersionOfListing);
             console.log(this.relevantListings);
