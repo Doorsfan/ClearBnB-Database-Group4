@@ -201,7 +201,8 @@ export default {
       console.log("THE ENDDATE WAS: " + this.myEndDate);
       console.log("THE PRICE WAS: " + this.myPrice);
       if(!this.changedSomething){
-        let res = await fetch('http://localhost:4000/getAllListings', {
+        let res = await fetch('http://localhost:4000/getAllListings?' +
+        new URLSearchParams(myQueryParams), {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
