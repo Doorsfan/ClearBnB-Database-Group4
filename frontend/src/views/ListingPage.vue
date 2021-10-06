@@ -578,7 +578,7 @@ export default {
         price: this.$route.query.price,
         listingStartDate: this.$route.query.listingStartDate,
         listingEndDate: this.$route.query.listingEndDate,
-        username: this.postedByUsername,
+        username: this.$store.getters.user.username,
         comment: this.myComment,
         rating: this.wantedAmountOfStars,
         timestamp: new Date(),
@@ -623,8 +623,11 @@ export default {
                 ));
               currentIndex += 1;
             }
+            console.log(data);
             this.relevantReviews = [];
             this.reviewsFromDatabase.forEach(element => {
+              console.log("THE ELEMENT VERSION WAS: " + element.version);
+              console.log("THE WANTED VERSION WAS: " + this.wantedVersion);
               if(element.version == this.wantedVersion){
                 this.relevantReviews.push(element);
               }

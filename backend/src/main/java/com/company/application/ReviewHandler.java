@@ -270,7 +270,7 @@ public class ReviewHandler {
                 myReviewDTO.setAuthor(myReviewInList.getAuthor());
                 myListOfReviewDTOs.add(myReviewDTO);
             }
-            res.json(myListOfReviewDTOs);
+            res.json(updatedListOfReviews);
 
         });
 
