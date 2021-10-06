@@ -6,7 +6,7 @@
       <div class="cellBox">{{ imageUrl }}</div>
       <div class="cellBox">{{ location }}</div>
       <div class="cellBox">{{ numberGuests }}</div>
-      <div class="cellBox">{{ displayPrice }}</div>
+      <div class="cellBox">{{ price }}</div>
       <div class="cellBox">{{ startDate }}</div>
       <div class="cellBox">{{ endDate }}</div>
       <div class="cellBox">{{ host }}</div>
@@ -24,7 +24,7 @@ export default {
       location: this.Listing.location,
       numberGuests: this.Listing.numberGuests,
       price: this.Listing.price,
-      displayPrice: Math.round(this.Listing.price * 1.15),
+      price: Math.round(this.Listing.price * 1.15),
       startDate: this.Listing.listingStartDate,
       endDate: this.Listing.listingEndDate,
       host: this.Listing.postedByUsername
@@ -33,7 +33,18 @@ export default {
   methods: {
   },
   mounted() {
+    console.log("THE MOUNTED LISTING IN POSTING WAS: ");
     console.log(this.Listing);
+    this.title = this.Listing.title;
+    this.description = this.Listing.description;
+    this.imageUrl = this.Listing.imageUrl;
+    this.location = this.Listing.location;
+    this.numberGuests = this.Listing.numberGuests;
+    this.price = this.Listing.price;
+    this.displayPrice = this.Listing.displayPrice;
+    this.startDate = this.Listing.listingStartDate;
+    this.endDate = this.Listing.listingEndDate;
+    this.host = this.Listing.postedByUsername;
   }
 };
 </script>

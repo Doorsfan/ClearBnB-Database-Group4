@@ -64,8 +64,8 @@
       </div>
       <Posting
         v-for="(listItem, index) of relevantListings"
-        :key="index"
         :Listing="listItem"
+        :key="index"
       />
     </div>
   </div>
@@ -109,44 +109,33 @@ export default {
       this.relevantListings = []
       let currentVersion = 0;
       let currentId = 0;
-
+      this.relevantListings = [];
+      let myCurrentIndex = 0;
+      while(myCurrentIndex < Object.keys(data).length){
+        let myListing = new Listing(
+              data[myCurrentIndex].listingId,
+              data[myCurrentIndex].owner.username, 
+              data[myCurrentIndex].title, 
+              data[myCurrentIndex].description, 
+              data[myCurrentIndex].imageUrl, 
+              data[myCurrentIndex].location, 
+              data[myCurrentIndex].numberGuests, 
+              data[myCurrentIndex].price, 
+              data[myCurrentIndex].listingStartDate,
+              data[myCurrentIndex].listingEndDate
+            );
+            this.relevantListings.push(myListing);
+            console.log(myListing);
+            myCurrentIndex += 1;
+      }    
+    });
       // listingId 4, versionId 1
       // listingId 4, versionId 2
       // listingId 5, versionId 1
       //
       // listingId5 {1: versionId: 1, 2: versionId: 2}
       // 
-      const groupBy = (objectArray, property) => {
-          return objectArray.reduce(function (total, obj) {
-            let key = obj[property];
-            if (!total[key]) {
-              total[key] = [];
-            }
-            total[key].push(obj);
-            return total;
-          }, {});
-        }
 
-        let groupedListings = groupBy(data, 'listingId');
-
-        for(var listing in groupedListings){
-          let currentListing = groupedListings[listing];
-          let relevantListing = currentListing[currentListing.length - 1];
-          let latestVersionOfListing = new Listing(
-            relevantListing.listingId,
-            relevantListing.owner.username, 
-            relevantListing.title, 
-            relevantListing.description, 
-            relevantListing.imageUrl, 
-            relevantListing.location, 
-            relevantListing.numberGuests, 
-            relevantListing.price, 
-            relevantListing.listingStartDate,
-            relevantListing.listingEndDate
-          );
-          this.relevantListings.push(latestVersionOfListing);
-        }     
-    });
   },
   methods: {
     updateMyPrice() {
@@ -172,6 +161,9 @@ export default {
         myMaxDate: this.myMaxDate,
         myPrice: this.myPrice
       }
+      let myScope = this;
+      this.relevantListings = [];
+      
       let res = await fetch('http://localhost:4000/getResultsFromFiltering?' + 
       new URLSearchParams(myQueryParams), {
         method: 'GET',
@@ -182,7 +174,10 @@ export default {
           this.relevantListings = [];
           let currentIndex = 0;
           while(currentIndex < Object.keys(data).length){
-            let latestVersionOfListing = new Listing(
+            console.log("My listing Loop");
+            console.log(data);
+            let myListing = new Listing(
+              data[currentIndex].listingId,
               data[currentIndex].owner.username, 
               data[currentIndex].title, 
               data[currentIndex].description, 
@@ -193,9 +188,10 @@ export default {
               data[currentIndex].listingStartDate,
               data[currentIndex].listingEndDate
             );
-            this.relevantListings.push(latestVersionOfListing);
+            myScope.relevantListings.push(myListing);
             currentIndex += 1;
           }
+          console.log(this.relevantListings);
           
         });
     },
