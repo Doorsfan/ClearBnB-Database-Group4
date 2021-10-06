@@ -57,8 +57,8 @@ public class ListingRepository {
                             "0" + LocalDateTime.now().getDayOfMonth()
                             : LocalDateTime.now().getDayOfMonth());
         }
-        System.out.println(listingStartDate);
-        System.out.println(listingEndDate);
+        System.out.println("IN THE BACKEND, THE EMPTYLIST WAS: ");
+
         ArrayList<Integer> alreadyCheckedIds = new ArrayList<Integer>();
         for(int i = baseList.size()-1; i > 0; i--){
 
@@ -86,6 +86,8 @@ public class ListingRepository {
             alreadyCheckedIds.add(baseList.get(i).getOriginalListingId());
 
         }
+
+        /*
         int lastIdChecked = 0;
         for(int e = emptyList.size()-1; e > 0; e--){
             if(lastIdChecked != 0){
@@ -94,7 +96,7 @@ public class ListingRepository {
                 }
             }
             lastIdChecked = emptyList.get(e).getListingId();
-        }
+        } */
         return emptyList;
     }
 
