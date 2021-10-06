@@ -40,8 +40,10 @@ export default {
     goToLoginPage() {
       this.$router.push("/login");
     },
-    goToProfilePage() {
-      this.$router.push("/profile/" + this.$store.getters.user.username);
+    async goToProfilePage() {
+      await this.$router.push("/profile/" + this.$store.getters.user.username);
+      window.location.reload(false); // fixed a redering issue when going from one profile to the next
+                                     // not a great solution, but it works for the time-being
     },
     logout() {
       this.$store.dispatch("logout");

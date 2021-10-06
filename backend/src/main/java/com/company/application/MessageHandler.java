@@ -29,7 +29,7 @@ public class MessageHandler {
     private void initMessageHandler() {
         List<WsContext> clients = new ArrayList<>();
 
-        app.get("/rest/usersInChat", (req, res) -> {
+        app.get("/api/usersInChat", (req, res) -> {
             List<String> usernames = new ArrayList<>();
             for (WsContext ctx : clients) {
                 if (!usernames.contains(ctx.pathParam("username"))) {
@@ -39,7 +39,7 @@ public class MessageHandler {
             res.json(usernames);
         });
 
-        app.get("/rest/getAllMessagesForUser/:id", (req, res) -> {
+        app.get("/api/getAllMessagesForUser/:id", (req, res) -> {
             List<User> user = userRepository.findByUsername(req.params("id"));
 
             // get both sent and received messages for a user

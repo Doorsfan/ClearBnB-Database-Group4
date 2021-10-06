@@ -1,5 +1,5 @@
 <template>
-  <div class="mainDiv">
+  <div class="mainDiv" :key="username">
     <div class="upperDiv">
       <div class="navbar"></div>
       <div class="myProfileBox centerBox">My Profile</div>
@@ -62,18 +62,21 @@ export default {
   },
   data() {
     return {
-      username: (this.$route.params.username) ? 
-      (this.$route.params.username) : ((this.$store.getters.user) ? 
-        (this.$store.getters.user.username) : "Not Logged In"),
+      username: this.$route.params.username ? this.$route.params.username : "Not Logged In",
       reviewsFromDatabase: [],
       myComment: '',
       wantedAmountOfStars: 3,
-      loggedInUser: this.$store.getters.user,
+      loggedInUser: this.$store.state.user,
       samePerson: false,
       myListings: []
     };
   },
   async mounted() {
+    if (!this.$store.state.user) {
+      await this.$store.dispatch("whoAmI")
+      this.loggedInUser = this.$store.state.user
+      this.username = this.$route.params.username ? this.$route.params.username : "Not Logged In"
+    }
     if(this.$store.getters.user){
       if(this.$store.getters.user.username == this.username){
         this.samePerson = true;

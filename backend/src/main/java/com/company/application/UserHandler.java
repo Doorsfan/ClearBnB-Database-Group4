@@ -133,7 +133,7 @@ public class UserHandler {
             req.session("current-user", null);
         });
 
-        app.get("/rest/getUserByUsername/:username", (req, res) -> {
+        app.get("/api/getUserByUsername/:username", (req, res) -> {
             User user = userCacheRepository.find("username-" + req.params("username"));
             if (user == null) {
                 user = userRepository.findByUsername(req.params("username")).get(0);
