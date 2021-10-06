@@ -151,12 +151,12 @@ public class ListingHandler {
                 }
             }
             System.out.println("Added a total of: " + alreadyCoveredIds.size() + " items");
-            List<Listing> allMyListings = this.theListingRepository.findAll();
-
+            //List<Listing> allMyListings = this.theListingRepository.findAll();
+            List<Listing> myListings = this.theListingRepository.findUniqueVersionOfAll();
 
             res.append("Access-Control-Allow-Origin", "http://localhost:3000");
             res.append("Access-Control-Allow-Credentials", "true");
-            res.json(allMyListings);
+            res.json(myListings);
         });
 
         app.post("/getAllVersionsOfListing", (req, res) -> {

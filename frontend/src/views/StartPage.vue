@@ -115,27 +115,26 @@ export default {
       let currentVersion = 0;
       let currentId = 0;
       this.processedIds = []
-      console.log(data.length);
       while(currentIndex < data.length){
         console.log(data);
-        
-        console.log(data[currentIndex].originalListingId)
-        if(!this.processedIds.includes(data[currentIndex].originalListingId)){
-          this.processedIds.push(data[currentIndex].originalListingId);
-          this.relevantListings.push(
-          new Listing(
-            data[currentIndex].listingId,
-            data[currentIndex].owner.username,
-            data[currentIndex].title,
-            data[currentIndex].description,
-            data[currentIndex].imageUrl,
-            data[currentIndex].location,
-            data[currentIndex].numberGuests,
-            data[currentIndex].price,
-            data[currentIndex].listingStartDate,
-            data[currentIndex].listingEndDate,
-            data[currentIndex].originalListingId)
-            );
+        for (let i = data.length-1; i > -1; i--) {
+            if(!this.processedIds.includes(data[i].originalListingId)){
+              this.processedIds.push(data[i].originalListingId);
+              this.relevantListings.push(
+              new Listing(
+                data[i].listingId,
+                data[i].owner.username,
+                data[i].title,
+                data[i].description,
+                data[i].imageUrl,
+                data[i].location,
+                data[i].numberGuests,
+                data[i].price,
+                data[i].listingStartDate,
+                data[i].listingEndDate,
+                data[i].originalListingId)
+                );
+             }
         }
         
         currentIndex += 1;

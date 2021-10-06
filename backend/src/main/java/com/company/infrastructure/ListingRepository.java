@@ -35,7 +35,7 @@ public class ListingRepository {
 
         List<Listing> baseList = entityManager.createQuery("SELECT l FROM Listing l WHERE l.location " +
                 "LIKE :location AND :numberGuests <= l.numberGuests" +
-                " AND l.price <= :price")
+                " AND l.price <= :price ORDER BY l.version DESC LIMIT 1", Listing.class)
                 .setParameter("location", "%" + location + "%")
                 .setParameter("numberGuests", (numberGuests < 1 ? 1 : numberGuests))
                 .setParameter("price", (price == 0 ? 100000.0 : price))
@@ -163,6 +163,13 @@ public class ListingRepository {
             return result.get(0).getListingId();
         }
         return -1;
+    }
+
+    public List<Listing> findUniqueVersionOfAll(){
+        List<Listing> result = entityManager
+                .createQuery("SELECT l FROM Listing l ORDER BY l.version")
+                .getResultList();
+        return result;
     }
 
     public List<Listing> findAllBasedOnId(Integer id){
