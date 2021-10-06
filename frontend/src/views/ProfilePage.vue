@@ -1,10 +1,10 @@
 <template>
-  <div class="mainDiv">
+  <div class="mainDiv" :key="username">
     <div class="upperDiv">
       <div class="navbar"></div>
       <div class="myProfileBox centerBox">My Profile</div>
       <div class="myProfileInfoBoxUsername centerBox subBox1">Username: {{ username }}</div>
-      <div class="myProfileInfoBoxBalance centerBox subBox2">Balance: {{ loggedInUser.balance }}</div>
+      <div class="myProfileInfoBoxBalance centerBox subBox2" v-if="loggedInUser">Balance: {{ loggedInUser.balance }}</div>
       <router-link to="/leaseAHouse" class="centerBox subBox3">Add a Lease</router-link>
       <p v-if="myListings.length > 0" class="myLeasesP">My Leases</p>
       <div v-if="myListings.length > 0" class="divOfListings">
@@ -62,18 +62,21 @@ export default {
   },
   data() {
     return {
-      username: (this.$route.params.username) ? 
-      (this.$route.params.username) : ((this.$store.getters.user) ? 
-        (this.$store.getters.user.username) : "Not Logged In"),
+      username: this.$route.params.username ? this.$route.params.username : "Not Logged In",
       reviewsFromDatabase: [],
       myComment: '',
       wantedAmountOfStars: 3,
-      loggedInUser: this.$store.getters.user,
+      loggedInUser: this.$store.state.user,
       samePerson: false,
       myListings: []
     };
   },
   async mounted() {
+    if (!this.$store.state.user) {
+      await this.$store.dispatch("whoAmI")
+      this.loggedInUser = this.$store.state.user
+      this.username = this.$route.params.username ? this.$route.params.username : "Not Logged In"
+    }
     if(this.$store.getters.user){
       if(this.$store.getters.user.username == this.username){
         this.samePerson = true;

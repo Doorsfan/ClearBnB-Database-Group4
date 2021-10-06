@@ -33,7 +33,6 @@ public class UserHandler {
             userRepository.update(Integer.parseInt(req.query("userId")), null,
                    null, null, Double.parseDouble(req.query("balance")));
             // invalidate user in cache
-            System.out.println("test111");
             userCacheRepository.remove("username-" + req.query("username"));
 
             res.json(userRepository.findById(Integer.parseInt(req.query("userId"))));
@@ -110,7 +109,7 @@ public class UserHandler {
             req.session("current-user", null);
         });
 
-        app.get("/rest/getUserByUsername/:username", (req, res) -> {
+        app.get("/api/getUserByUsername/:username", (req, res) -> {
             User user = userCacheRepository.find("username-" + req.params("username"));
             if (user == null) {
                 user = userRepository.findByUsername(req.params("username")).get(0);
