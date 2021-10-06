@@ -22,7 +22,7 @@ export default {
         this.$store.state.user.username === this.$route.params.username)) {
       this.$router.push("/")
     }
-    let res = await fetch('/rest/getAllMessagesForUser/' + this.$route.params.username)
+    let res = await fetch('/api/getAllMessagesForUser/' + this.$route.params.username)
     this.previousMessages = await res.json()
     this.ul = document.querySelector("#chat-output")
     this.input = document.querySelector("#chat-input")

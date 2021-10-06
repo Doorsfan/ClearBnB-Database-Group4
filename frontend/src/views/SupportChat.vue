@@ -18,7 +18,7 @@ export default {
     if (!this.$store.state.user || this.$store.state.user.username !== "support") {
       this.$router.push("/")
     }
-    let res = await fetch('/rest/usersInChat')
+    let res = await fetch('/api/usersInChat')
     this.usernames = await res.json()
   },
 
