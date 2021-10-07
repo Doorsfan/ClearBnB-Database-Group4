@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `booking` (
   CONSTRAINT `booking_ibfk_4` FOREIGN KEY (`bookedByUser`) REFERENCES `user` (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.booking: ~1 rows (approximately)
+-- Dumping data for table clearbnb.booking: ~6 rows (approximately)
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
 INSERT IGNORE INTO `booking` (`bookingId`, `listingBooked`, `bookedByUser`, `amountPaid`, `bookingStartDate`, `bookingEndDate`, `cancelled`) VALUES
 	(1, 25, 9, 345, '2021-10-09', '2021-10-12', 0),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `listing` (
   CONSTRAINT `listing_ibfk_1` FOREIGN KEY (`ownerId`) REFERENCES `user` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.listing: ~17 rows (approximately)
+-- Dumping data for table clearbnb.listing: ~31 rows (approximately)
 /*!40000 ALTER TABLE `listing` DISABLE KEYS */;
 INSERT IGNORE INTO `listing` (`listingId`, `version`, `auditedDatetime`, `ownerId`, `title`, `description`, `imageUrl`, `location`, `numberGuests`, `price`, `listingStartDate`, `listingEndDate`, `originalListingId`) VALUES
 	(1, 1, '2021-10-04 16:01:00', 4, 'Small Suburban Housing', 'A small fine suburban housing ', 'https://i.ytimg.com/vi/35wYjQRnOZA/maxresdefault.jpg', 'Detroit', 3, 200, '2021-10-05', '2021-10-30', 1),
@@ -85,19 +85,16 @@ INSERT IGNORE INTO `listing` (`listingId`, `version`, `auditedDatetime`, `ownerI
 	(16, 1, '2021-10-04 16:52:00', 15, 'House with a Pool', 'A housing with a Pool', 'https://media.gettyimages.com/photos/large-house-with-swimming-pool-picture-id94474127?s=612x612', 'Bangkok, Thailand', 2, 600, '2021-10-11', '2021-10-30', 16),
 	(17, 1, '2021-10-04 16:54:00', 16, 'Enormous Mansion', 'A huge luxury Mansion', 'https://i.pinimg.com/originals/d0/c0/4b/d0c04be7f982a0753cb6dc0c565ea661.jpg', 'Paris, France', 10, 5000, '2021-10-04', '2021-11-30', 17),
 	(18, 1, '2021-10-04 17:05:00', 17, 'Mountainside House', 'A house on the mountainside', 'https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2021/08/When-Buying-a-Bigger-House-Could-Be-a-Bad-Idea_1.jpg', 'England, Yorkshire', 2, 1000, '2021-10-06', '2021-10-28', 18),
+	(19, 1, '2021-10-07 07:44:00', 1, 'q', 'q', 'q', 'q', 5, 5, '2021-10-07', '2021-10-14', 19),
+	(20, 1, '2021-10-07 07:45:00', 1, 'q', 'q', 'q', 'q', 5, 5, '2021-10-07', '2021-10-14', 20),
+	(20, 2, '2021-10-07 07:46:30', 1, 'w', 'q', 'q', 'q', 5, 5, '2021-10-07', '2021-10-14', 20),
 	(22, 1, '2021-10-05 21:05:00', 5, 'hehe', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
 	(23, 2, '2021-10-05 23:18:08', 5, 'REH', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
 	(24, 2, '2021-10-06 00:17:24', 17, 'NEW TITLE', 'A house on the mountainside', 'https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2021/08/When-Buying-a-Bigger-House-Could-Be-a-Bad-Idea_1.jpg', 'England, Yorkshire', 2, 1000, '2021-10-06', '2021-10-28', 18),
 	(25, 3, '2021-10-06 00:20:34', 5, 'MODIFIED', 'hehe', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', 22),
 	(26, 2, '2021-10-06 00:26:41', 4, 'Trying something new', 'A small fine suburban housing ', 'https://i.ytimg.com/vi/35wYjQRnOZA/maxresdefault.jpg', 'Detroit', 3, 200, '2021-10-05', '2021-10-30', 1),
-	(27, 1, '2021-10-06 03:34:00', 24, 'MY LEASE', 'HEH', 'HEH', 'HEH', 1, 500, '2021-10-06', '2021-10-30', 19),
-	(28, 1, '2021-10-06 05:59:00', 1, 'a New Listing', 'hehe', 'hehe', 'hehe', 5, 500, '2021-10-06', '2021-10-16', 19),
-	(29, 4, '2021-10-06 08:54:44', 5, 'MODIFIED', 'NEW DESCRIPTION', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', NULL),
-	(30, 5, '2021-10-06 08:55:30', 5, 'SEEEE', 'NEW DESCRIPTION', 'hehe', 'hehe', 1, 100, '2021-10-05', '2021-10-16', NULL),
 	(31, 2, '2021-10-06 09:15:33', 8, 'Gated Community House', 'A small gated community housing', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMUIxJXtxxHeX-LGu40M-fRDGadxGE6-sf0tAjfC-Py9642WdH_7Z9Js1IbtxpXH-6mMc&usqp=CAU', 'Berlin, Germany', 4, 300, '2021-10-04', '2021-10-29', 9),
-	(32, 1, '2021-10-06 09:16:00', 8, 'LATEST LISTING', 'hehe', '', 'hehe', 5, 555, '2021-10-06', '2021-10-30', 19),
-	(33, 2, '2021-10-06 10:00:43', 6, 'My New Title', 'Small house in the Fields', 'https://cdn.houseplansservices.com/content/iipv49rhgtuoiqmn4dvmphqpcl/w991x660.jpg?v=9', 'Istanbul, Turkey', 3, 600, '2021-11-24', '2021-11-30', 5),
-	(34, 1, '2021-10-06 15:42:00', 1, 'a new place', 'hehe', 'hehe', 'wwww', 5, 55555, '2021-10-07', '2021-10-15', 19);
+	(33, 2, '2021-10-06 10:00:43', 6, 'My New Title', 'Small house in the Fields', 'https://cdn.houseplansservices.com/content/iipv49rhgtuoiqmn4dvmphqpcl/w991x660.jpg?v=9', 'Istanbul, Turkey', 3, 600, '2021-11-24', '2021-11-30', 5);
 /*!40000 ALTER TABLE `listing` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.message
@@ -114,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   CONSTRAINT `message_ibfk_2` FOREIGN KEY (`recipientId`) REFERENCES `user` (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.message: ~0 rows (approximately)
+-- Dumping data for table clearbnb.message: ~7 rows (approximately)
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
 INSERT IGNORE INTO `message` (`messageId`, `writtenById`, `recipientId`, `content`, `timestamp`) VALUES
 	(1, 1, NULL, 'haha', '2021-10-06 03:26:34'),
@@ -147,14 +144,6 @@ CREATE TABLE IF NOT EXISTS `review` (
 
 -- Dumping data for table clearbnb.review: ~12 rows (approximately)
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT IGNORE INTO `review` (`reviewId`, `version`, `timestamp`, `authorId`, `comment`, `rating`, `postedToListingId`, `reviewsUserIdOf`) VALUES
-	(1, 2, '2021-10-06 00:48:47', 4, 'VERSION 2', 3, 26, NULL),
-	(2, 1, '2021-10-06 00:49:11', 4, 'VERSION 1', 3, 26, NULL),
-	(3, 2, '2021-10-06 00:57:39', 4, 'VERSION 3?', 3, 26, NULL),
-	(4, 1, '2021-10-06 00:58:54', 4, 'IN VERSION 1', 3, 26, NULL),
-	(5, 1, '2021-10-06 08:55:17', 5, 'This comment has been removed.', 3, 28, NULL),
-	(6, 2, '2021-10-06 10:06:20', 4, 'This comment has been removed.', 3, 1, NULL),
-	(7, 1, '2021-10-06 15:39:37', 1, 'Great stuff', 5, NULL, 8);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 
 -- Dumping structure for table clearbnb.user
@@ -168,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`,`email`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table clearbnb.user: ~22 rows (approximately)
+-- Dumping data for table clearbnb.user: ~23 rows (approximately)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT IGNORE INTO `user` (`userId`, `username`, `password`, `email`, `balance`) VALUES
 	(1, 'mikael', '60ebf6e22afe105f975ddc810e6cac4599034f40cc25c16da279c36c2b4bcbbe', 'haha', 0),
